@@ -29,7 +29,7 @@ async function getMenuOrderItem() {
 
 async function getMenuOrderItemDetail(id) {
     const cat = id;
-    const res = await pool.query(`SELECT c.name, SUM(ti.quantity) AS total_sales FROM transaction_item ti JOIN catalog c ON ti.catalog_id = c.id WHERE c.category = $1 GROUP BY c.name`, [cat]);
+    const res = await pool.query(`SELECT c.name, SUM(ti.quantity) AS total_sales FROM transaction_item ti JOIN catalog c ON ti.catalog_id = c.id WHERE c.category = $1 GROUP BY c.name ORDER BY total_sales DESC`, [cat]);
     return res.rows;
 };
 

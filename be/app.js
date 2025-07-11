@@ -34,7 +34,7 @@ app.use(requestLogger);
 // Routes
 app.use('/api/auth', authRoutes);
 // app.use('/api/users', userRoutes);
-app.use('/api/catalogs', catalogRoutes);
+// app.use('/api/catalogs', catalogRoutes);
 app.use('/api/transactions', transactionRoutes);
 
 //admin
