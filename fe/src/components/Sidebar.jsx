@@ -5,6 +5,11 @@ import logo from '../assets/logo.png';
 import logoMin from '../assets/logo-p.png';
 import { useLocation, useNavigate } from 'react-router-dom';
 
+import dashboard from '../assets/icon/dashboard.png'
+import setting from '../assets/icon/setting.png'
+import menuoard from '../assets/icon/menu-board.png'
+import report from '../assets/icon/report.png'
+
 const Sidebar = ({ isOpen, minimized, onToggleMinimize }) => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -43,11 +48,11 @@ const Sidebar = ({ isOpen, minimized, onToggleMinimize }) => {
               active={location.pathname === '/dashboard-admin'}
               className="d-flex align-items-center justify-content-start"
             >
-              <FiGrid className="me-2" /> {!minimized && 'Dashboard'}
+              <img src={dashboard} className='me-2' /> {!minimized && 'Dashboard'}
             </Nav.Link>
           </Nav.Item>
           <Nav.Link href="/master-catalog"  active={location.pathname === '/master-catalog'} className="d-flex align-items-center justify-content-start">
-              <FiFileText className="me-2" /> {!minimized && 'Catalog Menu'}
+              <img src={menuoard} alt="Logo" className='me-2' style={{ width: '24px', height: '24px' }} />  {!minimized && 'Catalog Menu'}
             </Nav.Link>
           <Nav.Item>
             <Nav.Link
@@ -55,7 +60,7 @@ const Sidebar = ({ isOpen, minimized, onToggleMinimize }) => {
               active={location.pathname === '/report-sales'}
               className="d-flex align-items-center justify-content-start"
             >
-              <FiFileText className="me-2" /> {!minimized && 'Reports'}
+              <img src={report} alt="Logo" className='me-2' style={{ width: '24px', height: '24px', objectFit: 'contain' }} />   {!minimized && 'Reports'}
             </Nav.Link>
           </Nav.Item>
           <Nav.Item>
@@ -64,12 +69,12 @@ const Sidebar = ({ isOpen, minimized, onToggleMinimize }) => {
               active={location.pathname === '/setting'}
               className="d-flex align-items-center justify-content-start"
             >
-              <FiSettings className="me-2" /> {!minimized && 'Settings'}
+              <img src={setting} alt="Logo" className='me-2' style={{ width: '24px', height: '24px', objectFit: 'contain' }} /> {!minimized && 'Settings'}
             </Nav.Link>
           </Nav.Item>
         </Nav>
         <div className="mt-auto w-100 d-flex justify-content-center">
-           <Nav.Link onClick={handleLogout} className="d-flex align-items-center text-danger justify-content-start" style={{cursor: 'pointer'}}>
+           <Nav.Link onClick={handleLogout} className="d-flex align-items-center text-danger justify-content-start bg-light p-2 px-3 rounded" style={{cursor: 'pointer'}}>
               <FiLogOut className="me-2" /> {!minimized && 'Logout'}
             </Nav.Link>
         </div>

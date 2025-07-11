@@ -6,12 +6,6 @@ import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import MenuData from '../components/MenuData';
 
-import SummaryData from '../components/SummaryData';
-import SalesChart from '../components/SalesChart';
-
-// Import ikon-ikon untuk SummaryData
-import { FiArchive, FiDollarSign, FiClipboard, FiCoffee, FiGift, FiTrello } from '../components/Icon';
-
 function App() {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [isSidebarMinimized, setSidebarMinimized] = useState(false);

@@ -1,14 +1,72 @@
-/* Override Bootstrap primary color */
-:root {
-  --bs-primary: #3572EF !important;
-  --bs-primary-rgb: 5, 136, 64 !important;
-}
-
 #root {
   max-width: 100%;
   margin: 0 auto;
   padding: 2rem;
   /* text-align: center; */
+}
+
+.table-container {
+  background: #fff;
+  max-width: 500px;
+  margin: auto;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.close-btn {
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.search-box {
+  margin: 10px 0 20px;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  outline: none;
+  font-size: 14px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 14px !important;
+  text-align: left;
+  border-radius: 4px 4px 0 0;
+}
+
+th {
+  background: #f1f1f1 !important; 
+  font-size: 14px;
+}
+
+tr{
+  border-radius: 10px 10px 0 0;
+}
+
+tr:not(:last-child) td {
+  border-bottom: 1px solid #eee;
+}
+
+td {
+  font-size: 14px;
 }
 
 .btn-primary {
@@ -114,8 +172,8 @@
   text-align: start;
 }
 .nav-pills .nav-link.active {
-  background-color: #e7e9fc !important;
-  color: #4e73df !important;
+  background-color: #3572EF !important;
+  color: #f1f1f1 !important;
   font-weight: 700;
 }
 .nav-pills .nav-link:hover {
