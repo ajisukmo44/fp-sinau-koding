@@ -1,16 +1,41 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Nav, Form, Button } from 'react-bootstrap';
+import { Container, Row, Col, Card, Nav, Form, Button, Modal } from 'react-bootstrap';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 import foods from '../assets/icon/reserve1.png'
 import beverages from '../assets/icon/coffe1.png'
 import desserts from '../assets/icon/cake1.png'
+import deleted from '../assets/icon/deleted.png';
+import tickCircle from '../assets/icon/tick-circle.png';''
+import add from '../assets/icon/add.png';
+import edit from '../assets/icon/edit.png';
+import deletedd from '../assets/icon/deletedd.png';
 import api from '../api';
+import urlImage from '../api/baseUrl';
+import Alert from 'react-bootstrap/Alert';
 
 const MenuApp = () => {
   const [menuData, setMenuData] = useState([]);
   const [selectedMenu, setSelectedMenu] = useState(null);
   const [loading, setLoading] = useState(false);
   const [activeCategory, setActiveCategory] = useState('all');
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [editForm, setEditForm] = useState({});
+  const [updating, setUpdating] = useState(false);
+  const [isAddMode, setIsAddMode] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+  const [messageAlert, setMessageAlert] = useState('');
+  const [addForm, setAddForm] = useState({
+    name: '',
+    category: '',
+    price: '',
+    description: '',
+    image: null
+  });
+  const [adding, setAdding] = useState(false);
+  // const urlImage = urlImage;
 
   const fetchMenuData = async () => {
     setLoading(true);
@@ -35,16 +60,160 @@ const MenuApp = () => {
     fetchMenuData();
   }, []);
 
+  const handleDeleteMenu = async () => {
+    if (!selectedMenu) return;
+    
+    setDeleting(true);
+    try {
+      const token = localStorage.getItem('token');
+      await api.delete(`/admin/master-catalogs/${selectedMenu.id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      setMenuData(prev => prev.filter(item => item.id !== selectedMenu.id));
+      setSelectedMenu(null);
+      setShowDeleteModal(false);
+      setShowAlert(true);
+      setMessageAlert('Menu successfully deleted!');
+    } catch (error) {
+      console.error('Error deleting menu:', error);
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  const handleEditMenu = () => {
+    if (!selectedMenu) return;
+    setEditForm({
+      name: selectedMenu.name,
+      category: selectedMenu.category,
+      price: selectedMenu.price,
+      description: selectedMenu.description,
+      image: null
+    });
+    setIsEditMode(true);
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditMode(false);
+    setEditForm({});
+  };
+
+  const handleUpdateMenu = async () => {
+    if (!selectedMenu) return;
+    
+    setUpdating(true);
+    try {
+      const token = localStorage.getItem('token');
+      const formData = new FormData();
+      formData.append('name', editForm.name);
+      formData.append('category', editForm.category);
+      formData.append('price', editForm.price);
+      formData.append('description', editForm.description);
+      if (editForm.image) {
+        formData.append('image', editForm.image);
+      }
+      
+      const response = await api.put(`/admin/master-catalogs/${selectedMenu.id}`, formData, {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      
+      setMenuData(prev => prev.map(item => 
+        item.id === selectedMenu.id ? { ...item, ...editForm } : item
+      ));
+      setSelectedMenu({ ...selectedMenu, ...editForm });
+      setIsEditMode(false);
+      fetchMenuData();
+      setShowAlert(true);
+      setMessageAlert('Menu successfully updated!');
+      
+      // Swal.fire({
+      //   title: 'Success!',
+      //   text: 'Menu has been updated successfully',
+      //   icon: 'success',
+      //   confirmButtonText: 'OK'
+      // });
+    } catch (error) {
+      console.error('Error updating menu:', error);
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  const handleAddMenu = () => {
+    setIsAddMode(true);
+    setAddForm({
+      name: '',
+      category: '',
+      price: '',
+      description: '',
+      image: null
+    });
+  };
+
+  const handleCreateMenu = async () => {
+    setAdding(true);
+    try {
+      const token = localStorage.getItem('token');
+      const formData = new FormData();
+      formData.append('name', addForm.name);
+      formData.append('category', addForm.category);
+      formData.append('price', addForm.price);
+      formData.append('description', addForm.description);
+      if (addForm.image) {
+        formData.append('image', addForm.image);
+      }
+      
+      const response = await api.post('/admin/master-catalogs', formData, {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      
+      setMenuData(prev => [...prev, response.data]);
+      setIsAddMode(false);
+      fetchMenuData();
+      setShowAlert(true);
+      setMessageAlert('Menu successfully created!');
+      // Swal.fire({
+      //   title: 'Success!',
+      //   text: 'Menu has been added successfully',
+      //   icon: 'success',
+      //   confirmButtonText: 'OK'
+      // });
+    } catch (error) {
+      console.error('Error creating menu:', error);
+    } finally {
+      setAdding(false);
+    }
+  };
+
+  const handleCancelAdd = () => {
+    setIsAddMode(false);
+    setAddForm({
+      name: '',
+      category: '',
+      price: '',
+      description: '',
+      image: null
+    });
+  };
+
   const filteredMenuData = activeCategory === 'all' 
     ? menuData 
     : menuData.filter(item => item.category.toLowerCase() === activeCategory.toLowerCase());
 
   return (
+    <>
       <Row className='mt-2'>
         {/* Left Panel - Menu List */}
         <Col md={8}>
           <div>
-          <h4 className="fw-bolder">List Menu</h4>
+            <h4 className="fw-bolder">List Menu x {urlImage}</h4>
           </div>
           <div className='text-start'>
             <div className="row">
@@ -99,12 +268,12 @@ const MenuApp = () => {
             ) : (
               filteredMenuData.map((item, idx) => (
                 <Col key={idx} md={4} className="mb-3">
-                  <Card onClick={() => setSelectedMenu(item)} style={{ cursor: 'pointer' }}>
-                    <Card.Img variant="top" src={item.image} />
+                  <Card onClick={() => setSelectedMenu(item)} style={{ cursor: 'pointer' }} className='h-100'>
+                    <Card.Img variant="top" src={urlImage + '/catalogs/' + item.image}  style={{ width: '100%', height: '200px' }} />  
                     <Card.Body className='px-0'>
                       <div className="row">
                         <div className="col-12 text-muted">
-                          <h5><b>{item.name}</b></h5>
+                          <h5><b>{item.name} x {urlImage+'/catalogs/'+item.image}</b></h5>
                           <small>{item?.description.slice(0, 100)} {item.description.length > 100 ? '...' : ''}</small>
                         </div>
                         <div className="col-8 mt-3">
@@ -124,47 +293,197 @@ const MenuApp = () => {
 
         {/* Right Panel - Detail Menu */}
         <Col md={4} className='mt-4 pt-1'>
-       
+          {showAlert ? (
+            <div className="alert-success mb-2">
+                <div className="alert-message">  <img src={tickCircle} alt="icon" className='mx-0 me-2'/><span className='ms-2'>{messageAlert}</span></div>
+                <div className="alert-close" onClick={() => setShowAlert(false)}>&times;</div>
+              </div>
+          ) :  (
+            ''
+          )}
           <Card>
           <div className='row'>
             <div className="col-10">
-                <h4 className="fw-bolder">Add Menu</h4>
+                <h5 className="fw-bolder">
+                   {isAddMode ? (
+                 'Add Menu'
+                ) : isEditMode ? (
+                  'Edit Menu'
+                ) : selectedMenu ? (
+                 'Detail Menu'
+                ): (
+                  'Add Menu'
+                )}
+
+                </h5>
             </div>
-            <div className="col-2 text-end">
-            <Button variant="primary" className="me-2 px-3"><b>+</b></Button>
+              <div className="col-2 text-end">
+                {isAddMode ? (
+                  <Button variant="light" className="me-0 px-3 border text-muted" onClick={handleCancelAdd}>X</Button>
+                ) : isEditMode ? (
+                  <Button variant="light" className="me-0 px-3 border text-muted" onClick={handleCancelEdit}>X</Button>
+                ) : selectedMenu ? (
+                  <div className="d-flex justify-content-end">
+                      <Button variant="white" className="me-2 mx-0 p-0" onClick={handleEditMenu}><img src={edit} alt="icon" className='mx-0'/></Button>
+                      <Button variant="white" className='mx-0 p-0' onClick={() => setShowDeleteModal(true)}><img src={deletedd} alt="icon" className='mx-0'/></Button>
+                    </div>
+                ): (
+                  <Button variant="primary" className="me-0 px-2" onClick={handleAddMenu}><img src={add} alt="icon" className='mx-0'/></Button>
+                )}
             </div>
           </div>
           <hr />
-            {selectedMenu ? (
+            {isAddMode ? (
+              <Card.Body className='p-0 pt-4'>
+                <Form>
+                  <Form.Group className="mb-3 bg-light p-3 rounded">
+                    <Form.Label>Image</Form.Label>
+                    <Form.Control 
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => setAddForm({...addForm, image: e.target.files[0]})}
+                    />
+                  </Form.Group>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Name</Form.Label>
+                    <Form.Control 
+                      value={addForm.name}
+                      onChange={(e) => setAddForm({...addForm, name: e.target.value})}
+                      placeholder="Menu name.."
+                    />
+                  </Form.Group>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Category</Form.Label>
+                    <Form.Select 
+                      value={addForm.category}
+                      onChange={(e) => setAddForm({...addForm, category: e.target.value})}
+                    >
+                      <option value="">Select category</option>
+                      <option value="foods">Foods</option>
+                      <option value="beverages">Beverages</option>
+                      <option value="desserts">Desserts</option>
+                    </Form.Select>
+                  </Form.Group>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Price</Form.Label>
+                    <Form.Control 
+                      type="number"
+                      value={addForm.price}
+                      onChange={(e) => setAddForm({...addForm, price: e.target.value})}
+                      placeholder="Enter price.."
+                    />
+                  </Form.Group>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Description</Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      rows={3}
+                      value={addForm.description}
+                      onChange={(e) => setAddForm({...addForm, description: e.target.value})}
+                      placeholder="Enter description."
+                    />
+                  </Form.Group>
+                  <div className="d-grid gap-2">
+                    {/* <Button variant="secondary" className="me-2" onClick={handleCancelAdd}>Cancel</Button> */}
+                    <Button variant="primary" 
+                      className='btn btn-block px-4'
+                      onClick={handleCreateMenu}
+                      disabled={adding || !addForm.name || !addForm.category || !addForm.price}
+                    >
+                      {adding ? 'Loading...' : 'Save'}
+                    </Button>
+                  </div>
+                </Form>
+              </Card.Body>
+            ) : isEditMode && selectedMenu ? (
+              <Card.Body className='p-0 pt-4'>
+                <Form>
+                  <Form.Group className="mb-3 bg-light p-4 rounded">
+                    <Form.Label>Image</Form.Label>
+                    <Form.Control 
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => setEditForm({...editForm, image: e.target.files[0]})}
+                    />
+                  </Form.Group>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Name</Form.Label>
+                    <Form.Control 
+                      value={editForm.name || ''}
+                      onChange={(e) => setEditForm({...editForm, name: e.target.value})}
+                      placeholder="Menu name.."
+                    />
+                  </Form.Group>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Category</Form.Label>
+                    <Form.Select 
+                      value={editForm.category || ''}
+                      onChange={(e) => setEditForm({...editForm, category: e.target.value})}
+                    >
+                      <option value="">Select category</option>
+                      <option value="foods">Foods</option>
+                      <option value="beverages">Beverages</option>
+                      <option value="desserts">Desserts</option>
+                    </Form.Select>
+                  </Form.Group>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Price</Form.Label>
+                    <Form.Control 
+                      type="number"
+                      value={editForm.price || ''}
+                      onChange={(e) => setEditForm({...editForm, price: e.target.value})}
+                      placeholder="Enter price.."
+                    />
+                  </Form.Group>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Description</Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      rows={4}
+                      value={editForm.description || ''}
+                      onChange={(e) => setEditForm({...editForm, description: e.target.value})}
+                      placeholder="Enter description."
+                    />
+                  </Form.Group>
+                  <div className="d-grid gap-2">
+                    <Button 
+                      variant="primary" 
+                      className='btn btn-block px-4'
+                      onClick={handleUpdateMenu}
+                      disabled={updating || !editForm.name || !editForm.category || !editForm.price}
+                    >
+                      {updating ? 'Loading...' : 'Update'}
+                    </Button>
+                  </div>
+                </Form>
+              </Card.Body>
+            ) : selectedMenu ? (
               <>
-                <Card.Img variant="top" src={selectedMenu.image} />
-                <Card.Body>
+                <Card.Img variant="top" src={selectedMenu.image} className='rounded' />
+                <Card.Body className='p-0 pt-4'>
                   <Form>
-                    <Form.Group className="mb-2">
+                    <Form.Group className="mb-3">
                       <Form.Label>Name</Form.Label>
-                      <Form.Control value={selectedMenu.name} readOnly />
+                      <Form.Control value={selectedMenu.name} disabled />
                     </Form.Group>
-                    <Form.Group className="mb-2">
+                    <Form.Group className="mb-3">
                       <Form.Label>Category</Form.Label>
-                      <Form.Control value={selectedMenu.category} readOnly />
+                      <Form.Control value={selectedMenu.category} disabled />
                     </Form.Group>
-                    <Form.Group className="mb-2">
+                    <Form.Group className="mb-3">
                       <Form.Label>Price</Form.Label>
-                      <Form.Control value={selectedMenu.price} readOnly />
+                      <Form.Control value={selectedMenu.price} disabled />
                     </Form.Group>
-                    <Form.Group className="mb-2">
+                    <Form.Group className="mb-3">
                       <Form.Label>Description</Form.Label>
                       <Form.Control
                         as="textarea"
-                        rows={3}
+                        rows={5}
                         value={selectedMenu.description}
-                        readOnly
+                        disabled
                       />
                     </Form.Group>
-                    <div className="d-flex justify-content-end">
-                      <Button variant="warning" className="me-2">Edit</Button>
-                      <Button variant="danger">Delete</Button>
-                    </div>
+                   
                   </Form>
                 </Card.Body>
               </>
@@ -178,6 +497,30 @@ const MenuApp = () => {
           </Card>
         </Col>
       </Row>
+
+      {/* Delete Modal */}
+      <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} centered>
+        <Modal.Body className='text-center'>
+          <img src={deleted} alt="Logo" className='me-2 mb-4 mt-5' style={{ width: '80px', height: '80px' }} /> 
+          <h3 style={{ fontWeight: '600' }}>Are you sure want to delete <br /> this file?</h3>
+          <div className="text-center mb-5 mt-5">
+            <Button variant="outline-secondary" onClick={() => setShowDeleteModal(false)} className='me-3 px-5'>
+              Cancel
+            </Button>
+            <Button
+              className='px-5'
+              variant="danger" 
+              onClick={handleDeleteMenu}
+              disabled={deleting}
+            >
+              {deleting ? 'Deleting...' : 'Delete'}
+            </Button>
+          </div>
+        </Modal.Body>
+      </Modal>
+
+
+    </>
   );
 };
 

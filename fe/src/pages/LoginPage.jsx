@@ -29,6 +29,7 @@ function Login() {
       
       localStorage.setItem('token', res_data.data.token);
       localStorage.setItem('role', res_data.data.user?.role);
+      localStorage.setItem('userData', res_data.data.user?.username);
       // notify other components about auth change
       window.dispatchEvent(new Event('storage'));
       navigate('/dashboard-admin');

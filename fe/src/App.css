@@ -69,6 +69,38 @@ td {
   font-size: 14px;
 }
 
+.alert-success {
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  border-left: 4px solid #00AF10; /* green-500 */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border-radius: 6px;
+  padding: 20px 20px 20px 20px;
+  /* font-family: Arial, sans-serif; */
+  font-weight: 500;
+  color: #000;
+  max-width: 100%;
+  position: relative;
+}
+
+.alert-icon {
+  color: #00AF10; /* green-500 */
+  font-size: 18px;
+  margin-right: 12px;
+}
+
+.alert-message {
+  flex-grow: 1;
+  font-size: 15px;
+}
+
+.alert-close {
+  cursor: pointer;
+  font-size: 20px;
+  color: #888;
+}
+
 .btn-primary {
   background-color: #3572EF;
   border: none;

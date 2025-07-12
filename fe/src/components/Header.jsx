@@ -1,8 +1,19 @@
 import React from 'react';
 import { Navbar, Form, Image, Button } from 'react-bootstrap';
 import { FiMenu, FiSearch } from './Icon';
+import logout from '../assets/icon/logout.png';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const Header = ({ toggleSidebar, isSidebarOpen, isSidebarMinimized }) => {
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate('/login');
+  };
+ 
+  const userData = localStorage.getItem('userData');
+  const role = localStorage.getItem('role');
+
   return (
     <Navbar 
       bg="white" 
@@ -17,10 +28,13 @@ const Header = ({ toggleSidebar, isSidebarOpen, isSidebarMinimized }) => {
           <Form.Control type="text" placeholder="Enter the keyword here" className="ps-5 rounded-pill border-0 bg-light" />
         </div>
         <div className="d-flex align-items-center ms-auto">
-          <Image src={`https://i.pravatar.cc/40?u=john.doe`} roundedCircle width="40" height="40" className="me-2" alt="Foto Profil John Doe"/>
+          <Image src={`https://i.pravatar.cc/40?u=john.doe`} roundedCircle width="40" height="40" className="me-2" alt="avatar"/>
           <div className="d-none d-md-block">
-            <div className="fw-bold">John Doe</div>
-            <div className="text-muted small">Admin</div>
+            <div className="fw-bold">{userData ?? '-'}</div>
+            <div className="text-muted small">{role?? '-'}</div>
+          </div>
+           <div className="d-none d-md-block ms-4"  onClick={handleLogout} style={{ cursor: 'pointer' }} >
+            <img src={logout} alt="Logo" className='me-2' style={{ width: '24px', height: '24px' }} /> 
           </div>
         </div>
       </div>
