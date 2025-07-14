@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../assets/login.css'; // Custom styles if needed
 import logo from '../assets/logo.png';
 import { Link, useNavigate } from 'react-router-dom';
-import { login } from '../api/auth';
+import { login } from '../../api/auth';
 
 function Login() {
   const [username, setUsername] = useState('');
@@ -33,7 +33,7 @@ function Login() {
       localStorage.setItem('avatar_image', res_data.data.user?.avatar);
       // notify other components about auth change
       window.dispatchEvent(new Event('storage'));
-      navigate('/admin/dashboard-admin');
+      navigate('/dashboard-admin');
     } catch (error) {
       setErrors({ general: error.response?.data?.message || 'Login failed' });
     }
@@ -46,7 +46,7 @@ function Login() {
           <img src={logo} alt="Logo" style={{ width: '150px', height: '60px', objectFit: 'contain' }} />
         </div>
         <h4 className="text-center mb-3">Welcome Back!</h4>
-         <div className="text-center text-muted"><small>Please enter your username and password here!</small></div>
+        <small className="text-center text-muted">Please enter your username and password here!</small>
         <form onSubmit={handleLogin}>
           <div className="mb-3 mt-5">
             <label htmlFor="username" className="form-label d-flex justify-content-between">Username</label>

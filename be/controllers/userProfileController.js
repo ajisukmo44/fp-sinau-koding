@@ -84,7 +84,7 @@ exports.updatePicture = async (req, res) => {
       const output = {
         message: "User updated successfully",
         data: {
-          image_url: req.file ? `/uploads/users/${req.file.filename}` : null
+          image_url: req.file.filename
         },
         status: "success",
       };
@@ -106,8 +106,7 @@ exports.updatePicture = async (req, res) => {
 
 
 exports.updateUserProfile= async (req, res) => {
-  const id = req.params.id;
-  
+  const token = req.headers.authorization?.split(' ')[1];
   // Use multer middleware for single image upload
   upload.single('avatar')(req, res, async (err) => {
     if (err) {
@@ -131,7 +130,7 @@ exports.updateUserProfile= async (req, res) => {
         ...value
       };
 
-      const updatedUser = await updateProfileUser(id, updateData);
+      const updatedUser = await updateProfileUser(token, updateData);
       
       if (!updatedUser) {
         return res.status(404).json({

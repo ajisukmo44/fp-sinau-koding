@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { authenticateToken } = require('../middleware/auth');
+const { authenticateToken, authorizeAdmin } = require('../middleware/auth');
 const statisticController = require("../controllers/admin/statisticsController");
 const itemsRouter = express.Router();
 
@@ -11,8 +11,8 @@ router.use((req, res, next) => {
 });
 
 // Get all statistics
-router.get("/", authenticateToken, statisticController.getSummary);
-router.get("/:id", authenticateToken, statisticController.getSummaryDetail);
-router.post("/daily-chart", authenticateToken, statisticController.getDailyChartOrderCategory);
+router.get("/", authenticateToken, authorizeAdmin, statisticController.getSummary);
+router.get("/:id", authenticateToken, authorizeAdmin, statisticController.getSummaryDetail);
+router.post("/daily-chart", authenticateToken, authorizeAdmin, statisticController.getDailyChartOrderCategory);
 
 module.exports = router;

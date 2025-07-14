@@ -7,7 +7,7 @@ import urlImage from '../api/baseUrl';
 
 const Header = ({ toggleSidebar, isSidebarOpen, isSidebarMinimized }) => {
   const navigate = useNavigate();
-  const [role, setName] = useState(localStorage.getItem('role'));
+  const [name, setName] = useState(localStorage.getItem('name'));
   const [username, setUsername] = useState(localStorage.getItem('username'));
   const [avatarImage, setavatarImage] = useState(localStorage.getItem('avatar_image'));
 
@@ -44,8 +44,8 @@ const Header = ({ toggleSidebar, isSidebarOpen, isSidebarMinimized }) => {
         <div className="d-flex align-items-center ms-auto">
           <Image src={urlImage + '/users/'+avatarImage || `https://as2.ftcdn.net/jpg/08/19/66/31/1000_F_819663119_che4sZSrmQv8uQJOzuN9TVQFQNHJlfQ2.jpg`} roundedCircle width="40" height="40" className="me-2" alt="avatar"/>
           <div className="d-none d-md-block">
-            <div className="fw-bold">{username ?? '-'}</div>
-            <div className="text-muted small">{role?? '-'}</div>
+            <div className="fw-bold">{name ?? '-'}</div>
+            <div className="text-muted small">{username?? '-'}</div>
           </div>
            <div className="d-none d-md-block ms-4"  onClick={handleLogout} style={{ cursor: 'pointer' }} >
             <img src={logout} alt="Logo" className='me-2' style={{ width: '24px', height: '24px' }} /> 

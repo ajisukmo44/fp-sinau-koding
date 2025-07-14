@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../assets/login.css'; // Custom styles if needed
-import logo from '../assets/logo.png';
+import '../../assets/login.css'; // Custom styles if needed
+import logo from '../../assets/logo.png';
 import { Link, useNavigate } from 'react-router-dom';
-import { login } from '../api/auth';
+import { loginCashier } from '../../api/auth';
 
 function Login() {
   const [username, setUsername] = useState('');
@@ -24,7 +24,7 @@ function Login() {
     if (Object.keys(newErrors).length > 0) return;
     
     try {
-      const res_data = await login(username, password);
+      const res_data = await loginCashier(username, password);
       // console.log('result login', res_data);
       localStorage.setItem('token', res_data.data.token);
       localStorage.setItem('role', res_data.data.user?.role);
@@ -33,7 +33,7 @@ function Login() {
       localStorage.setItem('avatar_image', res_data.data.user?.avatar);
       // notify other components about auth change
       window.dispatchEvent(new Event('storage'));
-      navigate('/admin/dashboard-admin');
+      navigate('/cashier/menu-order');
     } catch (error) {
       setErrors({ general: error.response?.data?.message || 'Login failed' });
     }
@@ -41,12 +41,12 @@ function Login() {
 
   return (
     <div className="login-page d-flex align-items-center justify-content-start vh-100">
-      <div className="login-box bg-white p-5 rounded shadow">
+      <div className="login-cashier-box bg-white p-5 rounded shadow">
         <div className="text-center mb-4">
           <img src={logo} alt="Logo" style={{ width: '150px', height: '60px', objectFit: 'contain' }} />
         </div>
         <h4 className="text-center mb-3">Welcome Back!</h4>
-         <div className="text-center text-muted"><small>Please enter your username and password here!</small></div>
+        <div className="text-center text-muted"><small>Please enter your username and password here!</small></div>
         <form onSubmit={handleLogin}>
           <div className="mb-3 mt-5">
             <label htmlFor="username" className="form-label d-flex justify-content-between">Username</label>
@@ -87,6 +87,9 @@ function Login() {
           {errors.general && <div className="alert alert-danger">{errors.general}</div>}
           <button type="submit" className="btn btn-primary w-100">Login</button>
         </form>
+        <div className='text-center mt-2'>
+         <span className='text-muted'> Don’t have an account?</span> <Link to="/cashier/register">Register</Link>
+        </div>
       </div>
     </div>
   );

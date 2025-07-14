@@ -3,6 +3,7 @@ const cors = require('cors');
 const morgan = require('morgan');
 const path = require('path');
 const userRoutes = require('./routes/user');
+
 const userProfileRoutes = require('./routes/user-profile');
 const settingRoutes = require('./routes/setting');
 const catalogRoutes = require('./routes/catalogs');
@@ -11,6 +12,7 @@ const transactionRoutes = require('./routes/transactions');
 const reportSalesRoutes = require('./routes/report-sales');
 
 const authRoutes = require('./routes/auth');
+const authCashierRoutes = require('./routes/auth-cashier');
 const { errorHandler } = require('./middleware/errorHandler');
 const { requestLogger } = require('./middleware/requestLogger');
 
@@ -33,17 +35,22 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(requestLogger);
 
 // Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/user-profile', userProfileRoutes);
+
 // app.use('/api/catalogs', catalogRoutes);
 app.use('/api/transactions', transactionRoutes);
 
 //admin
+app.use('/api/auth/admin', authRoutes);
+app.use('/api/profile/admin', userProfileRoutes);
 app.use('/api/admin/statistics-summary', statisticsRoutes);
 app.use('/api/admin/sales-report', reportSalesRoutes);
 app.use('/api/admin/master-catalogs', catalogRoutes);
 app.use('/api/admin/master-user', userRoutes);
 app.use('/api/admin/setting', settingRoutes);
+
+// cashier
+app.use('/api/auth/cashier', authCashierRoutes);
+app.use('/api/profile/cashier', userProfileRoutes);
 
 // Root route
 app.get('/', (req, res) => {

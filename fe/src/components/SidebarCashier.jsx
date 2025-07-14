@@ -16,7 +16,7 @@ const Sidebar = ({ isOpen, minimized, onToggleMinimize }) => {
 
   const handleLogout = () => {
     localStorage.clear();
-    navigate('/admin/login');
+    navigate('/login');
   };
 
   return (
@@ -44,20 +44,20 @@ const Sidebar = ({ isOpen, minimized, onToggleMinimize }) => {
         <Nav variant="pills" className="flex-column mb-auto w-100 mt-4">
           <Nav.Item>
             <Nav.Link
-              href="/admin/dashboard-admin"
-              active={location.pathname === '/admin/dashboard-admin'}
+              href="/dashboard-admin"
+              active={location.pathname === '/dashboard-admin'}
               className="d-flex align-items-center justify-content-start"
             >
               <img src={dashboard} className='me-2' /> {!minimized && 'Dashboard'}
             </Nav.Link>
           </Nav.Item>
-          <Nav.Link href="/admin/master-catalog"  active={location.pathname === '/admin/master-catalog'} className="d-flex align-items-center justify-content-start">
+          <Nav.Link href="/master-catalog"  active={location.pathname === '/master-catalog'} className="d-flex align-items-center justify-content-start">
               <img src={menuoard} alt="Logo" className='me-2' style={{ width: '24px', height: '24px' }} />  {!minimized && 'Catalog Menu'}
             </Nav.Link>
           <Nav.Item>
             <Nav.Link
-              href="/admin/report-sales"
-              active={location.pathname === '/admin/report-sales'}
+              href="/report-sales"
+              active={location.pathname === '/report-sales'}
               className="d-flex align-items-center justify-content-start"
             >
               <img src={report} alt="Logo" className='me-2' style={{ width: '24px', height: '24px', objectFit: 'contain' }} />   {!minimized && 'Reports'}
@@ -65,8 +65,8 @@ const Sidebar = ({ isOpen, minimized, onToggleMinimize }) => {
           </Nav.Item>
           <Nav.Item>
             <Nav.Link
-              href="/admin/setting"
-              active={location.pathname === '/admin/setting'}
+              href="/setting"
+              active={location.pathname === '/setting'}
               className="d-flex align-items-center justify-content-start"
             >
               <img src={setting} alt="Logo" className='me-2' style={{ width: '24px', height: '24px', objectFit: 'contain' }} /> {!minimized && 'Settings'}

@@ -49,13 +49,17 @@ async function deleteUser(id){
 };
 
 // user profile
-async function updateProfileUser(id, user){
+async function updateProfileUser(token, user){
+  const decoded = jwt.verify(token, JWT_SECRET);
+  const userResult = await pool.query('SELECT * FROM users WHERE id = $1', [decoded.userId]);
+  const userID = userResult.rows[0].id;
+
   let query = 'UPDATE users SET ';
   let values = [];
   let paramCount = 1;
   
   query += `name = $${paramCount}, username = $${paramCount + 1}, email = $${paramCount + 2}, language = $${paramCount + 3}, updated_at = $${paramCount + 4} WHERE id = $${paramCount + 5} RETURNING *`;
-  values.push(user.name, user.username, user.email, user.language, nDate, id);
+  values.push(user.name, user.username, user.email, user.language, nDate, userID);
   
   const res = await pool.query(query, values);
   return res.rows[0];

@@ -12,7 +12,7 @@ router.use((req, res, next) => {
 
 // Get all users
 router.patch("/change-password", authenticateToken, userProfileController.changePassword);
-router.put("/edit/:id", authenticateToken, userProfileController.updateUserProfile); 
+router.put("/edit", authenticateToken, userProfileController.updateUserProfile); 
 router.patch("/change-avatar", authenticateToken, userProfileController.updatePicture); 
 
 module.exports = router;

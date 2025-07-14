@@ -89,7 +89,7 @@ const MenuApp = () => {
       category: selectedMenu.category,
       price: selectedMenu.price,
       description: selectedMenu.description,
-      image: null
+      image:  selectedMenu.image
     });
     setIsEditMode(true);
   };
@@ -120,6 +120,9 @@ const MenuApp = () => {
           'Content-Type': 'multipart/form-data'
         }
       });
+
+      console.log('res edit menu', response);
+      
       
       setMenuData(prev => prev.map(item => 
         item.id === selectedMenu.id ? { ...item, ...editForm } : item
@@ -398,8 +401,9 @@ const MenuApp = () => {
             ) : isEditMode && selectedMenu ? (
               <Card.Body className='p-0 pt-4'>
                 <Form>
-                  <Form.Group className="mb-3 bg-light p-4 rounded">
-                    <Form.Label>Image</Form.Label>
+                  <Form.Group className="mb-3 bg-light p-4 rounded text-center">
+                      <Form.Label>Image</Form.Label> <br />
+                      <img src={urlImage + '/catalogs/' + editForm.image} alt="menu" className='h-25 w-25 mb-2' />
                     <Form.Control 
                       type="file"
                       accept="image/*"
@@ -459,8 +463,11 @@ const MenuApp = () => {
               </Card.Body>
             ) : selectedMenu ? (
               <>
-                <Card.Img variant="top" src={selectedMenu.image} className='rounded' />
-                <Card.Body className='p-0 pt-4'>
+                {/* <Card.Img variant="top" src={urlImage + '/catalogs/' + selectedMenu.image} className='h-25 w-25 mb-2 text-center' /> */}
+                  <Card.Body className='p-0 pt-4'>
+                  <div className='text-center'>
+                        <img src={urlImage + '/catalogs/' + selectedMenu.image} className='h-50 w-50 mb-2 text-center' alt="menu" />
+                  </div>
                   <Form>
                     <Form.Group className="mb-3">
                       <Form.Label>Name</Form.Label>

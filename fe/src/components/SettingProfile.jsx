@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Form, Button, Row, Col, Container } from 'react-bootstrap';
 import api from '../api';
 import tickCircle from '../assets/icon/tick-circle.png';
+import urlImage from '../api/baseUrl';
 
 function SettingsPage() {
   const [formData, setFormData] = useState({
@@ -18,8 +19,8 @@ function SettingsPage() {
     zoom: '100 (Normal)',
   });
   const [loading, setLoading] = useState(false);
-  const [profileImage, setProfileImage] = useState('');
-  const [showAlert, setShowAlert] = useState(true);
+  const [avatarImage, setAvatarImage] = useState('');
+  const [showAlert, setShowAlert] = useState(false);
   const [messageAlert, setMessageAlert] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -30,7 +31,7 @@ function SettingsPage() {
 
   const fetchProfile = async () => {
     try {
-      const response = await api.get('/auth/profile');
+      const response = await api.get('/auth/admin/profile');
       const profile = response.data.data?.user;
       console.log('profile', profile);
       
@@ -43,7 +44,7 @@ function SettingsPage() {
         role: profile.role || '',
         status: profile.status || '',
       }));
-      setProfileImage(profile.profile_image || '');
+      setAvatarImage(profile.avatar || '');
     } catch (error) {
       console.error('Error fetching profile:', error);
     }
@@ -52,14 +53,22 @@ function SettingsPage() {
   const updateProfile = async () => {
     setLoading(true);
     try {
-      await api.put('/user-profile/edit/'+formData.id, {
+      await api.put('/profile/admin/edit', {
         name: formData.name,
         email: formData.email,
         username: formData.username,
         language: formData.language,
       });
       setShowAlert(true);
-      setMessageAlert('Profile successfully deleted!');
+      setMessageAlert('Profile successfully updated!');
+      
+      localStorage.setItem('username', formData.username);
+      localStorage.setItem('name', formData.name);
+      
+      // Dispatch custom event to reload header
+      window.dispatchEvent(new CustomEvent('profileUpdated', {
+        detail: { name: formData.name, username: formData.username }
+      }));
     } catch (error) {
       console.error('Error updating profile:', error);
       alert('Failed to update profile');
@@ -71,15 +80,21 @@ function SettingsPage() {
 
   const changePicture = async (file) => {
     const formData = new FormData();
-    formData.append('profile_image', file);
+    formData.append('avatar', file);
     setLoading(true);
     try {
-      const response = await api.post('/user-profile/picture', formData, {
+      const response = await api.patch('/profile/admin/change-avatar', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
-      setProfileImage(response.data.data.profile_image);
+      setAvatarImage(response.data.data.image_url);
       setShowAlert(true);
       setMessageAlert('Picture updated successfully!');
+      
+      // Update localStorage and dispatch event for header reload
+      localStorage.setItem('avatar_image', response.data.data.image_url);
+      window.dispatchEvent(new CustomEvent('profileUpdated', {
+        detail: { avatar: response.data.data.image_url }
+      }));
     } catch (error) {
       console.error('Error updating picture:', error);
       alert('Failed to update picture');
@@ -95,7 +110,7 @@ function SettingsPage() {
     }
     setLoading(true);
     try {
-      await api.put('/user-profile/change-password', {
+      await api.patch('/profile/admin/change-password', {
         password: newPassword
       });
       setNewPassword('');
@@ -133,8 +148,8 @@ function SettingsPage() {
         )}
       <Row className="mb-3 align-items-center">
         <Col md="auto">
-          <img
-            src={profileImage || "https://media.licdn.com/dms/image/v2/D5635AQGwMAaY9dxOSA/profile-framedphoto-shrink_200_200/B56Zdp2O6DGoAc-/0/1749827514430?e=1752739200&v=beta&t=EHgXbWGjsgESw3ct-ee1YCH-Qds0TqhJRiIgAJGojMg"}
+         <img
+            src={urlImage + '/users/'+avatarImage|| "https://as2.ftcdn.net/jpg/08/19/66/31/1000_F_819663119_che4sZSrmQv8uQJOzuN9TVQFQNHJlfQ2.jpg"}
             alt="Profile"
             className="rounded-circle"
             width="80"
@@ -157,7 +172,7 @@ function SettingsPage() {
           >
             Change Picture
           </Button>
-          <Button variant="outline-secondary">Delete Picture</Button>
+          <Button variant="outline-primary">Delete Picture</Button>
         </Col>
       </Row>
 
