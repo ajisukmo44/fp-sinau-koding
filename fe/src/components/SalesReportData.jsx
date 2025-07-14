@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Table, Form, Button, Row, Col, InputGroup, Pagination, Modal } from 'react-bootstrap';
 import { Calendar, Search } from 'react-bootstrap-icons';
 import axios from 'axios';
+import moment from 'moment';
 import api from '../api';
+import download from '../assets/icon/download.png';
 
 function SalesReportData() {
   const [showModal, setShowModal] = useState(false);
@@ -22,20 +24,21 @@ function SalesReportData() {
 
   const handleDetail = async (id) => {
     setShowModal(true);
-    console.log('iddd', id);
     fetchOrderDataDetail(id)
   };
 
+  const formatDate = async (date) => {
+    return moment(date).format('YYYY-MM-DD');
+  };
+
   const fetchSalesReport = async () => {
-    console.log('mulaiii');
+    // console.log('mulaiii');
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
       const response = await api.get('/admin/sales-report', {
         headers: { Authorization: `Bearer ${token}` }
       });
-      console.log('report sales', response);
-      
       setOrders(response.data.data);
     } catch (error) {
       console.error('Error fetching sales report:', error);
@@ -78,7 +81,7 @@ function SalesReportData() {
       {/* Filters */}
       <Form className="mb-4">
         <Row className="align-items-end">
-          <Col md={2}>
+          <Col md={3}>
             <Form.Label>Start</Form.Label>
             <InputGroup>
               <Form.Control 
@@ -88,7 +91,7 @@ function SalesReportData() {
               />
             </InputGroup>
           </Col>
-          <Col md={2}>
+          <Col md={3}>
             <Form.Label>Finish</Form.Label>
             <InputGroup>
               <Form.Control 
@@ -98,7 +101,7 @@ function SalesReportData() {
               />
             </InputGroup>
           </Col>
-          <Col md={2}>
+          {/* <Col md={2}>
             <Form.Label>Category</Form.Label>
             <Form.Select 
               value={filters.category}
@@ -108,8 +111,8 @@ function SalesReportData() {
               <option value="Foods">Foods</option>
               <option value="Drinks">Drinks</option>
             </Form.Select>
-          </Col>
-          <Col md={2}>
+          </Col> */}
+          <Col md={3}>
             <Form.Label>Order Type</Form.Label>
             <Form.Select 
               value={filters.orderType}
@@ -120,7 +123,7 @@ function SalesReportData() {
               <option value="Takeaway">Takeaway</option>
             </Form.Select>
           </Col>
-          <Col md={4} className='text-end'>
+          <Col md={3} className='text-end'>
           <Button 
             className='me-2 px-4 btn-primary' 
             onClick={handleSearch}
@@ -128,13 +131,15 @@ function SalesReportData() {
           >
             {loading ? 'Loading...' : 'Search'}
           </Button>
-          <Button variant="outline-secondary" className='px-3'>V</Button>
+          <Button variant="white" className='p-0'>
+             <img src={download} alt="Logo" className='me-0 pb-0' style={{ width: '38px', height: '38px'}} />
+          </Button>
           </Col>
         </Row>
       </Form>
 
       {/* Table */}
-      <table bordered responsive>
+      <table>
         <thead className="table-light">
           <tr>
             <th>No Order</th>
@@ -158,7 +163,7 @@ function SalesReportData() {
             orders.map((order) => (
               <tr key={order.id}>
                 <td>{order.order_number}</td>
-                <td>{order.order_number}</td>
+                <td>{moment(order.created_at).locale("id").format('dddd, DD/MM/YYYY, hh:mm')}</td>
                 <td>{order.transaction_type}</td>
                 <td>{order.customer_name}</td>
                 <td className='text-center'>
@@ -201,7 +206,7 @@ function SalesReportData() {
           </div>
           <div className="rounded bg-light p-4 mb-4">
             <span><small className='text-muted'>No Order : </small><small>{dataDetail?.order_number }</small></span> <br />
-            <span><small className='text-muted'>Order Date :  </small><small>{dataDetail?.created_at }</small></span><br />
+            <span><small className='text-muted'>Order Date :  </small><small>{moment(dataDetail?.created_at).locale("id").format('dddd, DD/MM/YYYY, hh:mm')}</small></span><br />
             <span><small className='text-muted'>Customer Name : </small><small>{ dataDetail?.customer_name}</small> </span><br />
             <span><small className='text-muted'>Dine-in : </small><small> No.Meja { dataDetail?.table_number}</small></span>
             <hr />

@@ -6,7 +6,7 @@ import foods from '../assets/icon/reserve1.png'
 import beverages from '../assets/icon/coffe1.png'
 import desserts from '../assets/icon/cake1.png'
 import deleted from '../assets/icon/deleted.png';
-import tickCircle from '../assets/icon/tick-circle.png';''
+import tickCircle from '../assets/icon/tick-circle.png';
 import add from '../assets/icon/add.png';
 import edit from '../assets/icon/edit.png';
 import deletedd from '../assets/icon/deletedd.png';
@@ -213,7 +213,7 @@ const MenuApp = () => {
         {/* Left Panel - Menu List */}
         <Col md={8}>
           <div>
-            <h4 className="fw-bolder">List Menu x {urlImage}</h4>
+            <h4 className="fw-bolder">List Menu</h4>
           </div>
           <div className='text-start'>
             <div className="row">
@@ -273,7 +273,7 @@ const MenuApp = () => {
                     <Card.Body className='px-0'>
                       <div className="row">
                         <div className="col-12 text-muted">
-                          <h5><b>{item.name} x {urlImage+'/catalogs/'+item.image}</b></h5>
+                          <h5><b>{item.name} </b></h5>
                           <small>{item?.description.slice(0, 100)} {item.description.length > 100 ? '...' : ''}</small>
                         </div>
                         <div className="col-8 mt-3">

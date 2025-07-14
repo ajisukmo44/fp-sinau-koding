@@ -3,6 +3,7 @@ const cors = require('cors');
 const morgan = require('morgan');
 const path = require('path');
 const userRoutes = require('./routes/user');
+const userProfileRoutes = require('./routes/user-profile');
 const settingRoutes = require('./routes/setting');
 const catalogRoutes = require('./routes/catalogs');
 const statisticsRoutes = require('./routes/statistics');
@@ -33,7 +34,7 @@ app.use(requestLogger);
 
 // Routes
 app.use('/api/auth', authRoutes);
-// app.use('/api/users', userRoutes);
+app.use('/api/user-profile', userProfileRoutes);
 // app.use('/api/catalogs', catalogRoutes);
 app.use('/api/transactions', transactionRoutes);
 

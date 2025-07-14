@@ -153,53 +153,76 @@ router.post('/login', async (req, res) => {
 });
 
 // Get current user profile
-// router.get('/profile', (req, res) => {
-//   try {
-//     const token = req.headers.authorization?.split(' ')[1];
+router.get('/profile', async (req, res) => {
+  try {
+    const token = req.headers.authorization?.split(' ')[1];
     
-//     if (!token) {
-//       return res.status(401).json({ 
-//         success: false, 
-//         message: 'Access token required' 
-//       });
-//     }
+    if (!token) {
+      return res.status(401).json({ 
+        success: false, 
+        message: 'Access token required' 
+      });
+    }
 
-//     const decoded = jwt.verify(token, JWT_SECRET);
-//     const user = users.find(u => u.id === decoded.userId);
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const userResult = await pool.query('SELECT * FROM users WHERE id = $1', [decoded.userId]);
+    const user = userResult.rows[0];
 
-//     if (!user) {
-//       return res.status(404).json({ 
-//         success: false, 
-//         message: 'User not found' 
-//       });
-//     }
+    if (!user) {
+      return res.status(404).json({ 
+        success: false, 
+        message: 'User not found' 
+      });
+    }
 
-//     res.json({
-//       success: true,
-//       data: {
-//         user: {
-//           id: user.id,
-//           username: user.username,
-//           email: user.email
-//         }
-//       }
-//     });
+    res.json({
+      success: true,
+      data: {
+        user: {
+          id: user.id,
+          name: user.name,
+          username: user.username,
+          email: user.email,
+          role: user.role,
+          status: user.status,
+          language: user.language
+        }
+      }
+    });
 
-//   } catch (error) {
-//     console.error('Profile error:', error);
-//     res.status(401).json({ 
-//       success: false, 
-//       message: 'Invalid token' 
-//     });
-//   }
-// });
+  } catch (error) {
+    console.error('Profile error:', error);
+    res.status(401).json({ 
+      success: false, 
+      message: 'Invalid token' 
+    });
+  }
+});
 
 // Logout (client-side token removal)
 router.post('/logout', (req, res) => {
-  res.json({
-    success: true,
-    message: 'Logout successful'
-  });
+  try {
+    const token = req.headers.authorization?.split(' ')[1];
+    
+    if (!token) {
+      return res.status(401).json({ 
+        success: false, 
+        message: 'Access token required' 
+      });
+    }
+
+    jwt.verify(token, JWT_SECRET);
+    
+    res.json({
+      success: true,
+      message: 'Logout successful'
+    });
+  } catch (error) {
+    res.status(401).json({ 
+      success: false, 
+      message: 'Invalid token' 
+    });
+  }
 });
 
 module.exports = router; 

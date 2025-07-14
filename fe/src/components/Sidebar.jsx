@@ -73,11 +73,11 @@ const Sidebar = ({ isOpen, minimized, onToggleMinimize }) => {
             </Nav.Link>
           </Nav.Item>
         </Nav>
-        <div className="mt-auto w-100 d-flex justify-content-center">
+        {/* <div className="mt-auto w-100 d-flex justify-content-center">
            <Nav.Link onClick={handleLogout} className="d-flex align-items-center text-danger justify-content-start bg-light p-2 px-3 rounded" style={{cursor: 'pointer'}}>
               <FiLogOut className="me-2" /> {!minimized && 'Logout'}
             </Nav.Link>
-        </div>
+        </div> */}
       </div>
     </div>
   );

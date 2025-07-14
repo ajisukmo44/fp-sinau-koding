@@ -14,17 +14,13 @@ const SummaryData = ({ icon, title, value }) => {
   };
 
    const fetchSummaryDataDetail = async (title) => {
-    console.log('val', title.toLowerCase());
+    // console.log('val', title.toLowerCase());
     const key = title.toLowerCase();
     
       try {
-        const token = localStorage.getItem('token');
-        const { data } = await api.get('/admin/statistics-summary/'+key, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        const { data } = await api.get('/admin/statistics-summary/'+key);
         setDataDetail(data.data);
-        console.log('data', data);
-        
+        // console.log('data', data);
       } catch (error) {
         console.error('Error fetching summary data:', error);
       }

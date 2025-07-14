@@ -13,5 +13,6 @@ router.use((req, res, next) => {
 // Get all statistics
 router.get("/", authenticateToken, statisticController.getSummary);
 router.get("/:id", authenticateToken, statisticController.getSummaryDetail);
+router.post("/daily-chart", authenticateToken, statisticController.getDailyChartOrderCategory);
 
 module.exports = router;
