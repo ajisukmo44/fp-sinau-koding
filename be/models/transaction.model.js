@@ -27,7 +27,7 @@ async function getTransactionById (id) {
 };
 
 async function getTransactionItemByGroupId (id) {
-  const res = await pool.query('SELECT * FROM transaction_item WHERE transaction_group_id = $1', [id]);
+  const res = await pool.query('SELECT ti.*, c.name, c.price FROM transaction_item ti JOIN catalog c ON ti.catalog_id = c.id  WHERE transaction_group_id = $1', [id]);
   return res.rows;
 };
 

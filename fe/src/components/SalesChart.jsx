@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, Form } from 'react-bootstrap';
 import { Bar } from 'react-chartjs-2';
+import api from '../api';
+import moment from 'moment';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -19,34 +21,6 @@ ChartJS.register(
   Tooltip,
   Legend
 );
-
-const chartLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', 'Mon', 'Tue', 'Wed'];
-const chartData = {
-  labels: chartLabels,
-  datasets: [
-    {
-      label: 'Food',
-      data: [18000, 27000, 42000, 82000, 97000, 48000, 18000, 43000, 48000, 19000],
-      backgroundColor: '#4E73DF',
-      borderRadius: 4,
-      barThickness: 12,
-    },
-    {
-      label: 'Beverage',
-      data: [145000, 95000, 245000, 148000, 195000, 147000, 98000, 142000, 250000, 146000],
-      backgroundColor: '#858796',
-      borderRadius: 4,
-      barThickness: 12,
-    },
-    {
-      label: 'Dessert',
-      data: [12000, 14000, 11000, 15000, 13000, 16000, 12000, 14000, 11000, 15000].map(() => Math.floor(Math.random() * 20000)),
-      backgroundColor: '#DDDFEB',
-      borderRadius: 4,
-      barThickness: 12,
-    },
-  ],
-};
 
 const chartOptions = {
   responsive: true,
@@ -93,20 +67,102 @@ const chartOptions = {
 };
 
 const MainChart = () => {
+  const dateNow = moment().format('YYYY-MM-DD');
+  const last7day = moment().subtract(6, "days").format("YYYY-MM-DD");
+  console.log('date now', last7day);
+
+  const [chartData, setChartData] = useState({
+    labels: [],
+    datasets: []
+  });
+  const [loading, setLoading] = useState(true);
+  const [startDate, setStartDate] = useState(last7day);
+  const [endDate, setEndDate] = useState(dateNow);
+
+  useEffect(() => {
+    fetchChartData();
+  }, [endDate]);
+
+  const fetchChartData = async () => {
+    const data = {
+     'startDate' : startDate,
+      'endDate' : endDate
+    }
+    try {
+      const response = await api.post('/admin/statistics-summary/daily-chart', data);
+      const data_res = response.data.data;
+      const result_foods = data_res.results.filter((value) => value.label == 'foods');
+      const result_beverages = data_res.results.filter((value) => value.label == 'beverages');
+      const result_desserts = data_res.results.filter((value) => value.label == 'desserts');
+      setChartData({
+        labels: data_res.dates || [],
+        datasets: [
+          {
+            label: 'Foods',
+            data: result_foods[0]?.data || [],
+            backgroundColor: '#0E43AF',
+            borderRadius: 4,
+            barThickness: 12,
+          },
+          {
+            label: 'Beverages',
+            data: result_beverages[0]?.data || [],
+            backgroundColor: '#3572EF',
+            borderRadius: 4,
+            barThickness: 12,
+          },
+          {
+            label: 'Desserts',
+            data: result_desserts[0]?.data || [],
+            backgroundColor: '#C2D4FA',
+            borderRadius: 4,
+            barThickness: 12,
+          },
+        ],
+      });
+    } catch (error) {
+      console.error('Error fetching chart data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <Card className="shadow-sm border-0 mt-4">
+        <Card.Body className="p-4 text-center">
+          <div>Loading...</div>
+        </Card.Body>
+      </Card>
+    );
+  }
+
   return (
     <Card className="shadow-sm border-0 mt-4">
       <Card.Body className="p-4">
         <div className="d-flex flex-wrap justify-content-between align-items-center mb-4">
             <Card.Title as="h4" className="fw-bold mb-2 mb-md-0">Total Omzet</Card.Title>
             <div className="d-flex flex-wrap gap-2">
-                <Form.Control type="date" placeholder="Start date" style={{width: '150px'}}/>
-                <Form.Control type="date" placeholder="Finish date" style={{width: '150px'}}/>
-                <Form.Select style={{width: '180px'}}>
+                <Form.Control 
+                  type="date" 
+                  placeholder="Start date" 
+                  style={{width: '150px'}}
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                />
+                <Form.Control 
+                  type="date" 
+                  placeholder="Finish date" 
+                  style={{width: '150px'}}
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                />
+                {/* <Form.Select style={{width: '180px'}}>
                     <option>Pilih Kategori</option>
                     <option value="1">Food</option>
                     <option value="2">Beverage</option>
                     <option value="3">Dessert</option>
-                </Form.Select>
+                </Form.Select> */}
             </div>
         </div>
         <div style={{ height: '350px' }}>

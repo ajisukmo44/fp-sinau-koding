@@ -1,9 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Row } from 'react-bootstrap';
+import moment from 'moment';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import SummaryData from '../components/SummaryData';
 import SalesChart from '../components/SalesChart';
+import order from '../assets/icon/receipt.png'
+import omzet from '../assets/icon/wallet-money.png'
+import menu from '../assets/icon/document.png'
+import foods from '../assets/icon/reserve.png'
+import beverages from '../assets/icon/coffee.png'
+import desserts from '../assets/icon/cake.png'
 import api from '../api';
 
 // Import ikon-ikon untuk SummaryData
@@ -13,6 +20,7 @@ function App() {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [isSidebarMinimized, setSidebarMinimized] = useState(false);
   const [summaryData, setSummaryData] = useState({});
+  const timeNow = moment().format('[Today,] dddd DD MMMM YYYY');
 
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
@@ -64,18 +72,18 @@ function App() {
             <h4 className="fw-bolder">Dashboard</h4>
           </div>
           <div className="text-muted">
-            Today, Senin 30 September 2024
+            {timeNow}
           </div>
         </div>
 
         <Row xs={1} sm={2} lg={3} xl={6} className="g-4">
           
-          <SummaryData icon={<FiArchive />} title="Total Orders" value={summaryData.totalOrder || 0} />
-          <SummaryData icon={<FiDollarSign />} title="Total Omzet" value={`Rp ${summaryData.totalOmzet?.toLocaleString() || 0}`} />
-          <SummaryData icon={<FiClipboard />} title="All Menu Orders" value={summaryData.totalMenus || 0} />
-          <SummaryData icon={<FiTrello />} title="Foods" value={summaryData.totalFoods || 0} />
-          <SummaryData icon={<FiCoffee />} title="Beverages" value={summaryData.totalBeverages || 0} />
-          <SummaryData icon={<FiGift />} title="Desserts" value={summaryData.totalDesserts || 0} />
+          <SummaryData icon={order} title="Total Orders" value={summaryData.totalOrder || 0} />
+          <SummaryData icon={omzet} title="Total Omzet" value={`Rp ${summaryData.totalOmzet?.toLocaleString() || 0}`} />
+          <SummaryData icon={menu} title="All Menu Orders" value={summaryData.totalMenus || 0} />
+          <SummaryData icon={foods} title="Foods" value={summaryData.totalFoods || 0} />
+          <SummaryData icon={beverages} title="Beverages" value={summaryData.totalBeverages || 0} />
+          <SummaryData icon={desserts} title="Desserts" value={summaryData.totalDesserts || 0} />
         </Row>
         <SalesChart />
       </main>

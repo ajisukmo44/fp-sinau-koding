@@ -1,5 +1,5 @@
 // create a handler for Transaction
-const  { getSummaryOrder, getOmzet, getMenuOrder, getMenuOrderItem, getMenuOrderItemDetail }  = require("../../models/statistics.model.js");
+const  { getSummaryOrder, getOmzet, getMenuOrder, getMenuOrderItem, getMenuOrderItemDetail, getDailyChartCategoryOrder }  = require("../../models/statistics.model.js");
 const Joi = require('joi');
 const { v4: uuidv4 } = require('uuid');
 const pool = require('../../config/pg.js');
@@ -15,7 +15,7 @@ exports.getSummary = async (req, res, next) => {
     try {
       res.writeHead(200, { "Content-Type": "application/json" });
       const output = {
-        message: "List of Transaction",
+        message: "List of Summary",
         data: {
           total_order : orderTotal.length,
           total_omzet : omzetData.total_omzet,
@@ -40,7 +40,7 @@ exports.getSummaryDetail = async (req, res, next) => {
     try {
       res.writeHead(200, { "Content-Type": "application/json" });
       const output = {
-        message: "List of Transaction",
+        message: "List of detail category order",
         data: menuDetailOrder,
         status: "success",
       };
@@ -51,6 +51,28 @@ exports.getSummaryDetail = async (req, res, next) => {
     res.status(500).json({message: err, success: false});
     }
 }
+
+
+exports.getDailyChartOrderCategory = async (req, res, next) => {
+    const startDate = req.body.startDate;
+    const endDate = req.body.endDate
+    let menuDetailOrder = await getDailyChartCategoryOrder(startDate, endDate);
+    try {
+      res.writeHead(200, { "Content-Type": "application/json" });
+      const output = {
+        message: "List of daily chart",
+        data: menuDetailOrder,
+        status: "success",
+      };
+      res.write(JSON.stringify(output));
+      res.end();
+
+    } catch (err) {
+    res.status(500).json({message: err, success: false});
+    }
+}
+
+
 
 
 

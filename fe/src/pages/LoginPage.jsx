@@ -25,13 +25,15 @@ function Login() {
     
     try {
       const res_data = await login(username, password);
-      console.log('result login', res_data);
-      
+      // console.log('result login', res_data);
       localStorage.setItem('token', res_data.data.token);
       localStorage.setItem('role', res_data.data.user?.role);
+      localStorage.setItem('username', res_data.data.user?.username);
+      localStorage.setItem('name', res_data.data.user?.name);
+      localStorage.setItem('avatar_image', res_data.data.user?.avatar);
       // notify other components about auth change
       window.dispatchEvent(new Event('storage'));
-      navigate('/dashboard-admin');
+      navigate('/admin/dashboard-admin');
     } catch (error) {
       setErrors({ general: error.response?.data?.message || 'Login failed' });
     }
@@ -44,7 +46,7 @@ function Login() {
           <img src={logo} alt="Logo" style={{ width: '150px', height: '60px', objectFit: 'contain' }} />
         </div>
         <h4 className="text-center mb-3">Welcome Back!</h4>
-        <small className="text-center text-muted">Please enter your username and password here!</small>
+         <div className="text-center text-muted"><small>Please enter your username and password here!</small></div>
         <form onSubmit={handleLogin}>
           <div className="mb-3 mt-5">
             <label htmlFor="username" className="form-label d-flex justify-content-between">Username</label>
