@@ -57,11 +57,11 @@ exports.getTransactionDetail = async (req, res, next) => {
 }
 
 exports.addTransactions = async (req, res, next) => {
+  const token = req.headers.authorization?.split(' ')[1];
   try {
    const last_id = await pool.query('SELECT * FROM transaction_group ORDER BY id DESC');
-   const idtrx = last_id?.rows[0].id ?? 0;
+   const idtrx = last_id?.rows[0].id ?? 0;;
    const newTransaction = {
-     user_id: req.body.user_id,
      order_number: 'TRX-000'+(idtrx+1),
      transaction_type: req.body.transaction_type,
      customer_name: req.body.customer_name,
@@ -73,7 +73,7 @@ exports.addTransactions = async (req, res, next) => {
      items: req.body.items,
    };
  
-   let result = await addTransaction(newTransaction); 
+   let result = await addTransaction(token, newTransaction); 
    
    if(result){
     const items = req.body.items;
@@ -87,10 +87,15 @@ exports.addTransactions = async (req, res, next) => {
       };
       return addTransactionItemRun(newTransactionItem);  
     });
-   }           
+   }      
+
+   
+   const TransactionItem = await getTransactionItemByGroupId(result?.id);
+  
    const output = {
      message: "Transaction added successfully",
      data: result,
+     dataItem: TransactionItem,
      status: "success",
    };
 

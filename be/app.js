@@ -36,9 +36,6 @@ app.use(requestLogger);
 
 // Routes
 
-// app.use('/api/catalogs', catalogRoutes);
-app.use('/api/transactions', transactionRoutes);
-
 //admin
 app.use('/api/auth/admin', authRoutes);
 app.use('/api/profile/admin', userProfileRoutes);
@@ -51,6 +48,7 @@ app.use('/api/admin/setting', settingRoutes);
 // cashier
 app.use('/api/auth/cashier', authCashierRoutes);
 app.use('/api/profile/cashier', userProfileRoutes);
+app.use('/api/cashier/transactions', transactionRoutes);
 
 // Root route
 app.get('/', (req, res) => {

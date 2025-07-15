@@ -1,9 +1,12 @@
 const express = require('express');
 const pool = require('../config/pg');
+const jwt = require('jsonwebtoken');
 
 const nDate = new Date().toLocaleString('en-US', {
   timeZone: 'Asia/Jakarta'
 });
+
+const JWT_SECRET = 'your-secret-key-change-in-production';
 
 // Transaction crud 
 async function getAllTransaction() {
@@ -11,8 +14,12 @@ async function getAllTransaction() {
   return res.rows;
 };
 
-async function addTransaction(data) {
-  const res = await pool.query('INSERT INTO transaction_group (user_id, order_number, transaction_type, customer_name, table_number, subtotal_group, tax, cash, cashback) VALUES ($1, $2, $3, $4,  $5, $6, $7, $8, $9) RETURNING *', [data.user_id, data.order_number, data.transaction_type, data.customer_name, data.table_number, data.subtotal_group, data.tax, data.cash, data.cashback]);
+async function addTransaction(token, data) {
+  const decoded = jwt.verify(token, JWT_SECRET);
+  const userResult = await pool.query('SELECT * FROM users WHERE id = $1', [decoded.userId]);
+  const userID = userResult.rows[0].id;
+
+  const res = await pool.query('INSERT INTO transaction_group (user_id, order_number, transaction_type, customer_name, table_number, subtotal_group, tax, cash, cashback) VALUES ($1, $2, $3, $4,  $5, $6, $7, $8, $9) RETURNING *', [userID, data.order_number, data.transaction_type, data.customer_name, data.table_number, data.subtotal_group, data.tax, data.cash, data.cashback]);
   return res.rows[0];
 };
 

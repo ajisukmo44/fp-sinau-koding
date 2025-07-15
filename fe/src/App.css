@@ -5,6 +5,15 @@
   /* text-align: center; */
 }
 
+/* Dotted red border */
+hr {
+  border-top: 2px dotted #707070;
+}
+
+.bg-invoice{
+  background-color: #f7f7f7;
+}
+
 .table-container {
   background: #fff;
   max-width: 500px;

@@ -25,7 +25,7 @@ const Header = ({ toggleSidebar, isSidebarOpen, isSidebarMinimized }) => {
 
   const handleLogout = () => {
     localStorage.clear();
-    navigate('/admin/login');
+    navigate('/cashier/login');
   };
 
   return (
@@ -47,9 +47,9 @@ const Header = ({ toggleSidebar, isSidebarOpen, isSidebarMinimized }) => {
             <div className="fw-bold">{name ?? '-'}</div>
             <div className="text-muted small">{username?? '-'}</div>
           </div>
-           <div className="d-none d-md-block ms-4"  onClick={handleLogout} style={{ cursor: 'pointer' }} >
+           {/* <div className="d-none d-md-block ms-4"  onClick={handleLogout} style={{ cursor: 'pointer' }} >
             <img src={logout} alt="Logo" className='me-2' style={{ width: '24px', height: '24px' }} /> 
-          </div>
+          </div> */}
         </div>
       </div>
     </Navbar>

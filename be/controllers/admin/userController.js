@@ -67,15 +67,13 @@ exports.getUser = async (req, res, next) => {
         filteredUser = users.filter(user => searchRegex.test(user.name));
       }
 
-      res.writeHead(200, { "Content-Type": "application/json" });
       const output = {
         message: "List of user",
         data: filteredUser,
         count: filteredUser.length, 
         status: "success",
       };
-      res.write(JSON.stringify(output));
-      res.end();
+      res.json(output);
 
     } catch (err) {
     res.status(500).json({message: err, success: false});
@@ -93,16 +91,13 @@ exports.getUserDetail = async (req, res, next) => {
     status: "success",
   };
   if (userx) {
-    res.writeHead(200, { "Content-Type": "application/json" });
-    res.write(JSON.stringify(output));
+    res.json(output);
   } else {
-    res.writeHead(404, { "Content-Type": "application/json" });
-    res.write(JSON.stringify({ error: "user not found" }));
+    res.status(404).json({ error: "user not found" });
   }
 } catch (err) {
   res.status(500).json({message: err, success: false});
   }
-  res.end();
 }
 
 exports.addUsers = async (req, res, next) => {
@@ -232,12 +227,9 @@ exports.deleteUser =  async (req, res, next) => {
     status: "success",
   };
   if (deleteUserx) {
-    res.writeHead(200, { "Content-Type": "application/json" }); // No Content
-    res.write(JSON.stringify(output));
+    res.json(output);
   } else {
-    res.writeHead(404, { "Content-Type": "application/json" });
-    res.write(JSON.stringify({ error: "User not found" }));
+    res.status(404).json({ error: "User not found" });
   }
-  res.end();
 };
 

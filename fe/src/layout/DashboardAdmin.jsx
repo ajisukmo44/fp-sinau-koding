@@ -22,6 +22,14 @@ function App() {
   const [summaryData, setSummaryData] = useState({});
   const timeNow = moment().format('[Today,] dddd DD MMMM YYYY');
 
+  const formatRupiah = (number) => {
+      return new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+        minimumFractionDigits: 0,
+      }).format(number);
+    };
+
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
   };
@@ -79,7 +87,7 @@ function App() {
         <Row xs={1} sm={2} lg={3} xl={6} className="g-4">
           
           <SummaryData icon={order} title="Total Orders" value={summaryData.totalOrder || 0} />
-          <SummaryData icon={omzet} title="Total Omzet" value={`Rp ${summaryData.totalOmzet?.toLocaleString() || 0}`} />
+          <SummaryData icon={omzet} title="Total Omzet" value={formatRupiah(summaryData?.totalOmzet) || 0} />
           <SummaryData icon={menu} title="All Menu Orders" value={summaryData.totalMenus || 0} />
           <SummaryData icon={foods} title="Foods" value={summaryData.totalFoods || 0} />
           <SummaryData icon={beverages} title="Beverages" value={summaryData.totalBeverages || 0} />

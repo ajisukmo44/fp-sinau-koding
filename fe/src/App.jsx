@@ -9,6 +9,7 @@ import DashboardAdmin from './pages/HomeDashboard';
 import SalesReportPage from './pages/SalesReportPage';
 import SettingsPage from './pages/SettingsPage';
 import MasterCatalogPage from './pages/MasterCatalogPage';
+import MenuOrderCashier from './pages/cashier/MenuOrderCashier';
 import ProtectedRoute from './components/ProtectedRoute';
 
 
@@ -30,7 +31,7 @@ function App() {
         <Route path="/cashier/login" element={<LoginPageCashier />} />
          <Route path="/cashier/register" element={<RegisterPageCashier />} />
         {/* <Route path="/dashboard-admin" element={<ProtectedRoute><DashboardAdmin /></ProtectedRoute>} /> */}
-        <Route path="/cashier/menu-order" element={<ProtectedRoute><MasterCatalogPage /></ProtectedRoute>} />
+        <Route path="/cashier/menu-order" element={<ProtectedRoute><MenuOrderCashier /></ProtectedRoute>} />
         <Route path="/cashier/report-sales" element={<ProtectedRoute><SalesReportPage /></ProtectedRoute>} />
         <Route path="/cashier/setting" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
       </Routes>
