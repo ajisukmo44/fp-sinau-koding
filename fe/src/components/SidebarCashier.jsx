@@ -5,7 +5,6 @@ import logo from '../assets/logo.png';
 import logoMin from '../assets/logo-p.png';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import dashboard from '../assets/icon/dashboard.png'
 import setting from '../assets/icon/setting.png'
 import menuoard from '../assets/icon/menu-board.png'
 import report from '../assets/icon/report.png'
@@ -42,22 +41,13 @@ const Sidebar = ({ isOpen, minimized, onToggleMinimize }) => {
           <FiMenu />
         </Button> */}
         <Nav variant="pills" className="flex-column mb-auto w-100 mt-4">
-          <Nav.Item>
-            <Nav.Link
-              href="/dashboard-admin"
-              active={location.pathname === '/dashboard-admin'}
-              className="d-flex align-items-center justify-content-start"
-            >
-              <img src={dashboard} className='me-2' /> {!minimized && 'Dashboard'}
-            </Nav.Link>
-          </Nav.Item>
-          <Nav.Link href="/master-catalog"  active={location.pathname === '/master-catalog'} className="d-flex align-items-center justify-content-start">
+          <Nav.Link href="/cashier/menu-order"  active={location.pathname === '/cashier/menu-order'} className="d-flex align-items-center justify-content-start">
               <img src={menuoard} alt="Logo" className='me-2' style={{ width: '24px', height: '24px' }} />  {!minimized && 'Catalog Menu'}
-            </Nav.Link>
+          </Nav.Link>
           <Nav.Item>
             <Nav.Link
-              href="/report-sales"
-              active={location.pathname === '/report-sales'}
+              href="/cashier/report-sales"
+              active={location.pathname === '/cashier/report-sales'}
               className="d-flex align-items-center justify-content-start"
             >
               <img src={report} alt="Logo" className='me-2' style={{ width: '24px', height: '24px', objectFit: 'contain' }} />   {!minimized && 'Reports'}
@@ -65,8 +55,8 @@ const Sidebar = ({ isOpen, minimized, onToggleMinimize }) => {
           </Nav.Item>
           <Nav.Item>
             <Nav.Link
-              href="/setting"
-              active={location.pathname === '/setting'}
+              href="/cashier/setting"
+              active={location.pathname === '/cashier/setting'}
               className="d-flex align-items-center justify-content-start"
             >
               <img src={setting} alt="Logo" className='me-2' style={{ width: '24px', height: '24px', objectFit: 'contain' }} /> {!minimized && 'Settings'}

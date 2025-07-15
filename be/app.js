@@ -49,6 +49,8 @@ app.use('/api/admin/setting', settingRoutes);
 app.use('/api/auth/cashier', authCashierRoutes);
 app.use('/api/profile/cashier', userProfileRoutes);
 app.use('/api/cashier/transactions', transactionRoutes);
+app.use('/api/cashier/statistics-summary', statisticsRoutes);
+app.use('/api/cashier/sales-report', reportSalesRoutes);
 
 // Root route
 app.get('/', (req, res) => {

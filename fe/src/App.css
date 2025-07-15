@@ -11,7 +11,12 @@ hr {
 }
 
 .bg-invoice{
-  background-color: #f7f7f7;
+  background-color: #f9f9f9;
+}
+
+.img-invoice {
+  -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
+  filter: grayscale(100%);
 }
 
 .table-container {

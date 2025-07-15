@@ -5,12 +5,9 @@ import moment from 'moment';
 // Import komponen-komponen
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
-import SummaryData from '../components/SummaryData';
 import SettingProfile from '../components/SettingProfile';
 
 // Import ikon-ikon untuk SummaryData
-import { FiArchive, FiDollarSign, FiClipboard, FiCoffee, FiGift, FiTrello } from '../components/Icon';
-
 function App() {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [isSidebarMinimized, setSidebarMinimized] = useState(false);
@@ -41,7 +38,6 @@ function App() {
             <h4 className="fw-bolder">Settings</h4>
           </div>
         </div>
-
         <SettingProfile />
       </main>
     </div>

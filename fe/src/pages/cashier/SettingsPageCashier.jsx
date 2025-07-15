@@ -1,12 +1,12 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../App.css';
-import SalesReportCashier from '../../layout/SalesReportCashier';
+import SettingCashier from '../../layout/SettingCashier';
 
 function App() {
   return (
  <>
-  <SalesReportCashier />
+  <SettingCashier />
   </>
   )
 }

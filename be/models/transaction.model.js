@@ -10,7 +10,7 @@ const JWT_SECRET = 'your-secret-key-change-in-production';
 
 // Transaction crud 
 async function getAllTransaction() {
-  const res = await pool.query('SELECT * FROM transaction_group');
+  const res = await pool.query('SELECT * FROM transaction_group ORDER BY created_at DESC');
   return res.rows;
 };
 

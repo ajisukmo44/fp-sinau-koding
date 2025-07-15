@@ -1,34 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { Row } from 'react-bootstrap';
 import moment from 'moment';
-import Header from '../components/Header';
-import Sidebar from '../components/Sidebar';
-import SummaryData from '../components/SummaryData';
-import SalesChart from '../components/SalesChart';
+import api from '../api';
+import HeaderCashier from '../components/HeaderCashier';
+import SidebarCashier from '../components/SidebarCashier';
+import SalesReportData from '../components/SalesReportData';
+import SummaryDataCashier from '../components/SummaryDataCashier';
 import order from '../assets/icon/receipt.png'
 import omzet from '../assets/icon/wallet-money.png'
 import menu from '../assets/icon/document.png'
 import foods from '../assets/icon/reserve.png'
 import beverages from '../assets/icon/coffee.png'
 import desserts from '../assets/icon/cake.png'
-import api from '../api';
 
 // Import ikon-ikon untuk SummaryData
-import { FiArchive, FiDollarSign, FiClipboard, FiCoffee, FiGift, FiTrello } from '../components/Icon';
-
 function App() {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [isSidebarMinimized, setSidebarMinimized] = useState(false);
-  const [summaryData, setSummaryData] = useState({});
+  const [summaryDataCashier, setSummaryDataCashier] = useState({});
   const timeNow = moment().format('[Today,] dddd DD MMMM YYYY');
-
-  const formatRupiah = (number) => {
-    return new Intl.NumberFormat('id-ID', {
-      style: 'currency',
-      currency: 'IDR',
-      minimumFractionDigits: 0,
-    }).format(number);
-  };
 
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
@@ -38,11 +28,19 @@ function App() {
     setSidebarMinimized(!isSidebarMinimized);
   };
 
+  const formatRupiah = (number) => {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0,
+    }).format(number);
+  };
+
   useEffect(() => {
     const fetchSummaryData = async () => {
       try {
         const token = localStorage.getItem('token');
-        const { data } = await api.get('/admin/statistics-summary', {
+        const { data } = await api.get('/cashier/statistics-summary', {
           headers: { Authorization: `Bearer ${token}` }
         });
         const result = {
@@ -53,7 +51,7 @@ function App() {
           totalOmzet : data.data.total_omzet,
           totalOrder : data.data.total_order,
         }
-        setSummaryData(result);
+        setSummaryDataCashier(result);
         
       } catch (error) {
         console.error('Error fetching summary data:', error);
@@ -63,8 +61,8 @@ function App() {
   }, []);
 
   return (
-    <div className="d-flex  justify-content-start vh-100">
-    <Sidebar 
+    <div className="d-flex w-100 justify-content-start vh-100">
+    <SidebarCashier 
       isOpen={isSidebarOpen} 
       minimized={isSidebarMinimized}
       onToggleMinimize={toggleSidebarMinimize}
@@ -73,27 +71,26 @@ function App() {
     
     <div className={`main-content w-100 ${isSidebarMinimized ? 'main-minimized' : ''}`}>
       
-    <Header toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} isSidebarMinimized={isSidebarMinimized}/>
+    <HeaderCashier toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} isSidebarMinimized={isSidebarMinimized}/>
       <main className="p-4 mt-5">
         <div className="d-flex flex-wrap justify-content-between mb-4">
           <div>
-            <h4 className="fw-bolder">Dashboard</h4>
+            <h4 className="fw-bolder">Sales Report</h4>
           </div>
           <div className="text-muted">
             {timeNow}
           </div>
         </div>
-
-        <Row xs={1} sm={2} lg={3} xl={6} className="g-4">
-          
-          <SummaryData icon={order} title="Total Orders" value={summaryData.totalOrder || 0} />
-          <SummaryData icon={omzet} title="Total Omzet" value={formatRupiah(summaryData?.totalOmzet) || 0} />
-          <SummaryData icon={menu} title="All Menu Orders" value={summaryData.totalMenus || 0} />
-          <SummaryData icon={foods} title="Foods" value={summaryData.totalFoods || 0} />
-          <SummaryData icon={beverages} title="Beverages" value={summaryData.totalBeverages || 0} />
-          <SummaryData icon={desserts} title="Desserts" value={summaryData.totalDesserts || 0} />
+        <Row xs={1} sm={2} lg={3} xl={6} className="g-4 mb-4">
+          <SummaryDataCashier icon={order} title="Total Orders" value={summaryDataCashier.totalOrder || 0} />
+          <SummaryDataCashier icon={omzet} title="Total Omzet" value={formatRupiah(summaryDataCashier?.totalOmzet) || 0} />
+          <SummaryDataCashier icon={menu} title="All Menu Orders" value={summaryDataCashier.totalMenus || 0} />
+          <SummaryDataCashier icon={foods} title="Foods" value={summaryDataCashier.totalFoods || 0} />
+          <SummaryDataCashier icon={beverages} title="Beverages" value={summaryDataCashier.totalBeverages || 0} />
+          <SummaryDataCashier icon={desserts} title="Desserts" value={summaryDataCashier.totalDesserts || 0} />
         </Row>
-        <SalesChart />
+
+        <SalesReportData />
       </main>
     </div>
   </div>

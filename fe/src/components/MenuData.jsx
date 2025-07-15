@@ -271,18 +271,18 @@ const MenuApp = () => {
             ) : (
               filteredMenuData.map((item, idx) => (
                 <Col key={idx} md={4} className="mb-3">
-                  <Card onClick={() => setSelectedMenu(item)} style={{ cursor: 'pointer' }} className='h-100'>
-                    <Card.Img variant="top" src={urlImage + '/catalogs/' + item.image}  style={{ width: '100%', height: '200px' }} />  
+                  <Card onClick={() => setSelectedMenu(item)} style={{ cursor: 'pointer' }} className='h-100 px-3 py-0'>
                     <Card.Body className='px-0'>
+                      <img src={urlImage + '/catalogs/' + item.image}  style={{ width: '100%', height: '200px' }} className='p-0 rounded mb-2'/>
                       <div className="row">
                         <div className="col-12 text-muted">
                           <h5><b>{item.name} </b></h5>
                           <small>{item?.description.slice(0, 100)} {item.description.length > 100 ? '...' : ''}</small>
                         </div>
-                        <div className="col-8 mt-3">
+                        <div className="col-8 mt-3 align-bottom">
                           <b>Rp {item.price}</b> <small className='text-muted'>/ Portion</small>
                         </div>
-                        <div className="col-4 mt-3">
+                        <div className="col-4 mt-3 align-bottom">
                             <span className="badge bg-primary">{item.category}</span>
                         </div>
                     </div>

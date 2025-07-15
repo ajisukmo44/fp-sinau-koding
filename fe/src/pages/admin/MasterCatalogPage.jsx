@@ -1,13 +1,11 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../App.css';
-import Setting from '../layout/Setting';
+import MasterCatalog from '../../layout/MasterCatalog';
 
 function App() {
   return (
  <>
-  <Setting />
-  <h1>ok</h1>
+  <MasterCatalog />
   </>
   )
 }

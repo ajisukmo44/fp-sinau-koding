@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../assets/login.css'; // Custom styles if needed
-import logo from '../assets/logo.png';
+import '../../assets/login.css'; // Custom styles if needed
+import logo from '../../assets/logo.png';
 import { Link, useNavigate } from 'react-router-dom';
-import { login } from '../api/auth';
+import { login } from '../../api/auth';
 
 function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -23,6 +24,7 @@ function Login() {
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) return;
     
+    setLoading(true);
     try {
       const res_data = await login(username, password);
       // console.log('result login', res_data);
@@ -36,6 +38,8 @@ function Login() {
       navigate('/admin/dashboard-admin');
     } catch (error) {
       setErrors({ general: error.response?.data?.message || 'Login failed' });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -85,7 +89,9 @@ function Login() {
             {errors.password && <div className="invalid-feedback d-block">{errors.password}</div>}
           </div>
           {errors.general && <div className="alert alert-danger">{errors.general}</div>}
-          <button type="submit" className="btn btn-primary w-100">Login</button>
+          <button type="submit" className="btn btn-primary w-100" disabled={loading}>
+            {loading ? 'Loading...' : 'Login'}
+          </button>
         </form>
       </div>
     </div>

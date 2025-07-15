@@ -60,7 +60,10 @@ exports.addTransactions = async (req, res, next) => {
   const token = req.headers.authorization?.split(' ')[1];
   try {
    const last_id = await pool.query('SELECT * FROM transaction_group ORDER BY id DESC');
-   const idtrx = last_id?.rows[0].id ?? 0;;
+   let idtrx = 0;
+   if (last_id.rows && last_id.rows.length > 0 && last_id.rows[0].id) {
+     idtrx = last_id.rows[0].id;
+   }
    const newTransaction = {
      order_number: 'TRX-000'+(idtrx+1),
      transaction_type: req.body.transaction_type,

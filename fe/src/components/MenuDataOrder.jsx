@@ -10,6 +10,7 @@ import tickCircle from '../assets/icon/tick-circle.png';
 import add from '../assets/icon/add.png';
 import edit from '../assets/icon/edit.png';
 import deletedd from '../assets/icon/deletedd.png';
+import logo from '../assets/logo.png';
 import api from '../api';
 import urlImage from '../api/baseUrl';
 import Alert from 'react-bootstrap/Alert';
@@ -36,7 +37,7 @@ const MenuApp = () => {
   const [adding, setAdding] = useState(false);
   const [orderList, setOrderList] = useState([]);
   const [orderTotal, setOrderTotal] = useState(0);
-  const [orderType, setOrderType] = useState('dine-in');
+  const [orderType, setOrderType] = useState('dine_in');
   const [customerName, setCustomerName] = useState('');
   // const [cashPayment, setCashPayment] = useState('');
   const [tableNumber, setTableNumber] = useState('');
@@ -121,7 +122,6 @@ const formatRupiah = (number) => {
 
   const handlePay = async () => {
     setPaying(true);
-    setShowInvoiceModal(true);
     try {
       const token = localStorage.getItem('token');
       const subtotal = orderList.reduce((sum, item) => sum + (item.price * item.quantity), 0);
@@ -131,7 +131,7 @@ const formatRupiah = (number) => {
       const orderData = {
         customer_name: customerName,
         transaction_type: orderType,
-        table_number: orderType === 'dine-in' ? tableNumber : null,
+        table_number: orderType === 'dine_in' ? tableNumber : null,
         items: orderList.map(item => ({
           catalog_id: item.id,
           quantity: item.quantity,
@@ -149,14 +149,14 @@ const formatRupiah = (number) => {
       const response = await api.post('/cashier/transactions', orderData, {
         headers: { Authorization: `Bearer ${token}` }
       });
-
+      setShowInvoiceModal(true);
       setDataDetailItem(response.data.dataItem)
       setInvoiceData(response.data.data);
       setShowInvoiceModal(true);
       setOrderList([]);
-      setCustomerName('Anisa');
+      setCustomerName('');
       setTableNumber('');
-      setPaymentAmount(0);
+      setPaymentAmount('');
     } catch (error) {
       console.error('Error processing payment:', error);
       alert('Payment failed. Please try again.');
@@ -168,28 +168,36 @@ const formatRupiah = (number) => {
   const printInvoice = async () => {
     const element = document.getElementById('printPDF');
     const canvas = await html2canvas(element, {
-      scale: 2,
+      scale: 3,
       useCORS: true,
-      allowTaint: true
+      allowTaint: true,
+      backgroundColor: '#ffffff'
     });
     
     const imgData = canvas.toDataURL('image/png');
-    const pdf = new jsPDF();
-    const imgWidth = 210;
-    const pageHeight = 295;
+    const pdf = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a5'
+    });
+    
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const imgWidth = pageWidth - 20;
     const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    const x = (pageWidth - imgWidth) / 2;
+    
+    let position = 10;
     let heightLeft = imgHeight;
     
-    let position = 0;
-    
-    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-    heightLeft -= pageHeight;
+    pdf.addImage(imgData, 'PNG', x, position, imgWidth, imgHeight);
+    heightLeft -= (pageHeight - 20);
     
     while (heightLeft >= 0) {
-      position = heightLeft - imgHeight;
+      position = heightLeft - imgHeight + 10;
       pdf.addPage();
-      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
+      pdf.addImage(imgData, 'PNG', x, position, imgWidth, imgHeight);
+      heightLeft -= (pageHeight - 20);
     }
     
     pdf.save(`invoice-${invoiceData?.order_number}.pdf`);
@@ -286,16 +294,16 @@ const formatRupiah = (number) => {
             {/* <small>No Order <strong>ORDR#1234567890</strong></small> */}
             <div className="d-flex mt-3 mb-2">
               <Button 
-                variant={orderType === 'dine-in' ? 'primary' : 'outline-secondary'} 
+                variant={orderType === 'dine_in' ? 'primary' : 'outline-secondary'} 
                 className="flex-fill me-2"
-                onClick={() => setOrderType('dine-in')}
+                onClick={() => setOrderType('dine_in')}
               >
                 Dine in
               </Button>
               <Button 
-                variant={orderType === 'takeaway' ? 'primary' : 'outline-secondary'} 
+                variant={orderType === 'take_away' ? 'primary' : 'outline-secondary'} 
                 className="flex-fill"
-                onClick={() => setOrderType('takeaway')}
+                onClick={() => setOrderType('take_away')}
               >
                 Take Away
               </Button>
@@ -304,7 +312,7 @@ const formatRupiah = (number) => {
             <Form.Group className="mb-3">
               <hr />
               <div className="row mt-2">
-                <div className={orderType === 'takeaway' ? 'col-12' : 'col-6'}>
+                <div className={orderType === 'take_away' ? 'col-12' : 'col-6'}>
                   <Form.Label>Customer Name</Form.Label>
                   <Form.Control 
                     placeholder="Enter name" 
@@ -312,15 +320,15 @@ const formatRupiah = (number) => {
                     onChange={(e) => setCustomerName(e.target.value)}
                   />
                 </div>
-                {orderType === 'dine-in' && (
+                {orderType === 'dine_in' && (
                   <div className="col-6">
-                    <Form.Label>No.Table</Form.Label>
+                    <Form.Label>Nomer Table</Form.Label>
                     <Form.Select 
                       style={{width: '180px'}}
                       value={tableNumber}
                       onChange={(e) => setTableNumber(e.target.value)}
                     >
-                      <option value="">Select No.Table</option>
+                      <option value="">Select Table</option>
                       <option value="01">01</option>
                       <option value="02">02</option>
                       <option value="03">03</option>
@@ -407,7 +415,7 @@ const formatRupiah = (number) => {
               </div>
               <hr />
               <div className="row mt-3 px-3">
-                 <Form.Label className=''>Masukan Nominal</Form.Label>
+                 <label className='ml-0 mb-1'>Masukan Nominal</label>
                   <Form.Control 
                     placeholder="Enter nominal" 
                     value={paymentAmount}
@@ -418,7 +426,7 @@ const formatRupiah = (number) => {
               <Button 
                 variant="primary" 
                 className="w-100 mt-3"
-                disabled={orderList.length === 0 || paying}
+                disabled={orderList.length === 0 || paying || !customerName || paymentAmount < orderList.reduce((sum, item) => sum + (item.price * item.quantity), 0) * 1.1}
                 onClick={handlePay}
               >
                 {paying ? 'Processing...' : 'Pay'}
@@ -429,72 +437,76 @@ const formatRupiah = (number) => {
       </Row>
 
       {/* Invoice Modal */}
-      <Modal show={showInvoiceModal} onHide={() => setShowInvoiceModal(false)} size="lg">
-        <Modal.Body>
-         <div id='printPDF'>
+      <Modal show={showInvoiceModal} onHide={() => setShowInvoiceModal(false)} size="md">
+        <Modal.Body className='bg-invoice'>
+         <div>
            <div className='text-end'>
             <button className='bordered'  onClick={() => setShowInvoiceModal(false)}>X</button>
           </div>
           <div className="text-center pt-1 mt-2 mb-4 anyclass" data-html2canvas-ignore="true">
-              <h3><b>Transaction Success</b></h3>
+            <h3><b>Transaction Success</b></h3>
           </div>
-          <div className="rounded m-5 p-5 bg-invoice p-5 mb-4">
-            <span><small className='text-muted'>No Order : </small><small>{invoiceData?.order_number }</small></span> <br />
-            <span><small className='text-muted'>Order Date :  </small><small>{moment(invoiceData?.created_at).locale("id").format('dddd, DD/MM/YYYY, hh:mm')}</small></span><br />
-            <span><small className='text-muted'>Customer Name : </small><small>{ invoiceData?.customer_name}</small> </span><br />
-            <span><small className='text-muted'>Dine-in : </small><small> No.Meja { invoiceData?.table_number}</small></span>
-            <hr />
-            <div className="mt-2">
-                {dataDetailItem?.map((item, index) => (
-                  <div className="row mb-2" key={index}>
-                    <div className="col-8">
-                      <b>{item.name}</b> <br />
-                      <small>{item.quantity} x Rp {item.price} </small>
+          <div id='printPDF'>
+          <div className="rounded m-3 p-4 bg-white mb-4">
+              <div className="text-center pt-1 mt-0 mb-4">
+                <img src={logo} alt="Logo" className='me-2 pb-1 img-invoice' style={{ width: '125px', height: '45px', }} />
+              </div>
+              <span><small className='text-muted'>No Order : </small><small>{invoiceData?.order_number }</small></span> <br />
+              <span><small className='text-muted'>Order Date :  </small><small>{moment(invoiceData?.created_at).locale("id").format('dddd, DD/MM/YYYY, hh:mm')}</small></span><br />
+              <span><small className='text-muted'>Customer Name : </small><small>{ invoiceData?.customer_name}</small> </span><br />
+                <span> {invoiceData?.transaction_type == 'dine_in' ? (<><small className='text-muted'>Dine-in : </small><small> No.Meja { invoiceData?.table_number}</small></>) : (<small><b>Take Away</b></small>)} </span>
+              <hr />
+              <div className="mt-2">
+                  {dataDetailItem?.map((item, index) => (
+                    <div className="row mb-2" key={index}>
+                      <div className="col-8">
+                        <b>{item.name}</b> <br />
+                        <small>{item.quantity} x {formatRupiah(item.price)} </small>
+                      </div>
+                      <div className="col-4 text-end">
+                        <small><b>{formatRupiah(item.subtotal)}</b></small>
+                      </div>
                     </div>
-                    <div className="col-4 text-end">
-                      <small><b>Rp {item.subtotal}</b></small>
-                    </div>
-                  </div>
-                ))}
-            </div>
-            <hr />
-            <div className="row">
-              <div className="col-8">
-                <small className='text-muted'>Sub Total</small>  <br />
+                  ))}
               </div>
-              <div className="col-4 text-end">
-                <small> {formatRupiah(invoiceData?.subtotal_group)}</small>
+              <hr />
+              <div className="row">
+                <div className="col-8">
+                  <small className='text-muted'>Sub Total</small>  <br />
+                </div>
+                <div className="col-4 text-end">
+                  <small> {formatRupiah(invoiceData?.subtotal_group)}</small>
+                </div>
               </div>
-            </div>
-            <div className="row">
-              <div className="col-8">
-              <small className='text-muted'>Tax</small>  <br />
+              <div className="row">
+                <div className="col-8">
+                <small className='text-muted'>Tax</small>  <br />
+                </div>
+                <div className="col-4 text-end">
+                <small> {formatRupiah(invoiceData?.tax)}</small>
+                </div>
               </div>
-              <div className="col-4 text-end">
-              <small> {formatRupiah(invoiceData?.tax)}</small>
+              <hr />
+              <div className="row">
+                <div className="col-8">
+                  <h5><b>Total</b></h5>  <br />
+                </div>
+                <div className="col-4 text-end">
+                  <h5><b>{formatRupiah(parseFloat(invoiceData?.subtotal_group)+parseFloat(invoiceData?.tax))}</b></h5>
+                </div>
               </div>
-            </div>
-            <hr />
-            <div className="row">
-              <div className="col-8">
-                <h5><b>Total</b></h5>  <br />
+              <div className="row">
+                <div className="col-8">
+                <small className='text-muted'>Diterima</small>  <br />
+                <small className='text-muted'>Kembalian</small>  <br />
+                </div>
+                <div className="col-4 text-end">
+                  <small>{formatRupiah(invoiceData?.cash)}</small> <br />
+                  <small>{formatRupiah(invoiceData?.cashback)}</small>
+                </div>
               </div>
-              <div className="col-4 text-end">
-                <h5><b>{formatRupiah(parseFloat(invoiceData?.subtotal_group)+parseFloat(invoiceData?.tax))}</b></h5>
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-8">
-              <small className='text-muted'>Diterima</small>  <br />
-              <small className='text-muted'>Kembalian</small>  <br />
-              </div>
-              <div className="col-4 text-end">
-                <small>{formatRupiah(invoiceData?.cash)}</small> <br />
-                <small>{formatRupiah(invoiceData?.cashback)}</small>
-              </div>
-            </div>
           </div>
-          <div className="mx-5 mb-5 anyclass" data-html2canvas-ignore="true">
+          <div className="mx-3 mb-5 anyclass" data-html2canvas-ignore="true">
               <button 
                 type="button" 
                 className="btn btn-primary w-100"
@@ -502,6 +514,7 @@ const formatRupiah = (number) => {
               >
                 Print Struk
               </button>
+          </div>
           </div>
          </div>
         </Modal.Body>
