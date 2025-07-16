@@ -24,7 +24,6 @@ const MenuApp = () => {
   const [selectedMenu, setSelectedMenu] = useState(null);
   const [loading, setLoading] = useState(false);
   const [activeCategory, setActiveCategory] = useState('all');
-  const [editForm, setEditForm] = useState({});
   const [showAlert, setShowAlert] = useState(false);
   const [messageAlert, setMessageAlert] = useState('');
   const [addForm, setAddForm] = useState({
@@ -143,9 +142,7 @@ const formatRupiah = (number) => {
         cash : paymentAmount,
         cashback : (parseFloat(paymentAmount)-(total))
       };
-
-      console.log('orderData', orderData);
-      
+      // console.log('orderData', orderData);
       const response = await api.post('/cashier/transactions', orderData, {
         headers: { Authorization: `Bearer ${token}` }
       });

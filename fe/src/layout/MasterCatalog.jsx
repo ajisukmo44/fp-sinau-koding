@@ -8,7 +8,7 @@ import MenuData from '../components/MenuData';
 
 function App() {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
-  const [isSidebarMinimized, setSidebarMinimized] = useState(false);
+  const [isSidebarMinimized, setSidebarMinimized] = useState(true);
 
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);

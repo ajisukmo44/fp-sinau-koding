@@ -10,7 +10,7 @@ import SettingProfile from '../components/SettingProfile';
 // Import ikon-ikon untuk SummaryData
 function App() {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
-  const [isSidebarMinimized, setSidebarMinimized] = useState(false);
+  const [isSidebarMinimized, setSidebarMinimized] = useState(true);
 
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
@@ -36,7 +36,6 @@ function App() {
             <h4 className="fw-bolder">Settings</h4>
           </div>
         </div>
-
         <SettingProfile />
       </main>
     </div>

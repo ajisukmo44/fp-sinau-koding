@@ -9,6 +9,8 @@ import dashboard from '../assets/icon/dashboard.png'
 import setting from '../assets/icon/setting.png'
 import menuoard from '../assets/icon/menu-board.png'
 import report from '../assets/icon/report.png'
+import arrowLeft from '../assets/icon/arrow-left.png'
+import arrowRight from '../assets/icon/arrow-right.png'
 
 const Sidebar = ({ isOpen, minimized, onToggleMinimize }) => {
   const location = useLocation();
@@ -23,7 +25,7 @@ const Sidebar = ({ isOpen, minimized, onToggleMinimize }) => {
     <div className={`sidebar bg-white shadow-sm ${isOpen ? 'open' : ''} ${minimized ? 'minimized' : ''}`}>
       <div className="p-3 d-flex flex-column h-100 align-items-center">
        
-        <Navbar.Brand href="#" className="d-flex mb-4 text-dark text-decoration-none justify-content-center w-100">
+        <Navbar.Brand href="/admin/dashboard-admin" className="d-flex mb-2 text-dark text-decoration-none justify-content-center w-100">
           <img
             src={minimized ? logoMin : logo}
             alt="Logo"
@@ -31,17 +33,29 @@ const Sidebar = ({ isOpen, minimized, onToggleMinimize }) => {
             onClick={onToggleMinimize}
           />
         </Navbar.Brand>
-        {/* <hr />
-        <Button
-          variant="light"
-          size="sm"
-          className="mb-3"
-          onClick={handleMinimize}
-          aria-label={minimized ? 'Expand sidebar' : 'Minimize sidebar'}
-        >
-          <FiMenu />
-        </Button> */}
+       
+        <div className='mb-4 px-0 bg-success margin-top'>
+          <img
+              src={minimized ? arrowRight : arrowLeft}
+              alt="Logo"
+              style={{ width: minimized ? '32px' : '32px', height: '32px', objectFit: 'contain', transition: 'width 0.2s', cursor: 'pointer' }}
+              onClick={onToggleMinimize}
+            />
+        </div>
+
         <Nav variant="pills" className="flex-column mb-auto w-100 mt-4">
+           <Nav.Item>
+            <Nav.Link
+            >
+            { minimized ? ( <img
+              src={minimized ? arrowRight : ''}
+              alt="Logo"
+              style={{ width: minimized ? '32px' : '32px', height: '32px', objectFit: 'contain', transition: 'width 0.2s', cursor: 'pointer' }}
+              onClick={onToggleMinimize}
+            />) : ('') }
+            </Nav.Link>
+          </Nav.Item>
+           
           <Nav.Item>
             <Nav.Link
               href="/admin/dashboard-admin"

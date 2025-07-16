@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Nav, Form, Button, Modal } from 'react-bootstrap';
-import axios from 'axios';
-import Swal from 'sweetalert2';
 import foods from '../assets/icon/reserve1.png'
 import beverages from '../assets/icon/coffe1.png'
 import desserts from '../assets/icon/cake1.png'
@@ -132,13 +130,6 @@ const MenuApp = () => {
       fetchMenuData();
       setShowAlert(true);
       setMessageAlert('Menu successfully updated!');
-      
-      // Swal.fire({
-      //   title: 'Success!',
-      //   text: 'Menu has been updated successfully',
-      //   icon: 'success',
-      //   confirmButtonText: 'OK'
-      // });
     } catch (error) {
       console.error('Error updating menu:', error);
     } finally {
@@ -182,12 +173,6 @@ const MenuApp = () => {
       fetchMenuData();
       setShowAlert(true);
       setMessageAlert('Menu successfully created!');
-      // Swal.fire({
-      //   title: 'Success!',
-      //   text: 'Menu has been added successfully',
-      //   icon: 'success',
-      //   confirmButtonText: 'OK'
-      // });
     } catch (error) {
       console.error('Error creating menu:', error);
     } finally {

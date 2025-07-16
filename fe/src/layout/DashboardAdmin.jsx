@@ -13,12 +13,9 @@ import beverages from '../assets/icon/coffee.png'
 import desserts from '../assets/icon/cake.png'
 import api from '../api';
 
-// Import ikon-ikon untuk SummaryData
-import { FiArchive, FiDollarSign, FiClipboard, FiCoffee, FiGift, FiTrello } from '../components/Icon';
-
 function App() {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
-  const [isSidebarMinimized, setSidebarMinimized] = useState(false);
+  const [isSidebarMinimized, setSidebarMinimized] = useState(true);
   const [summaryData, setSummaryData] = useState({});
   const timeNow = moment().format('[Today,] dddd DD MMMM YYYY');
 

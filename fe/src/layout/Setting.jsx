@@ -10,7 +10,7 @@ import SettingProfile from '../components/SettingProfile';
 // Import ikon-ikon untuk SummaryData
 function App() {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
-  const [isSidebarMinimized, setSidebarMinimized] = useState(false);
+  const [isSidebarMinimized, setSidebarMinimized] = useState(true);
 
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);

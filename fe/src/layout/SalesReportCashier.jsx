@@ -16,7 +16,7 @@ import desserts from '../assets/icon/cake.png'
 // Import ikon-ikon untuk SummaryData
 function App() {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
-  const [isSidebarMinimized, setSidebarMinimized] = useState(false);
+  const [isSidebarMinimized, setSidebarMinimized] = useState(true);
   const [summaryDataCashier, setSummaryDataCashier] = useState({});
   const timeNow = moment().format('[Today,] dddd DD MMMM YYYY');
 

@@ -18,7 +18,6 @@ const Header = ({ toggleSidebar, isSidebarOpen, isSidebarMinimized }) => {
   const [showArchiveModal, setShowArchiveModal] = useState(false);
 
   const fetchSalesReport = async () => {
-    // console.log('mulaiii');
     // setLoading(true);
     try {
       const token = localStorage.getItem('token');

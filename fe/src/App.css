@@ -252,7 +252,7 @@ body {
 }
 .sidebar.minimized .nav-link span,
 .sidebar.minimized .nav-link:not(:has(svg)) {
-  display: none !important;
+  /* display: none !important; */
 }
 @media (min-width: 992px) {
   .sidebar.minimized ~ .main-content {
