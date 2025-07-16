@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Form, Button, Row, Col, InputGroup, Pagination, Modal } from 'react-bootstrap';
+import { Table, Form, Button, Row, Col, InputGroup, Pagination, Modal, Badge  } from 'react-bootstrap';
 import { Calendar, Search } from 'react-bootstrap-icons';
 import axios from 'axios';
 import moment from 'moment';
@@ -18,6 +18,14 @@ function SalesReportData() {
     category: '',
     orderType: ''
   });
+
+const formatRupiah = (number) => {
+  return new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    minimumFractionDigits: 0,
+  }).format(number);
+};
 
   // const handleShow = () => setShowModal(true);
   const handleClose = () => setShowModal(false);
@@ -76,7 +84,7 @@ function SalesReportData() {
   };
 
   return (
-    <div className="bg-white p-4 w-100 rounded shadow-sm">
+    <div className="bg-white p-4 w-100 rounded shadow-sm mb-5">
     
       {/* Filters */}
       <Form className="mb-4">
@@ -164,7 +172,8 @@ function SalesReportData() {
               <tr key={order.id}>
                 <td>{order.order_number}</td>
                 <td>{moment(order.created_at).locale("id").format('dddd, DD/MM/YYYY, hh:mm')}</td>
-                <td>{order.transaction_type}</td>
+                <td> {order.transaction_type == 'dine_in' ? ( <Badge bg="secondary">Dine-in</Badge>) : ( <Badge bg="success">Take Away</Badge>)} 
+                </td>
                 <td>{order.customer_name}</td>
                 <td className='text-center'>
                   <Button size='sm' className='px-3 py-1 btn-primary' onClick={() => handleDetail(order.id)}>
@@ -196,29 +205,29 @@ function SalesReportData() {
       <Modal show={showModal} onHide={handleClose}>
         {/* <Modal.Header closeButton>
         </Modal.Header> */}
-        <Modal.Body className='p-3'>
+        <Modal.Body className='p-3 px-4'>
           <div className='text-end'>
             <button className='bordered' onClick={handleClose}>X</button>
           </div>
           {/* Place your detail content here */}
           <div className='text-center pt-1 mt-2 mb-4'>
-              <h2><b>Transaction Detail</b></h2>
+              <h4><b>Transaction Detail</b></h4>
           </div>
-          <div className="rounded bg-light p-4 mb-4">
+          <div className="rounded bg-invoice p-3 mb-4">
             <span><small className='text-muted'>No Order : </small><small>{dataDetail?.order_number }</small></span> <br />
             <span><small className='text-muted'>Order Date :  </small><small>{moment(dataDetail?.created_at).locale("id").format('dddd, DD/MM/YYYY, hh:mm')}</small></span><br />
             <span><small className='text-muted'>Customer Name : </small><small>{ dataDetail?.customer_name}</small> </span><br />
-            <span><small className='text-muted'>Dine-in : </small><small> No.Meja { dataDetail?.table_number}</small></span>
+            <span><small> {dataDetail?.transaction_type == 'dine_in' ? (<><span>Dine-in : No.Meja { dataDetail?.table_number}</span></>) : (<span><b>Take Away</b></span>)} </small></span>
             <hr />
             <div className="mt-2">
                 {dataDetailItem.map((item, index) => (
                   <div className="row mb-2" key={index}>
                     <div className="col-8">
-                      <b>{item.name}</b> <br />
-                      <small>{item.quantity} x Rp {item.price} </small>
+                     <small> <b>{item.name}</b> <br /></small>
+                    <small className='text-muted'>{item.quantity} x {formatRupiah(item.price)} </small>
                     </div>
                     <div className="col-4 text-end">
-                      <small><b>Rp {item.subtotal}</b></small>
+                      <small><b>{formatRupiah(item.subtotal)}</b></small>
                     </div>
                   </div>
                 ))}
@@ -229,7 +238,7 @@ function SalesReportData() {
                 <small className='text-muted'>Sub Total</small>  <br />
               </div>
               <div className="col-4 text-end">
-               <small> Rp {dataDetail?.subtotal_group}</small>
+               <small>{formatRupiah(dataDetail?.subtotal_group)}</small>
               </div>
             </div>
             <div className="row">
@@ -237,7 +246,7 @@ function SalesReportData() {
               <small className='text-muted'>Tax</small>  <br />
               </div>
               <div className="col-4 text-end">
-             <small> Rp {dataDetail?.tax}</small>
+             <small>{formatRupiah(dataDetail?.tax)}</small>
               </div>
             </div>
             <hr />
@@ -246,7 +255,7 @@ function SalesReportData() {
                 <h5><b>Total</b></h5>  <br />
               </div>
               <div className="col-4 text-end">
-                <h5><b>Rp {parseFloat(dataDetail?.subtotal_group)+parseFloat(dataDetail?.tax)}</b></h5>
+                <h5><b>{formatRupiah(parseFloat(dataDetail?.subtotal_group)+parseFloat(dataDetail?.tax))}</b></h5>
               </div>
             </div>
             <div className="row">
@@ -255,8 +264,8 @@ function SalesReportData() {
               <small className='text-muted'>Kembalian</small>  <br />
               </div>
               <div className="col-4 text-end">
-                <small>Rp {dataDetail?.cash}</small> <br />
-                <small>Rp {dataDetail?.cashback}</small>
+                <small>{formatRupiah(dataDetail?.cash)}</small> <br />
+                <small>{formatRupiah(dataDetail?.cashback)}</small>
               </div>
             </div>
           </div>

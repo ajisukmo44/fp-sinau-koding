@@ -72,9 +72,9 @@ function App() {
       
     <Header toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} isSidebarMinimized={isSidebarMinimized}/>
       <main className="p-4 mt-5">
-        <div className="d-flex flex-wrap justify-content-between mb-4">
+        <div className="d-flex flex-wrap justify-content-between mb-2">
           <div>
-            <h4 className="fw-bolder">Dashboard</h4>
+            <h5 className="fw-bolder">Dashboard</h5>
           </div>
           <div className="text-muted">
             {timeNow}
@@ -82,7 +82,6 @@ function App() {
         </div>
 
         <Row xs={1} sm={2} lg={3} xl={6} className="g-4">
-          
           <SummaryData icon={order} title="Total Orders" value={summaryData.totalOrder || 0} />
           <SummaryData icon={omzet} title="Total Omzet" value={formatRupiah(summaryData?.totalOmzet) || 0} />
           <SummaryData icon={menu} title="All Menu Orders" value={summaryData.totalMenus || 0} />

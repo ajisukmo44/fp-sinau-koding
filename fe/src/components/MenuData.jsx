@@ -20,6 +20,7 @@ const MenuApp = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [editForm, setEditForm] = useState({});
+  const [editImageForm, setEditImageForm] = useState({});
   const [updating, setUpdating] = useState(false);
   const [isAddMode, setIsAddMode] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -34,6 +35,13 @@ const MenuApp = () => {
   });
   const [adding, setAdding] = useState(false);
   // const urlImage = urlImage;
+  const formatRupiah = (number) => {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0,
+    }).format(number);
+  };
 
   const fetchMenuData = async () => {
     setLoading(true);
@@ -99,7 +107,6 @@ const MenuApp = () => {
 
   const handleUpdateMenu = async () => {
     if (!selectedMenu) return;
-    
     setUpdating(true);
     try {
       const token = localStorage.getItem('token');
@@ -108,24 +115,22 @@ const MenuApp = () => {
       formData.append('category', editForm.category);
       formData.append('price', editForm.price);
       formData.append('description', editForm.description);
-      if (editForm.image) {
-        formData.append('image', editForm.image);
+      if (editImageForm.image) {
+        formData.append('image', editImageForm.image);
       }
-      
       const response = await api.put(`/admin/master-catalogs/${selectedMenu.id}`, formData, {
         headers: { 
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data'
         }
       });
-
+      // setMenuData(prev => prev.map(item => 
+      //   item.id === selectedMenu.id ? { ...item, ...editForm } : item
+      // ));
       console.log('res edit menu', response);
-      
-      
-      setMenuData(prev => prev.map(item => 
-        item.id === selectedMenu.id ? { ...item, ...editForm } : item
-      ));
-      setSelectedMenu({ ...selectedMenu, ...editForm });
+      //  setSelectedMenu(response.data[0]);
+      // setSelectedMenu({ ...selectedMenu, ...editForm });
+      setSelectedMenu(null);
       setIsEditMode(false);
       fetchMenuData();
       setShowAlert(true);
@@ -135,6 +140,15 @@ const MenuApp = () => {
     } finally {
       setUpdating(false);
     }
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setFile(e.dataTransfer.files[0]);
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
   };
 
   const handleAddMenu = () => {
@@ -170,6 +184,7 @@ const MenuApp = () => {
       
       setMenuData(prev => [...prev, response.data]);
       setIsAddMode(false);
+      
       fetchMenuData();
       setShowAlert(true);
       setMessageAlert('Menu successfully created!');
@@ -201,12 +216,12 @@ const MenuApp = () => {
         {/* Left Panel - Menu List */}
         <Col md={8}>
           <div>
-            <h4 className="fw-bolder">List Menu</h4>
+            <h5 className="fw-bolder">List Menu</h5>
           </div>
           <div className='text-start'>
             <div className="row">
               <div className="col-8">
-              <Nav variant="pills" defaultActiveKey="all">
+              <Nav variant="pills" defaultActiveKey="all" className="menu-component">
               <Nav.Item className='border rounded me-2'>
                 <Nav.Link 
                   eventKey="all" 
@@ -239,7 +254,7 @@ const MenuApp = () => {
               </div>
               <div className="col-4 text-end">
               <div className="text-muted mt-2">
-                Total : <b>{filteredMenuData.length} Menu</b> 
+               <small> Total : <b>{filteredMenuData.length} Menu</b></small> 
               </div>
               </div>
             </div>
@@ -255,20 +270,20 @@ const MenuApp = () => {
               </Col>
             ) : (
               filteredMenuData.map((item, idx) => (
-                <Col key={idx} md={4} className="mb-3">
+                <Col key={idx} md={3} className="mb-3">
                   <Card onClick={() => setSelectedMenu(item)} style={{ cursor: 'pointer' }} className='h-100 px-3 py-0'>
                     <Card.Body className='px-0'>
-                      <img src={urlImage + '/catalogs/' + item.image}  style={{ width: '100%', height: '200px' }} className='p-0 rounded mb-2'/>
+                      <img src={urlImage + '/catalogs/' + item.image}  style={{ width: '100%', height: '150px' }} className='p-0 rounded mb-2'/>
                       <div className="row">
                         <div className="col-12 text-muted">
                           <h5><b>{item.name} </b></h5>
-                          <small>{item?.description.slice(0, 100)} {item.description.length > 100 ? '...' : ''}</small>
+                          <small>{item?.description.slice(0, 65)} {item.description.length > 65 ? '...' : ''}</small>
                         </div>
-                        <div className="col-8 mt-3 align-bottom">
-                          <b>Rp {item.price}</b> <small className='text-muted'>/ Portion</small>
+                        <div className="col-8 mt-3 align-content-bottom">
+                         <b>{formatRupiah(item.price)}</b><small className='text-muted'>/Portion</small>
                         </div>
-                        <div className="col-4 mt-3 align-bottom">
-                            <span className="badge bg-primary">{item.category}</span>
+                        <div className="col-4 mt-3 text-end">
+                           <small> <span className="badge bg-primary pe-2">{item.category}</span></small>
                         </div>
                     </div>
                     </Card.Body>
@@ -322,15 +337,43 @@ const MenuApp = () => {
           </div>
           <hr />
             {isAddMode ? (
-              <Card.Body className='p-0 pt-4'>
+              <Card.Body className='p-0 pt-0'>
                 <Form>
-                  <Form.Group className="mb-3 bg-light p-3 rounded">
-                    <Form.Label>Image</Form.Label>
+                  <Form.Group className="mb-3 mt-0 rounded">
+                    {/* <Form.Label>Image</Form.Label>
                     <Form.Control 
                       type="file"
                       accept="image/*"
                       onChange={(e) => setAddForm({...addForm, image: e.target.files[0]})}
-                    />
+                    /> */}
+                    <div
+                      className="upload-card border border-primary border-dashed w-100"
+                      onDrop={handleDrop}
+                      onDragOver={handleDragOver}
+                    >
+                      <div className="text-center">
+                        {addForm.image ? (
+                          <div>
+                            <img 
+                              src={URL.createObjectURL(addForm.image)} 
+                              alt="Preview" 
+                              style={{ width: '250px', height: '150px' }}
+                              className="rounded mb-2"
+                            />
+                            <p className="text-success">{addForm.image.name}</p>
+                          </div>
+                        ) : (
+                          <>
+                            <i className="bi bi-upload fs-1 mb-2" />
+                            <p>Drag and Drop your file here or</p>
+                          </>
+                        )}
+                        <label className="btn btn-primary">
+                          {addForm.image ? 'Change File' : 'Choose File'}
+                          <input type="file" hidden accept="image/*" onChange={(e) => setAddForm({...addForm, image: e.target.files[0]})} />
+                        </label>
+                      </div>
+                    </div>
                   </Form.Group>
                   <Form.Group className="mb-3">
                     <Form.Label>Name</Form.Label>
@@ -387,13 +430,41 @@ const MenuApp = () => {
               <Card.Body className='p-0 pt-4'>
                 <Form>
                   <Form.Group className="mb-3 bg-light p-4 rounded text-center">
-                      <Form.Label>Image</Form.Label> <br />
+                      {/* <Form.Label>Image</Form.Label> <br />
                       <img src={urlImage + '/catalogs/' + editForm.image} alt="menu" className='h-25 w-25 mb-2' />
                     <Form.Control 
                       type="file"
                       accept="image/*"
                       onChange={(e) => setEditForm({...editForm, image: e.target.files[0]})}
-                    />
+                    /> */}
+                    <div
+                      className="upload-card border border-primary border-dashed w-100"
+                      onDrop={handleDrop}
+                      onDragOver={handleDragOver}
+                    >
+                      <div className="text-center">
+                        {editForm.image ? (
+                          <div>
+                            <img 
+                              src={editImageForm.image instanceof File ? URL.createObjectURL(editImageForm.image) : urlImage + '/catalogs/' + editForm.image}
+                              alt="Preview" 
+                              style={{ width: '150px', height: '150px', objectFit: 'cover' }}
+                              className="rounded mb-2"
+                            />
+                            <p className="text-success">{editImageForm.image instanceof File ? editImageForm.image.name : 'Current image'}</p>
+                          </div>
+                        ) : (
+                          <>
+                            <i className="bi bi-upload fs-1 mb-2" />
+                            <p>Drag and Drop your file here or</p>
+                          </>
+                        )}
+                        <label className="btn btn-primary">
+                          {editImageForm.image ? 'Change File' : 'Choose File'}
+                          <input type="file" hidden accept="image/*"  onChange={(e) => setEditImageForm({...editImageForm, image: e.target.files[0]})} />
+                        </label>
+                      </div>
+                    </div>
                   </Form.Group>
                   <Form.Group className="mb-3">
                     <Form.Label>Name</Form.Label>
@@ -449,9 +520,9 @@ const MenuApp = () => {
             ) : selectedMenu ? (
               <>
                 {/* <Card.Img variant="top" src={urlImage + '/catalogs/' + selectedMenu.image} className='h-25 w-25 mb-2 text-center' /> */}
-                  <Card.Body className='p-0 pt-4'>
+                  <Card.Body className='p-0 pt-0'>
                   <div className='text-center'>
-                        <img src={urlImage + '/catalogs/' + selectedMenu.image} className='h-50 w-50 mb-2 text-center' alt="menu" />
+                      <img src={urlImage + '/catalogs/' + selectedMenu.image} className='w-100 rounded mb-2 text-center' alt="menu" style={{height:'300px'}} />
                   </div>
                   <Form>
                     <Form.Group className="mb-3">

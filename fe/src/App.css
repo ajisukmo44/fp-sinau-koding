@@ -7,7 +7,18 @@
 
 /* Dotted red border */
 hr {
-  border-top: 2px dotted #707070;
+  border-top: 1px dotted #707070;
+}
+
+.upload-card {
+  border-radius: 10px;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-color: #f9f9f9;
+  border-style: dashed !important;
+  cursor: pointer;
+  width: 100%;
+  margin: auto;
 }
 
 .bg-invoice{
@@ -218,10 +229,35 @@ td {
   text-align: start;
 }
 .nav-pills .nav-link.active {
-  background-color: #3572EF !important;
-  color: #f1f1f1 !important;
+  background-color: #f7f7f7;
+  border-right: 5px solid #3572EF;
+  border-radius: 4px;
+  color: #3572EF;
   font-weight: 700;
 }
+
+h3{
+  font-size: 36px;
+  line-height: 46px;
+  font-weight: 600;
+}
+
+/* Specific styling for menu data and menu order components */
+.menu-nav .nav-link.active {
+  background-color: #3572EF !important;
+  color: #ffffff !important;
+  font-weight: 700;
+  border-right: 0px;
+}
+
+/* .nav-pills .nav-link.active {
+  background-color: #f7f7f7 ;
+  border-right: 5px solid #3572EF;
+  color: #3572EF ;
+  color: #f1f1f1 !important;
+  font-weight: 700;
+} */
+
 .nav-pills .nav-link:hover {
   background-color: #f8f9fa;
 }
@@ -286,4 +322,16 @@ body {
   .navbar-fixed {
     left: 0; /* Full width on mobile */
   }
+}
+
+/* Specific styling for MenuData and MenuOrder components only */
+.menu-component .nav-link.active {
+  background-color: #3572EF !important;
+  color: #ffffff !important;
+}
+
+/* Override for menu components only */
+.menu-component .nav-pills .nav-link.active {
+  background-color: #3572EF !important;
+  color: #ffffff !important;
 }

@@ -35,15 +35,14 @@ function App() {
       
     <Header toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} isSidebarMinimized={isSidebarMinimized}/>
       <main className="p-4 mt-5">
-        <div className="d-flex flex-wrap justify-content-between mb-4">
+        <div className="d-flex flex-wrap justify-content-between mb-2">
           <div>
-            <h4 className="fw-bolder">Sales Report</h4>
+            <h5 className="fw-bolder">Sales Report</h5>
           </div>
           <div className="text-muted">
             {timeNow}
           </div>
         </div>
-
         <SalesReportData />
       </main>
     </div>

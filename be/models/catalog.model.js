@@ -7,7 +7,7 @@ const nDate = new Date().toLocaleString('en-US', {
 
 // catalog crud 
 async function getAllCatalog() {
-  const res = await pool.query('SELECT * FROM catalog  WHERE is_deleted = false');
+  const res = await pool.query('SELECT * FROM catalog  WHERE is_deleted = false ORDER BY category DESC');
   return res.rows;
 };
 

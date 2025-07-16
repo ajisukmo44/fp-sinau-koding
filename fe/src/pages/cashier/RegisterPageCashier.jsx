@@ -4,6 +4,8 @@ import '../../assets/login.css'; // Custom styles if needed
 import logo from '../../assets/logo.png';
 import { Link, useNavigate } from 'react-router-dom';
 import { login } from '../../api/auth';
+import eyeSlash from '../../assets/icon/eye-slash.png';
+import eye from '../../assets/icon/eye.png';
 
 function Register() {
   const [username, setUsername] = useState('');
@@ -94,7 +96,7 @@ function Register() {
                 className="btn position-absolute end-0 top-50 translate-middle-y border-0 bg-transparent"
                 onClick={() => setShowPassword(!showPassword)}
               >
-                {showPassword ? '👁️' : '👁️‍🗨️'}
+                 {showPassword ? <img src={eyeSlash} alt="icon" /> : <img src={eye} alt="icon" style={{width: '18px', height: '18px'}}/>}
               </button>
             </div>
 
@@ -115,7 +117,7 @@ function Register() {
                 className="btn position-absolute end-0 top-50 translate-middle-y border-0 bg-transparent"
                 onClick={() => setShowPasswordConfirm(!showPasswordConfirm)}
               >
-                {showPassword ? '👁️' : '👁️‍🗨️'}
+                {showPassword ? <img src={eyeSlash} alt="icon" /> : <img src={eye} alt="icon" style={{width: '18px', height: '18px'}}/>}
               </button>
             </div>
             {errors.password && <div className="invalid-feedback d-block">{errors.password}</div>}
@@ -124,7 +126,7 @@ function Register() {
           <button type="submit" className="btn btn-primary w-100">Register</button>
         </form>
         <div className='text-center mt-2'>
-         <span className='text-muted'> Already have an account?</span> <Link to="/cashier/login">Login</Link>
+         <small className='text-muted me-2'> Already have an account? <Link to="/cashier/login">Login</Link></small>
         </div>
       </div>
     </div>

@@ -36,8 +36,9 @@ const SummaryData = ({ icon, title, value }) => {
         >
           <Card.Body className='p-0'>
             <div className="row align-items-top">
-             <div className="col-12 text-muted text-start mb-1" >{title}</div>
-              <div className="col-12 text-secondary me-3 mt-1"><span><img src={icon} alt="Logo" style={{ width: '26px', height: '26px', objectFit: 'contain' }} /></span> <span className='text-secondary h5 ms-2'><b className='my-4'>{value}</b></span></div>
+             <div className="col-12  text-start mb-1" style={{ fontWeight: 500 }}>{title}</div>
+              <div className="col-12 text-secondary me-3 mt-1 align-content-center"><span><img src={icon} alt="Logo" style={{ width: '28px', height: '28px', }} /></span>
+                <span className='text-secondary h5 ms-2 pb-8 mt-2'><b className='my-4'>{value}</b></span></div>
             </div>
           </Card.Body>
         </Card>
@@ -48,14 +49,14 @@ const SummaryData = ({ icon, title, value }) => {
           <Modal.Title>{title}</Modal.Title>
         </Modal.Header> */}
         <Modal.Body>
-          <div className="row mb-4 p-2">
-            <div className="col-6">
-             <h4><b>{title}</b></h4>
+          <div className="row mb-4 p-0">
+            <div className="col-6 mt-2">
+             <h5 className='ml-2'><b>{title}</b></h5>
             </div>
             <div className="col-6">
             <div className='text-end'>
-            <button className='bordered' onClick={handleClose}>X</button>
-          </div>
+              <button className='bordered mt-0 p-1 px-3' onClick={handleClose}>X</button>
+            </div>
             </div>
           </div>
           <div className='p-2'>

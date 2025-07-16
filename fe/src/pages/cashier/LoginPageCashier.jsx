@@ -4,6 +4,8 @@ import '../../assets/login.css'; // Custom styles if needed
 import logo from '../../assets/logo.png';
 import { Link, useNavigate } from 'react-router-dom';
 import { loginCashier } from '../../api/auth';
+import eyeSlash from '../../assets/icon/eye-slash.png';
+import eye from '../../assets/icon/eye.png';
 
 function Login() {
   const [username, setUsername] = useState('');
@@ -63,7 +65,6 @@ function Login() {
           <div className="mb-3">
             <label htmlFor="password" className="form-label d-flex justify-content-between">
               <span>Password</span>
-              <a href="#" className="small">Forgot Password?</a>
             </label>
             <div className="position-relative">
               <input 
@@ -79,8 +80,11 @@ function Login() {
                 className="btn position-absolute end-0 top-50 translate-middle-y border-0 bg-transparent"
                 onClick={() => setShowPassword(!showPassword)}
               >
-                {showPassword ? '👁️' : '👁️‍🗨️'}
+                {showPassword ? <img src={eyeSlash} alt="icon" /> : <img src={eye} alt="icon" style={{width: '18px', height: '18px'}}/>}
               </button>
+            </div>
+            <div className='text-end'>
+              <small className="text-muted" style={{ fontSize: '11px' }}>Forgot Password?</small>
             </div>
             {errors.password && <div className="invalid-feedback d-block">{errors.password}</div>}
           </div>
@@ -88,7 +92,7 @@ function Login() {
           <button type="submit" className="btn btn-primary w-100">Login</button>
         </form>
         <div className='text-center mt-2'>
-         <span className='text-muted'> Don’t have an account?</span> <Link to="/cashier/register">Register</Link>
+         <small className='text-muted me-2'> Don’t have an account?</small><small><Link to="/cashier/register">Register</Link></small>
         </div>
       </div>
     </div>

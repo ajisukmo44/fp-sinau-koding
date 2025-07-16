@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../assets/login.css'; // Custom styles if needed
 import logo from '../../assets/logo.png';
+import eyeSlash from '../../assets/icon/eye-slash.png';
+import eye from '../../assets/icon/eye.png';
 import { Link, useNavigate } from 'react-router-dom';
 import { login } from '../../api/auth';
 
@@ -67,7 +69,6 @@ function Login() {
           <div className="mb-3">
             <label htmlFor="password" className="form-label d-flex justify-content-between">
               <span>Password</span>
-              <a href="#" className="small">Forgot Password?</a>
             </label>
             <div className="position-relative">
               <input 
@@ -83,8 +84,11 @@ function Login() {
                 className="btn position-absolute end-0 top-50 translate-middle-y border-0 bg-transparent"
                 onClick={() => setShowPassword(!showPassword)}
               >
-                {showPassword ? '👁️' : '👁️‍🗨️'}
+                {showPassword ? <img src={eyeSlash} alt="icon" /> : <img src={eye} alt="icon" style={{width: '18px', height: '18px'}}/>}
               </button>
+            </div>
+            <div className='text-end'>
+              <small className="text-muted" style={{ fontSize: '11px' }}>Forgot Password?</small>
             </div>
             {errors.password && <div className="invalid-feedback d-block">{errors.password}</div>}
           </div>

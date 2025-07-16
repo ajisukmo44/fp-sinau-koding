@@ -211,7 +211,7 @@ const formatRupiah = (number) => {
           <div className='text-start'>
             <div className="row">
               <div className="col-8">
-              <Nav variant="pills" defaultActiveKey="all">
+              <Nav variant="pills" defaultActiveKey="all" className="menu-component">
               <Nav.Item className='border rounded me-2'>
                 <Nav.Link 
                   eventKey="all" 
