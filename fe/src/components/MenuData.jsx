@@ -285,7 +285,7 @@ const MenuApp = () => {
                         <div className="col-4 mt-3 text-end">
                            <small> <span className="badge bg-primary pe-2">{item.category}</span></small>
                         </div>
-                    </div>
+                      </div>
                     </Card.Body>
                   </Card>
                 </Col>

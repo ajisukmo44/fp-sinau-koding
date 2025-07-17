@@ -13,7 +13,7 @@ import MasterCatalogPage from './pages/admin/MasterCatalogPage';
 // cashier 
 import LoginPageCashier from './pages/cashier/LoginPageCashier';
 import RegisterPageCashier from './pages/cashier/RegisterPageCashier';
-import ResetPasswordPageCashier from './pages/cashier/ResetPasswordPageCashier';
+import ResetPasswordCashier from './pages/cashier/ResetPasswordCashier';
 import MenuOrderCashier from './pages/cashier/MenuOrderCashier';
 import SettingsPageCashier from './pages/cashier/SettingsPageCashier';
 import SalesReportPageCashier from './pages/cashier/SalesReportPageCashier';
@@ -49,8 +49,8 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Navigate to="/admin" replace />} />
         <Route path="/" element={<Navigate to="/admin/login" replace />} />
+        <Route path="/admin" element={<Navigate to="/admin/login" replace />} />
         {/* admin */}
         <Route path="/admin/login" element={<LoginRedirect><LoginPage /></LoginRedirect>} />
         <Route path="/admin/dashboard-admin" element={<RoleProtectedRoute allowedRoles={['admin']}><DashboardAdmin /></RoleProtectedRoute>} />
@@ -62,7 +62,7 @@ function App() {
         <Route path="/cashier" element={<Navigate to="/cashier/login" replace />} />
         <Route path="/cashier/login" element={<LoginRedirect><LoginPageCashier /></LoginRedirect>} />
         <Route path="/cashier/register" element={<RegisterPageCashier />} />
-        <Route path="/cashier/reset-password" element={<ResetPasswordPageCashier />} />
+        <Route path="/cashier/reset-password" element={<ResetPasswordCashier />} />
         {/* <Route path="/dashboard-admin" element={<ProtectedRoute><DashboardAdmin /></ProtectedRoute>} /> */}
         <Route path="/cashier/menu-order" element={<RoleProtectedRoute allowedRoles={['cashier']}><MenuOrderCashier /></RoleProtectedRoute>} />
         <Route path="/cashier/report-sales" element={<RoleProtectedRoute allowedRoles={['cashier']}><SalesReportPageCashier /></RoleProtectedRoute>} />

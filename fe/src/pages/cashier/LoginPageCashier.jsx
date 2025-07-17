@@ -47,7 +47,7 @@ function Login() {
         <div className="text-center mb-4">
           <img src={logo} alt="Logo" style={{ width: '150px', height: '60px', objectFit: 'contain' }} />
         </div>
-        <h4 className="text-center mb-3">Welcome Back!</h4>
+        <h3 className="text-center mb-3">Welcome Back!</h3>
         <div className="text-center text-muted"><small>Please enter your username and password here!</small></div>
         <form onSubmit={handleLogin}>
           <div className="mb-3 mt-5">
@@ -84,7 +84,7 @@ function Login() {
               </button>
             </div>
             <div className='text-end'>
-              <small className="text-muted" style={{ fontSize: '11px' }}>Forgot Password?</small>
+              <small className="text-muted" style={{ fontSize: '11px' }}><Link to="/cashier/reset-password" style={{textDecoration: 'none', color: '#C4C4C4'}}>Forgot Password?</Link></small>
             </div>
             {errors.password && <div className="invalid-feedback d-block">{errors.password}</div>}
           </div>

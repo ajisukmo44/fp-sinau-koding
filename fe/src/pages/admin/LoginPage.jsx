@@ -51,7 +51,7 @@ function Login() {
         <div className="text-center mb-4">
           <img src={logo} alt="Logo" style={{ width: '150px', height: '60px', objectFit: 'contain' }} />
         </div>
-        <h4 className="text-center mb-3">Welcome Back!</h4>
+        <h3 className="text-center mb-3">Welcome Back!</h3>
          <div className="text-center text-muted"><small>Please enter your username and password here!</small></div>
         <form onSubmit={handleLogin}>
           <div className="mb-3 mt-5">
