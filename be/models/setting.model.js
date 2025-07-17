@@ -10,11 +10,11 @@ const Setting = sequelize.define('Setting', {
     type: DataTypes.STRING,
     allowNull: false,
   },
-}, 
-{
-  tableName: 'setting',
-  timestamps: false,
-});
+},
+  {
+    tableName: 'setting',
+    timestamps: false,
+  });
 
 // CRUD DATA SETTING
 async function getSetting() {
@@ -29,16 +29,16 @@ async function addSetting(data) {
   return setting.get();
 };
 
-async function getSettingById (id) {
+async function getSettingById(id) {
   const setting = await Setting.findByPk(id);
   return setting ? setting.get() : null;
 };
 
-async function deleteSetting(id){
+async function deleteSetting(id) {
   const setting = await Setting.findByPk(id);
   if (!setting) return false;
   await setting.destroy();
   return true;
 };
 
-module.exports = { getSetting, addSetting, deleteSetting, getSettingById};
+module.exports = { getSetting, addSetting, deleteSetting, getSettingById };

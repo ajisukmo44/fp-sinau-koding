@@ -34,14 +34,13 @@ const Sidebar = ({ isOpen, minimized, onToggleMinimize }) => {
             src={minimized ? logoMin : logo}
             alt="Logo"
             style={{ width: minimized ? '40px' : '120px', height: '40px', objectFit: 'contain', transition: 'width 0.2s' }}
-            onClick={onToggleMinimize}
             className='me-2'
           />
            { !minimized ? ( <img
               src={arrowLeft}
               alt="Logo"
               style={{ width: minimized ? '32px' : '32px', height: '32px', objectFit: 'contain', transition: 'width 0.2s', cursor: 'pointer' }}
-            onClick={onToggleMinimize}
+              onClick={onToggleMinimize}
              className='me-2'
             />) : ('') }
         </Navbar.Brand>

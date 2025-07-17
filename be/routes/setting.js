@@ -10,7 +10,7 @@ router.use((req, res, next) => {
   next();
 });
 
-// Get all catalogs
+// Crud setting application
 router.get("/", authenticateToken, settingController.getSetting);
 // router.get("/:id", authenticateToken, settingController.getsettingDetail);
 router.post("/", authenticateToken, settingController.addSettings);

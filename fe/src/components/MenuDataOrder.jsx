@@ -1,15 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Nav, Form, Button, Modal, InputGroup } from 'react-bootstrap';
-import axios from 'axios';
-import Swal from 'sweetalert2';
 import foods from '../assets/icon/reserve1.png'
 import beverages from '../assets/icon/coffe1.png'
 import desserts from '../assets/icon/cake1.png'
-import deleted from '../assets/icon/deleted.png';
-import tickCircle from '../assets/icon/tick-circle.png';
-import add from '../assets/icon/add.png';
-import edit from '../assets/icon/edit.png';
-import deletedd from '../assets/icon/deletedd.png';
+import edit2 from '../assets/icon/edit-2.png'
 import logo from '../assets/logo.png';
 import api from '../api';
 import urlImage from '../api/baseUrl';
@@ -162,6 +156,12 @@ const formatRupiah = (number) => {
     }
   };
 
+  const [selected, setSelected] = useState('');
+  const handleButtonClick = (value) => {
+    setSelected(value);
+    setPaymentAmount(value);
+  };
+
   const printInvoice = async () => {
     const element = document.getElementById('printPDF');
     const canvas = await html2canvas(element, {
@@ -268,7 +268,7 @@ const formatRupiah = (number) => {
                       <div className="row">
                         <div className="col-12 text-muted">
                           <h5><b>{item.name} </b></h5>
-                          <small>{item?.description.slice(0, 65)} {item.description.length > 65 ? '...' : ''}</small>
+                          <small>{item?.description.slice(0, 60)} {item.description.length > 60 ? '...' : ''}</small>
                         </div>
                         <div className="col-8 mt-3 align-content-bottom">
                          <b>{formatRupiah(item.price)}</b><small className='text-muted'>/Portion</small>
@@ -287,7 +287,7 @@ const formatRupiah = (number) => {
 
         {/* Right Panel - Detail Menu */}
         <Col md={4} className='mt-4 pt-1'>
-          <Card>
+          <Card style={{minHeight: '700px'}}>
             <h5><strong>List Order</strong></h5>
             {/* <small>No Order <strong>ORDR#1234567890</strong></small> */}
             <div className="d-flex mt-3 mb-2">
@@ -308,41 +308,40 @@ const formatRupiah = (number) => {
             </div>
 
             <Form.Group className="mb-3">
-              <hr />
-              <div className="row mt-2">
+              <div className="row mt-3">
                 <div className={orderType === 'take_away' ? 'col-12' : 'col-6'}>
                   <Form.Label>Customer Name</Form.Label>
                   <Form.Control 
-                    placeholder="Enter name" 
+                    placeholder="Customer name" 
                     value={customerName}
                     onChange={(e) => setCustomerName(e.target.value)}
                   />
                 </div>
                 {orderType === 'dine_in' && (
-                  <div className="col-6">
-                    <Form.Label>Nomer Table</Form.Label>
-                    <Form.Select 
-                      style={{width: '180px'}}
-                      value={tableNumber}
-                      onChange={(e) => setTableNumber(e.target.value)}
-                    >
-                      <option value="">Select Table</option>
-                      <option value="01">01</option>
-                      <option value="02">02</option>
-                      <option value="03">03</option>
-                      <option value="04">04</option>
-                      <option value="05">05</option>
-                      <option value="06">06</option>
-                      <option value="07">07</option>
-                      <option value="08">08</option>
-                      <option value="09">09</option>
-                      <option value="10">10</option>
-                      <option value="11">11</option>
-                      <option value="12">12</option>
-                    </Form.Select>
-                  </div>
+                <div className={orderType === 'take_away' ? '' : 'col-6'}>
+                  <Form.Label>Nomer Table</Form.Label>
+                  <Form.Select 
+                    value={tableNumber}
+                    onChange={(e) => setTableNumber(e.target.value)}
+                  >
+                    <option value="">Select Table</option>
+                    <option value="01">01</option>
+                    <option value="02">02</option>
+                    <option value="03">03</option>
+                    <option value="04">04</option>
+                    <option value="05">05</option>
+                    <option value="06">06</option>
+                    <option value="07">07</option>
+                    <option value="08">08</option>
+                    <option value="09">09</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                  </Form.Select>
+                </div>
                 )}
               </div>
+               <hr />
             </Form.Group>
 
             {/* Order Items */}
@@ -358,17 +357,24 @@ const formatRupiah = (number) => {
                       <img
                         src={urlImage + '/catalogs/' + item.image}
                         alt={item.name}
-                        style={{ width: 80, height: 80, borderRadius: 8, objectFit: 'cover' }}
+                        style={{ width: '100%', height: 80, borderRadius: 8, objectFit: 'cover' }}
                       />
                     </div>
                     <div className="col-6">
                       <div><strong>{item.name}</strong></div>
                       <div className="text-muted">{formatRupiah(item.price)}</div>
+                       <Button 
+                          size="sm" 
+                          variant="light"
+                          className='p-1 ps-2'
+                        >
+                         <img src={edit2} alt="Logo" className='me-2 pb-1' style={{ width: '18px', height: '18px', objectFit: 'contain' }} />
+                        </Button>
                     </div>
                     <div className="col-3 text-end">
                       <Button 
                         variant="link" 
-                        className="text-danger ms-auto mb-2"
+                        className="text-danger ms-auto mb-2 rounded border"
                         onClick={() => removeFromOrder(item.id)}
                       >
                         <Trash />
@@ -377,6 +383,7 @@ const formatRupiah = (number) => {
                         <Button 
                           size="sm" 
                           variant="outline-secondary"
+                          style={{borderRadius:'50%'}}
                           onClick={() => updateQuantity(item.id, item.quantity - 1)}
                         >
                           <Dash />
@@ -384,7 +391,8 @@ const formatRupiah = (number) => {
                         <span className="mx-2">{item.quantity}</span>
                         <Button 
                           size="sm" 
-                          variant="outline-secondary"
+                          variant="outline-primary"
+                          style={{borderRadius:'50%'}}
                           onClick={() => updateQuantity(item.id, item.quantity + 1)}
                         >
                           <Plus />
@@ -398,31 +406,55 @@ const formatRupiah = (number) => {
 
 
             {/* Summary */}
-            <div className="mt-4 pt-2">
-              <div className="d-flex justify-content-between">
-                <div>Sub Total</div>
-                <div>{formatRupiah(orderList.reduce((sum, item) => sum + (item.price * item.quantity), 0))}</div>
+            {orderList.length === 0 ? ('') : (
+              <div className="mt-2">
+                <div className='bg-invoice p-3'>
+                    <div className="d-flex justify-content-between pt-2">
+                      <div>Sub Total</div>
+                      <div>{formatRupiah(orderList.reduce((sum, item) => sum + (item.price * item.quantity), 0))}</div>
+                    </div>
+                    <div className="d-flex justify-content-between">
+                    <div>Tax (10%)</div>
+                      <div>{formatRupiah(orderList.reduce((sum, item) => sum + (item.price * item.quantity), 0) * 0.1)}</div>
+                    </div>
+                    <hr />
+                    <div className="d-flex justify-content-between fw-bold fs-5 mt-2">
+                      <div>Total</div>
+                      <div>{formatRupiah(orderList.reduce((sum, item) => sum + (item.price * item.quantity), 0) * 1.1)}</div>
+                    </div>
+                  </div>
+                  <div className='mt-2 mb-2'>
+                    <small className='mt-4 mb-2' htmlFor="sn">Select Nominal</small>
+                    <div className="d-flex gap-2 px-1 mb-3">
+                    {[50000, 75000, 100000, 200000].map((amount) => (
+                        <div className="">
+                          <button
+                            size="sm"
+                            key={amount}
+                            className={`btn btn-outline-secondary ${selected === amount ? 'active' : ''}`}
+                            onClick={() => handleButtonClick(amount)}
+                          >
+                            {formatRupiah(amount)}
+                          </button>
+                        </div>
+                        ))}
+                    </div>
+                    <div className="row mt-3 px-3">
+                      {/* <label className='ml-0 mb-1'>Enter Nominal</label> */}
+                        <Form.Control
+                          className='input-payment'
+                          placeholder="Enter nominal" 
+                          value={paymentAmount}
+                          onChange={(e) => setPaymentAmount(Number(e.target.value))}
+                          type='number'
+                        />
+                    </div>
+                  </div>
               </div>
-              <div className="d-flex justify-content-between">
-                <div>Tax (10%)</div>
-                <div>{formatRupiah(orderList.reduce((sum, item) => sum + (item.price * item.quantity), 0) * 0.1)}</div>
-              </div>
-              <div className="d-flex justify-content-between fw-bold fs-5 mt-2">
-                <div>Total</div>
-                <div>{formatRupiah(orderList.reduce((sum, item) => sum + (item.price * item.quantity), 0) * 1.1)}</div>
-              </div>
-              <hr />
-              <div className="row mt-3 px-3">
-                 <label className='ml-0 mb-1'>Masukan Nominal</label>
-                  <Form.Control 
-                    placeholder="Enter nominal" 
-                    value={paymentAmount}
-                    onChange={(e) => setPaymentAmount(Number(e.target.value))}
-                    type='number'
-                  />
-              </div>
+            )}     
+            <div className='d-flex flex-column mt-auto'>
               <Button 
-                variant="primary" 
+                variant={(orderList.length === 0 || paying || !customerName || paymentAmount < orderList.reduce((sum, item) => sum + (item.price * item.quantity), 0) * 1.1) ? 'secondary' : 'primary' }
                 className="w-100 mt-3"
                 disabled={orderList.length === 0 || paying || !customerName || paymentAmount < orderList.reduce((sum, item) => sum + (item.price * item.quantity), 0) * 1.1}
                 onClick={handlePay}
@@ -442,12 +474,12 @@ const formatRupiah = (number) => {
             <button className='bordered'  onClick={() => setShowInvoiceModal(false)}>X</button>
           </div>
           <div className="text-center pt-1 mt-2 mb-4 anyclass" data-html2canvas-ignore="true">
-            <h3><b>Transaction Success</b></h3>
+            <h4><b>Transaction Success</b></h4>
           </div>
           <div id='printPDF'>
           <div className="rounded m-3 p-4 bg-white mb-4">
               <div className="text-center pt-1 mt-0 mb-4">
-                <img src={logo} alt="Logo" className='me-2 pb-1 img-invoice' style={{ width: '125px', height: '45px', }} />
+                <img src={logo} alt="Logo" className='me-2 pb-1' style={{ width: '125px', height: '45px', }} />
               </div>
               <span><small className='text-muted'>No Order : </small><small>{invoiceData?.order_number }</small></span> <br />
               <span><small className='text-muted'>Order Date :  </small><small>{moment(invoiceData?.created_at).locale("id").format('dddd, DD/MM/YYYY, hh:mm')}</small></span><br />
@@ -458,8 +490,8 @@ const formatRupiah = (number) => {
                   {dataDetailItem?.map((item, index) => (
                     <div className="row mb-2" key={index}>
                       <div className="col-8">
-                        <b>{item.name}</b> <br />
-                        <small>{item.quantity} x {formatRupiah(item.price)} </small>
+                        <small><b>{item.name}</b></small> <br />
+                        <small className='text-muted'>{item.quantity} x {formatRupiah(item.price)} </small>
                       </div>
                       <div className="col-4 text-end">
                         <small><b>{formatRupiah(item.subtotal)}</b></small>

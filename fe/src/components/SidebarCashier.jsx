@@ -29,11 +29,10 @@ const Sidebar = ({ isOpen, minimized, onToggleMinimize }) => {
         <div className="d-flex flex-column h-100 align-items-center px-0 py-3 mx-0 ps-1">
             
        <Navbar.Brand className={`d-flex mb-2 text-dark text-decoration-none w-100 ${minimized ? 'justify-content-center' : 'justify-content-between'}`}>
-        <img
+            <img
               src={minimized ? logoMin : logo}
               alt="Logo"
               style={{ width: minimized ? '40px' : '120px', height: '40px', objectFit: 'contain', transition: 'width 0.2s' }}
-              onClick={onToggleMinimize}
               className='me-2'
             />
             { !minimized ? ( <img

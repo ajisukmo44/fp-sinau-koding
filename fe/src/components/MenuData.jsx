@@ -277,7 +277,7 @@ const MenuApp = () => {
                       <div className="row">
                         <div className="col-12 text-muted">
                           <h5><b>{item.name} </b></h5>
-                          <small>{item?.description.slice(0, 65)} {item.description.length > 65 ? '...' : ''}</small>
+                          <small>{item?.description.slice(0, 60)} {item.description.length > 60 ? '...' : ''}</small>
                         </div>
                         <div className="col-8 mt-3 align-content-bottom">
                          <b>{formatRupiah(item.price)}</b><small className='text-muted'>/Portion</small>
@@ -565,7 +565,7 @@ const MenuApp = () => {
       <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} centered>
         <Modal.Body className='text-center'>
           <img src={deleted} alt="Logo" className='me-2 mb-4 mt-5' style={{ width: '80px', height: '80px' }} /> 
-          <h3 style={{ fontWeight: '600' }}>Are you sure want to delete <br /> this file?</h3>
+          <h4 style={{ fontWeight: '600' }}>Are you sure want to delete <br /> this file?</h4>
           <div className="text-center mb-5 mt-5">
             <Button variant="outline-secondary" onClick={() => setShowDeleteModal(false)} className='me-3 px-5'>
               Cancel

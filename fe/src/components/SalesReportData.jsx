@@ -15,8 +15,13 @@ function SalesReportData() {
   const [filters, setFilters] = useState({
     startDate: '',
     endDate: '',
-    category: '',
-    orderType: ''
+    transaction_type: ''
+  });
+  const [pagination, setPagination] = useState({
+    page: 1,
+    pageSize: 1,
+    total: 0,
+    totalPages: 1,
   });
 
 const formatRupiah = (number) => {
@@ -39,15 +44,24 @@ const formatRupiah = (number) => {
     return moment(date).format('YYYY-MM-DD');
   };
 
-  const fetchSalesReport = async () => {
+  const fetchSalesReport = async (page = pagination.page, pageSize = pagination.pageSize) => {
     // console.log('mulaiii');
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
       const response = await api.get('/admin/sales-report', {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
+        params: {
+          ...filters,
+          limit: pageSize,
+          page: page,
+        }
       });
       setOrders(response.data.data);
+      setPagination({
+        ...pagination,
+        ...response.data.pagination, // update with backend response
+      });
     } catch (error) {
       console.error('Error fetching sales report:', error);
     } finally {
@@ -69,18 +83,54 @@ const formatRupiah = (number) => {
       } catch (error) {
         console.error('Error fetching summary data:', error);
       }
+  }
+
+  const exportDataExcel = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await api.get('/export/excel', {
+        headers: { Authorization: `Bearer ${token}` },
+        responseType: 'blob', // Important for file downloads!
+         params: filters
+      });
+
+      // Create a URL for the blob
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      // Create a link and trigger download
+      const link = document.createElement('a');
+      link.href = url;
+      // You can set a default filename here
+      link.setAttribute('download', 'sales-report.xlsx');
+      document.body.appendChild(link);
+      link.click();
+      // Clean up
+      link.parentNode.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error exporting Excel:', error);
     }
+  };
 
   useEffect(() => {
-    fetchSalesReport();
-  }, []);
+    fetchSalesReport(pagination.page, pagination.pageSize);
+    // eslint-disable-next-line
+  }, [pagination.page, pagination.pageSize]);
 
   const handleFilterChange = (field, value) => {
     setFilters(prev => ({ ...prev, [field]: value }));
   };
 
   const handleSearch = () => {
-    fetchSalesReport();
+    fetchSalesReport(1, pagination.pageSize);
+  };
+
+  const handlePageChange = (newPage) => {
+    fetchSalesReport(newPage, pagination.pageSize);
+  };
+
+  const handlePageSizeChange = (e) => {
+    const newSize = Number(e.target.value);
+    fetchSalesReport(1, newSize); // Reset to page 1 when page size changes
   };
 
   return (
@@ -109,26 +159,15 @@ const formatRupiah = (number) => {
               />
             </InputGroup>
           </Col>
-          {/* <Col md={2}>
-            <Form.Label>Category</Form.Label>
-            <Form.Select 
-              value={filters.category}
-              onChange={(e) => handleFilterChange('category', e.target.value)}
-            >
-              <option value="">Select category</option>
-              <option value="Foods">Foods</option>
-              <option value="Drinks">Drinks</option>
-            </Form.Select>
-          </Col> */}
           <Col md={3}>
             <Form.Label>Order Type</Form.Label>
             <Form.Select 
-              value={filters.orderType}
-              onChange={(e) => handleFilterChange('orderType', e.target.value)}
+              value={filters.transaction_type}
+              onChange={(e) => handleFilterChange('transaction_type', e.target.value)}
             >
               <option value="">Select order type</option>
-              <option value="Dine-in">Dine-in</option>
-              <option value="Takeaway">Takeaway</option>
+              <option value="dine_in">Dine-in</option>
+              <option value="take_away">Takeaway</option>
             </Form.Select>
           </Col>
           <Col md={3} className='text-end'>
@@ -139,7 +178,7 @@ const formatRupiah = (number) => {
           >
             {loading ? 'Loading...' : 'Search'}
           </Button>
-          <Button variant="white" className='p-0'>
+          <Button variant="white" className='p-0' onClick={exportDataExcel}>
              <img src={download} alt="Logo" className='me-0 pb-0' style={{ width: '38px', height: '38px'}} />
           </Button>
           </Col>
@@ -186,21 +225,41 @@ const formatRupiah = (number) => {
         </tbody>
       </table>
 
+      <hr />
+
       {/* Pagination */}
-      {/* <div className="d-flex justify-content-between align-items-center">
-        <Form.Select style={{ width: 'auto' }}>
-          <option>Show: 10</option>
-          <option>Show: 20</option>
-          <option>Show: 50</option>
-        </Form.Select>
-        <Pagination>
-          <Pagination.Prev />
-          <Pagination.Item active>1</Pagination.Item>
-          <Pagination.Item>2</Pagination.Item>
-          <Pagination.Item>3</Pagination.Item>
-          <Pagination.Next />
-        </Pagination>
-      </div> */}
+      <div className="d-flex justify-content-between align-items-center mt-3">
+          <Form.Select
+            style={{ width: 'auto', display: 'inline-block', marginRight: '10px' }}
+            value={pagination.pageSize}
+            onChange={handlePageSizeChange}
+          >
+            <option value={5}>5</option>
+            <option value={10}>10</option>
+            <option value={20}>20</option>
+          </Form.Select>
+          <nav aria-label="Page navigation example">
+            <ul className="pagination pagination-sm">
+              <li className={`page-item ${pagination.page === 1 ? 'disabled' : ''}`}>
+                <button className="page-link" onClick={() => handlePageChange(pagination.page - 1)} aria-label="Previous">
+                  <span aria-hidden="true">&laquo;</span>
+                </button>
+              </li>
+              {[...Array(pagination.totalPages)].map((_, idx) => (
+                <li key={idx} className={`page-item ${pagination.page === idx + 1 ? 'active' : ''}`}>
+                  <button className="page-link" onClick={() => handlePageChange(idx + 1)}>
+                    {idx + 1}
+                  </button>
+                </li>
+              ))}
+              <li className={`page-item ${pagination.page === pagination.totalPages ? 'disabled' : ''}`}>
+                <button className="page-link" onClick={() => handlePageChange(pagination.page + 1)} aria-label="Next">
+                  <span aria-hidden="true">&raquo;</span>
+                </button>
+              </li>
+            </ul>
+          </nav>
+      </div>
 
       <Modal show={showModal} onHide={handleClose}>
         {/* <Modal.Header closeButton>

@@ -58,6 +58,9 @@ exports.getTransactionDetail = async (req, res, next) => {
 
 exports.addTransactions = async (req, res, next) => {
   const token = req.headers.authorization?.split(' ')[1];
+  const dateNow = new Date().toLocaleString('en-US', {
+    timeZone: 'Asia/Jakarta'
+  });
   try {
    const last_id = await pool.query('SELECT * FROM transaction_group ORDER BY id DESC');
    let idtrx = 0;
@@ -73,6 +76,7 @@ exports.addTransactions = async (req, res, next) => {
      tax: req.body.tax,
      cash: req.body.cash,
      cashback: req.body.cashback,
+     created_at : dateNow,
      items: req.body.items,
    };
  
@@ -86,7 +90,8 @@ exports.addTransactions = async (req, res, next) => {
         "catalog_id": val.catalog_id,
         "quantity" : val.quantity,
         "note": val.note,
-        "subtotal": val.subtotal
+        "subtotal": val.subtotal,
+        "created_at" : dateNow,
       };
       return addTransactionItemRun(newTransactionItem);  
     });
@@ -102,7 +107,6 @@ exports.addTransactions = async (req, res, next) => {
      status: "success",
    };
 
-  //  res.json({data: 'ok', success: true});
    res.writeHead(200, { "Content-Type": "application/json" });
    res.write(JSON.stringify(output));
   } catch (err) {
@@ -140,28 +144,6 @@ exports.deleteTransaction =  async (req, res, next) => {
 };
 
 exports.updateTransactionData = async (req, res) => {
-  // const id = req.params.id;
-  // let body = req.body || "";
-
-  // try {
-  //   const updateData = body;
-  //   await updateTransaction(id, updateData);
-  //   const output = {
-  //     message: "Transaction updated successfully",
-  //     data: updateData,
-  //     status: "success",
-  //   };
-  //   res.writeHead(200, { "Content-Type": "application/json" });
-  //   res.write(JSON.stringify(output));
-
-  //  } catch (err) {
-  //   console.error("Error creating Transaction:", err);
-  //   res.status(500).json({
-  //     message: err.message || "Failed to create Transaction item",
-  //     success: false
-  //   });
-  // }
-  
-  // res.end();
+ //
 };
 

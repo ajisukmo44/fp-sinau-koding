@@ -3,6 +3,7 @@ import { Navbar, Form, Image, Button, Modal, Card, InputGroup, Row, Col } from '
 import { FiMenu, FiSearch } from './Icon';
 import logout from '../assets/icon/logout.png';
 import archive from '../assets/icon/archive-add.png';
+import arrowRight from '../assets/icon/arrow-right.png'
 import { useLocation, useNavigate } from 'react-router-dom';
 import urlImage from '../api/baseUrl';
 import moment from 'moment';
@@ -50,6 +51,14 @@ const Header = ({ toggleSidebar, isSidebarOpen, isSidebarMinimized }) => {
     localStorage.clear();
     navigate('/cashier/login');
   };
+  
+  const formatRupiah = (number) => {
+  return new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    minimumFractionDigits: 0,
+  }).format(number);
+};
 
   const handleArchive = () => {
     console.log('archivee');
@@ -88,7 +97,7 @@ const Header = ({ toggleSidebar, isSidebarOpen, isSidebarMinimized }) => {
       </Navbar>
 
       {/* Archive Modal */}
-      <Modal show={showArchiveModal} onHide={() => setShowArchiveModal(false)}   size="lg" rounded>
+      <Modal show={showArchiveModal} onHide={() => setShowArchiveModal(false)}   size="lg">
         <Modal.Body className='bg-light pt-0'>
           <div className="row bg-white py-2 pt-3">
             <div className="col-10">
@@ -115,30 +124,21 @@ const Header = ({ toggleSidebar, isSidebarOpen, isSidebarMinimized }) => {
           </Row>
           <div style={{ maxHeight: '80vh', overflowY: 'auto', left:0 }} className='p-3 bg-light'>
             {orders.map((order, index) => (
-              <Card key={index} className="mb-2 px-2">
-                <Card.Body className='p-0 px-3'>
-                  <Row className='p-0'>
-                    <Col md={8}>
-                      <small className='text-muted'>No Order {order.order_number}</small> | {order.transaction_type} | {order.customer_name ?? '..'} <span> | {order.table_number}</span><br />
-                      <b>Rp {order.subtotal_group}</b>
-                    </Col>
-                    <Col md={4} className="text-end">
-                      <div className="text-muted small">{order.created_at}</div>
-                      <Button variant="outline-primary" size="xs" className="mt-2">
-                        View
-                      </Button>
-                    </Col>
-                  </Row>
-                </Card.Body>
+              <Card key={index} className="mb-2 p-2">
+                <Row className='p-2'>
+                  <Col md={8} className='pt-0'>
+                    <small className='text-muted'>No Order {order.order_number} | {order.transaction_type == 'dine_in' ? 'Dine-in' : 'Take Away' } | {order.customer_name ?? '..'}  {!order.table_number ? ('') : (<span> | {order.table_number} </span>)}</small> <br />
+                    <b>{formatRupiah(order.subtotal_group)}</b>
+                  </Col>
+                  <Col md={4} className="text-end">
+                    <div className="text-muted small mb-1">{moment(order.created_at).locale("id").format('dddd, DD/MM/YYYY, hh:mm')}</div>
+                    <img src={arrowRight} alt="Logo" className='' style={{ width: '26px', height: '26px' }} />
+                  </Col>
+                </Row>
               </Card>
             ))}
           </div>
         </Modal.Body>
-        {/* <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowArchiveModal(false)}>
-            Close
-          </Button>
-        </Modal.Footer> */}
       </Modal>
     </>
   );

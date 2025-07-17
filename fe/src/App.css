@@ -242,6 +242,16 @@ h3{
   font-weight: 600;
 }
 
+.input-payment {
+  border: 0;
+  outline: 0;
+  border-bottom: 2px solid #C4C4C4;
+  font-size: 22px;
+  font-weight: 600;
+  color: #707070;
+        
+}
+
 /* Specific styling for menu data and menu order components */
 .menu-nav .nav-link.active {
   background-color: #3572EF !important;

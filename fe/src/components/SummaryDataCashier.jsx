@@ -37,7 +37,10 @@ const SummaryData = ({ icon, title, value }) => {
           <Card.Body className='p-0'>
             <div className="row align-items-top">
              <div className="col-12 text-muted text-start mb-1" >{title}</div>
-              <div className="col-12 text-secondary me-3 mt-1"><span><img src={icon} alt="Logo" style={{ width: '26px', height: '26px', objectFit: 'contain' }} /></span> <span className='text-secondary h5 ms-2'><b className='my-4'>{value}</b></span></div>
+              <div className="col-12 text-secondary me-3 mt-1">
+                <span><img src={icon} alt="Logo" style={{ width: '28px', height: '28px', marginBottom: '6px' }} /></span>
+                <span className='text-secondary h5 ms-2 pb-8 mt-2'><b>{value}</b></span>
+              </div>
             </div>
           </Card.Body>
         </Card>

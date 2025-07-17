@@ -1,24 +1,43 @@
 // create a handler for Transaction
-const  { getSalesReport, getTransactionById, getTransactionItemByGroupId  }  = require("../../models/transaction.model.js");
+const  { getSalesReport, getSalesReportCount, getTransactionById, getTransactionItemByGroupId  }  = require("../../models/transaction.model.js");
 const Joi = require('joi');
 const { v4: uuidv4 } = require('uuid');
 const pool = require('../../config/pg.js');
 
 exports.getReportSales = async (req, res, next) => {
-    // const Transaction = await pool.query('SELECT * FROM transaction');
-    let salesReport = await getSalesReport();
+    const { startDate, endDate, transaction_type } = req.query;
+    let limit = parseInt(req.query.limit, 10) || 10;
+    let offset = parseInt(req.query.offset, 10) || 0;
+    let page = Math.floor(offset / limit) + 1;
+    let baseUrl = req.baseUrl + req.path;
     try {
-      res.writeHead(200, { "Content-Type": "application/json" });
+      const [salesReport, total] = await Promise.all([
+        getSalesReport(startDate, endDate, transaction_type, limit, offset),
+        getSalesReportCount(startDate, endDate, transaction_type)
+      ]);
+      const totalPages = Math.ceil(total / limit);
+      const makeLink = (pageNum) => {
+        const params = new URLSearchParams({ ...req.query, limit, offset: (pageNum - 1) * limit });
+        return `${baseUrl}?${params.toString()}`;
+      };
       const output = {
         message: "List of Transaction",
         data: salesReport,
+        pagination: {
+          page,
+          pageSize: limit,
+          total,
+          totalPages,
+          next: page < totalPages ? makeLink(page + 1) : null,
+          prev: page > 1 ? makeLink(page - 1) : null
+        },
         status: "success",
       };
+      res.writeHead(200, { "Content-Type": "application/json" });
       res.write(JSON.stringify(output));
       res.end();
-
     } catch (err) {
-    res.status(500).json({message: err, success: false});
+      res.status(500).json({message: err, success: false});
     }
 }
 
