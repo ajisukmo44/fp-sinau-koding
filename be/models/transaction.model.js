@@ -59,7 +59,7 @@ async function deleteTransaction(id) {
 };
 
 
-async function getSalesReport(startDate, endDate, transactionType, limit, offset) {
+async function getSalesReport(startDate, endDate, transactionType, limit, page) {
   let query = 'SELECT * FROM transaction_group WHERE 1=1';
   const params = [];
   let paramIdx = 1;
@@ -85,9 +85,10 @@ async function getSalesReport(startDate, endDate, transactionType, limit, offset
     params.push(parseInt(limit, 10));
     paramIdx++;
   }
-  if (offset) {
+  if (page && limit) {
+    const offset = (parseInt(page, 10) - 1) * parseInt(limit, 10);
     query += ` OFFSET $${paramIdx}`;
-    params.push(parseInt(offset, 10));
+    params.push(offset);
     paramIdx++;
   }
   const res = await pool.query(query, params);

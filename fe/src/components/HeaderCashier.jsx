@@ -131,7 +131,7 @@ const Header = ({ toggleSidebar, isSidebarOpen, isSidebarMinimized }) => {
                     <b>{formatRupiah(order.subtotal_group)}</b>
                   </Col>
                   <Col md={4} className="text-end">
-                    <div className="text-muted small mb-1">{moment(order.created_at).locale("id").format('dddd, DD/MM/YYYY, hh:mm')}</div>
+                    <div className="text-muted small mb-1">{moment(order.created_at).locale("id").format('dddd, DD/MM/YYYY, HH:mm:ss')}</div>
                     <img src={arrowRight} alt="Logo" className='' style={{ width: '26px', height: '26px' }} />
                   </Col>
                 </Row>

@@ -17,9 +17,14 @@ function SalesReportData() {
     endDate: '',
     transaction_type: ''
   });
+  const [pendingFilters, setPendingFilters] = useState({
+    startDate: '',
+    endDate: '',
+    transaction_type: ''
+  });
   const [pagination, setPagination] = useState({
     page: 1,
-    pageSize: 1,
+    pageSize: 10,
     total: 0,
     totalPages: 1,
   });
@@ -111,26 +116,31 @@ const formatRupiah = (number) => {
     }
   };
 
+  // Debounced effect for filters and pagination
   useEffect(() => {
-    fetchSalesReport(pagination.page, pagination.pageSize);
+    setLoading(true);
+    const handler = setTimeout(() => {
+      fetchSalesReport(pagination.page, pagination.pageSize);
+    }, 200); // 2ms debounce
+    return () => {
+      clearTimeout(handler);
+    };
     // eslint-disable-next-line
-  }, [pagination.page, pagination.pageSize]);
+  }, [filters, pagination.page, pagination.pageSize]);
 
+  // Only update pendingFilters on change
   const handleFilterChange = (field, value) => {
-    setFilters(prev => ({ ...prev, [field]: value }));
+    setPendingFilters(prev => ({ ...prev, [field]: value }));
   };
 
+  // Only when Search is clicked, copy pendingFilters to filters and reset page
   const handleSearch = () => {
-    fetchSalesReport(1, pagination.pageSize);
+    setFilters({ ...pendingFilters });
+    setPagination(prev => ({ ...prev, page: 1 }));
   };
 
   const handlePageChange = (newPage) => {
-    fetchSalesReport(newPage, pagination.pageSize);
-  };
-
-  const handlePageSizeChange = (e) => {
-    const newSize = Number(e.target.value);
-    fetchSalesReport(1, newSize); // Reset to page 1 when page size changes
+    setPagination(prev => ({ ...prev, page: newPage }));
   };
 
   return (
@@ -144,7 +154,7 @@ const formatRupiah = (number) => {
             <InputGroup>
               <Form.Control 
                 type="date" 
-                value={filters.startDate}
+                value={pendingFilters.startDate}
                 onChange={(e) => handleFilterChange('startDate', e.target.value)}
               />
             </InputGroup>
@@ -154,7 +164,7 @@ const formatRupiah = (number) => {
             <InputGroup>
               <Form.Control 
                 type="date" 
-                value={filters.endDate}
+                value={pendingFilters.endDate}
                 onChange={(e) => handleFilterChange('endDate', e.target.value)}
               />
             </InputGroup>
@@ -162,7 +172,7 @@ const formatRupiah = (number) => {
           <Col md={3}>
             <Form.Label>Order Type</Form.Label>
             <Form.Select 
-              value={filters.transaction_type}
+              value={pendingFilters.transaction_type}
               onChange={(e) => handleFilterChange('transaction_type', e.target.value)}
             >
               <option value="">Select order type</option>
@@ -210,7 +220,7 @@ const formatRupiah = (number) => {
             orders.map((order) => (
               <tr key={order.id}>
                 <td>{order.order_number}</td>
-                <td>{moment(order.created_at).locale("id").format('dddd, DD/MM/YYYY, hh:mm')}</td>
+                <td>{moment(order.created_at).locale("id").format('dddd, DD/MM/YYYY, HH:mm:ss')}</td>
                 <td> {order.transaction_type == 'dine_in' ? ( <Badge bg="secondary">Dine-in</Badge>) : ( <Badge bg="success">Take Away</Badge>)} 
                 </td>
                 <td>{order.customer_name}</td>
@@ -229,17 +239,11 @@ const formatRupiah = (number) => {
 
       {/* Pagination */}
       <div className="d-flex justify-content-between align-items-center mt-3">
-          <Form.Select
-            style={{ width: 'auto', display: 'inline-block', marginRight: '10px' }}
-            value={pagination.pageSize}
-            onChange={handlePageSizeChange}
-          >
-            <option value={5}>5</option>
-            <option value={10}>10</option>
-            <option value={20}>20</option>
-          </Form.Select>
+          <div>
+            Total Data : <b>{pagination?.total}</b>
+          </div>
           <nav aria-label="Page navigation example">
-            <ul className="pagination pagination-sm">
+            <ul className="pagination pagination-md">
               <li className={`page-item ${pagination.page === 1 ? 'disabled' : ''}`}>
                 <button className="page-link" onClick={() => handlePageChange(pagination.page - 1)} aria-label="Previous">
                   <span aria-hidden="true">&laquo;</span>
@@ -274,7 +278,7 @@ const formatRupiah = (number) => {
           </div>
           <div className="rounded bg-invoice p-3 mb-4">
             <span><small className='text-muted'>No Order : </small><small>{dataDetail?.order_number }</small></span> <br />
-            <span><small className='text-muted'>Order Date :  </small><small>{moment(dataDetail?.created_at).locale("id").format('dddd, DD/MM/YYYY, hh:mm')}</small></span><br />
+            <span><small className='text-muted'>Order Date :  </small><small>{moment(dataDetail?.created_at).locale("id").format('dddd, DD/MM/YYYY, HH:mm:ss')}</small></span><br />
             <span><small className='text-muted'>Customer Name : </small><small>{ dataDetail?.customer_name}</small> </span><br />
             <span><small> {dataDetail?.transaction_type == 'dine_in' ? (<><span>Dine-in : No.Meja { dataDetail?.table_number}</span></>) : (<span><b>Take Away</b></span>)} </small></span>
             <hr />
@@ -329,11 +333,6 @@ const formatRupiah = (number) => {
             </div>
           </div>
         </Modal.Body>
-        {/* <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-        </Modal.Footer> */}
       </Modal>
     </div>
   );

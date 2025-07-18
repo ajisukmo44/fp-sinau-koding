@@ -41,6 +41,11 @@ const MenuApp = () => {
   const [paying, setPaying] = useState(false);
   // const urlImage = urlImage;
 
+  // Lazyloading spinner state for card images
+  const [imageLoading, setImageLoading] = useState({});
+  const [imageLoaded, setImageLoaded] = useState({});
+  const MIN_IMAGE_LOAD_DELAY = 1500; // ms
+
 const formatRupiah = (number) => {
   return new Intl.NumberFormat('id-ID', {
     style: 'currency',
@@ -264,8 +269,35 @@ const formatRupiah = (number) => {
                   <Card onClick={() => addToOrder(item)} style={{ cursor: 'pointer' }} className='h-100 px-3 py-0'>
                     {/* <Card.Img variant="top" src={urlImage + '/catalogs/' + item.image}  style={{ width: '100%', height: '200px' }} />   */}
                     <Card.Body className='px-0'>
-                      <img src={urlImage + '/catalogs/' + item.image}  style={{ width: '100%', height: '150px' }} className='p-0 rounded mb-2'/>
-                      <div className="row">
+                      <div style={{ position: 'relative', width: '100%', height: '150px' }}>
+                        <img
+                          src={urlImage + '/catalogs/' + item.image}
+                          style={{ width: '100%', height: '150px', objectFit: 'cover' }}
+                          className='p-0 rounded mb-2'
+                          loading="lazy"
+                          alt={item.name}
+                          onLoad={() => {
+                            setImageLoaded(prev => ({ ...prev, [item.id]: true }));
+                            setTimeout(() => {
+                              setImageLoading(prev => ({ ...prev, [item.id]: true }));
+                            }, MIN_IMAGE_LOAD_DELAY);
+                          }}
+                          onError={() => {
+                            setImageLoaded(prev => ({ ...prev, [item.id]: true }));
+                            setTimeout(() => {
+                              setImageLoading(prev => ({ ...prev, [item.id]: true }));
+                            }, MIN_IMAGE_LOAD_DELAY);
+                          }}
+                        />
+                        {(!imageLoading[item.id]) && (
+                          <div style={{position:'absolute',top:0,left:0,right:0,bottom:0,display:'flex',alignItems:'center',justifyContent:'center',background:'#f8f9fa',zIndex:1}}>
+                            <div className="spinner-border" role="status" style={{width:'2rem',height:'2rem'}}>
+                              <span className="visually-hidden">Loading...</span>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                      <div className="row mt-2">
                         <div className="col-12 text-muted">
                           <h5><b>{item.name} </b></h5>
                           <small>{item?.description.slice(0, 60)} {item.description.length > 60 ? '...' : ''}</small>
@@ -482,7 +514,7 @@ const formatRupiah = (number) => {
                 <img src={logo} alt="Logo" className='me-2 pb-1' style={{ width: '125px', height: '45px', }} />
               </div>
               <span><small className='text-muted'>No Order : </small><small>{invoiceData?.order_number }</small></span> <br />
-              <span><small className='text-muted'>Order Date :  </small><small>{moment(invoiceData?.created_at).locale("id").format('dddd, DD/MM/YYYY, hh:mm')}</small></span><br />
+              <span><small className='text-muted'>Order Date :  </small><small>{moment(invoiceData?.created_at).locale("id").format('dddd, DD/MM/YYYY, HH:mm:ss')}</small></span><br />
               <span><small className='text-muted'>Customer Name : </small><small>{ invoiceData?.customer_name}</small> </span><br />
                 <span> {invoiceData?.transaction_type == 'dine_in' ? (<><small className='text-muted'>Dine-in : </small><small> No.Meja { invoiceData?.table_number}</small></>) : (<small><b>Take Away</b></small>)} </span>
               <hr />

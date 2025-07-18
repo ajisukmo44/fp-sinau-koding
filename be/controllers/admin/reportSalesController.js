@@ -7,17 +7,16 @@ const pool = require('../../config/pg.js');
 exports.getReportSales = async (req, res, next) => {
     const { startDate, endDate, transaction_type } = req.query;
     let limit = parseInt(req.query.limit, 10) || 10;
-    let offset = parseInt(req.query.offset, 10) || 0;
-    let page = Math.floor(offset / limit) + 1;
+    let page = parseInt(req.query.page, 10) || 1;
     let baseUrl = req.baseUrl + req.path;
     try {
       const [salesReport, total] = await Promise.all([
-        getSalesReport(startDate, endDate, transaction_type, limit, offset),
+        getSalesReport(startDate, endDate, transaction_type, limit, page),
         getSalesReportCount(startDate, endDate, transaction_type)
       ]);
       const totalPages = Math.ceil(total / limit);
       const makeLink = (pageNum) => {
-        const params = new URLSearchParams({ ...req.query, limit, offset: (pageNum - 1) * limit });
+        const params = new URLSearchParams({ ...req.query, limit, page: pageNum });
         return `${baseUrl}?${params.toString()}`;
       };
       const output = {

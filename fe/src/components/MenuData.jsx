@@ -43,6 +43,11 @@ const MenuApp = () => {
     }).format(number);
   };
 
+  // Add image loading state and delay
+  const [imageLoading, setImageLoading] = useState({});
+  const [imageLoaded, setImageLoaded] = useState({});
+  const MIN_IMAGE_LOAD_DELAY = 1500; // ms
+
   const fetchMenuData = async () => {
     setLoading(true);
     try {
@@ -273,8 +278,35 @@ const MenuApp = () => {
                 <Col key={idx} md={3} className="mb-3">
                   <Card onClick={() => setSelectedMenu(item)} style={{ cursor: 'pointer' }} className='h-100 px-3 py-0'>
                     <Card.Body className='px-0'>
-                      <img src={urlImage + '/catalogs/' + item.image}  style={{ width: '100%', height: '150px' }} className='p-0 rounded mb-2'/>
-                      <div className="row">
+                      <div style={{ position: 'relative', width: '100%', height: '150px' }}>
+                        <img
+                          src={urlImage + '/catalogs/' + item.image}
+                          style={{ width: '100%', height: '150px', objectFit: 'cover' }}
+                          className='p-0 rounded mb-2'
+                          loading="lazy"
+                          alt={item.name}
+                          onLoad={() => {
+                            setImageLoaded(prev => ({ ...prev, [item.id]: true }));
+                            setTimeout(() => {
+                              setImageLoading(prev => ({ ...prev, [item.id]: true }));
+                            }, MIN_IMAGE_LOAD_DELAY);
+                          }}
+                          onError={() => {
+                            setImageLoaded(prev => ({ ...prev, [item.id]: true }));
+                            setTimeout(() => {
+                              setImageLoading(prev => ({ ...prev, [item.id]: true }));
+                            }, MIN_IMAGE_LOAD_DELAY);
+                          }}
+                        />
+                        {(!imageLoading[item.id]) && (
+                          <div style={{position:'absolute',top:0,left:0,right:0,bottom:0,display:'flex',alignItems:'center',justifyContent:'center',background:'#f8f9fa',zIndex:1}}>
+                            <div className="spinner-border" role="status" style={{width:'2rem',height:'2rem'}}>
+                              <span className="visually-hidden">Loading...</span>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                      <div className="row mt-2">
                         <div className="col-12 text-muted">
                           <h5><b>{item.name} </b></h5>
                           <small>{item?.description.slice(0, 60)} {item.description.length > 60 ? '...' : ''}</small>
