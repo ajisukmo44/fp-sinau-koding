@@ -2,8 +2,9 @@ Tugas Project Final Sinau Koding <br>
 ----------------------------------------
 Nama : Aji Sukmo
 ---------------------------------------
-<div>Tech Stack : <div>Node JS, Express JS, Postgre SQL, React JS, Bootstrap
----------------------------------------------------------------------------------------------------------
+<h4>Tech Stack : <h4> 
+- Node JS, Express JS, Postgre SQL, React JS, Bootstrap <br>
+-----------------------------------------------------------------------------
 <h4> Menu Admin </h4>
 <span>- Dashboard Admin Statistik :</span> Summary total transaksi order, daily chart grafik  </div>
 <div>- Master Catalog : Mengelola data master katalog CRUD </div>
@@ -24,3 +25,7 @@ Nama : Aji Sukmo
 <div> - npm run dev</div>
 <div> - Port Backend : http://localhost:3000/ </div>
 <div> - Port Frontend :  http://localhost:5173/ </div>
+
+----------------------------------------------------------------------
+
+<div>Dokumentasi Postman :  https://documenter.getpostman.com/view/8077069/2sB34kCdZZ </div>
