@@ -1,6 +1,5 @@
-Tugas Project Final Sinau Koding <br>
+Tugas Project KodingFinal Sinau  <br>
 ----------------------------------------
-Nama : Aji Sukmo
 ---------------------------------------
 <h4>Tech Stack : <h4> 
 - Node JS, Express JS, Postgre SQL, React JS, Bootstrap <br>
