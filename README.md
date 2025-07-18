@@ -2,20 +2,25 @@ Tugas Project Final Sinau Koding <br>
 ----------------------------------------
 Nama : Aji Sukmo
 ---------------------------------------
-<b>Tech Stack : <b>Node JS, Express JS, Postgre SQL, React JS, Bootstrap, NeonDB
+<div>Tech Stack : <div>Node JS, Express JS, Postgre SQL, React JS, Bootstrap
 ---------------------------------------------------------------------------------------------------------
-
-
-<h4>Menu Admin</h4>
-<b>- Dashboard Admin Statistik :</b> Summary total transaksi order, daily chart grafik  <br>
-<b>- Master Catalog :</b> Mengelola data master katalog CRUD <br>
-<b>- Master User :</b> Mengelola data master katalog CRUD <br>
-<b>- Report Sales :</b> Menampilkan data report transaksi, filter data transaksi dan ekspor data excel <br>
-<b>- Setting Profile :</b> Update profile, avatar, dan ganti password user <br>
-<b>- Setting Application : </b> Mengelola data preference aplikasi
+<h4> Menu Admin </h4>
+<span>- Dashboard Admin Statistik :</span> Summary total transaksi order, daily chart grafik  </div>
+<div>- Master Catalog : Mengelola data master katalog CRUD </div>
+<div>- Master User : Mengelola data master katalog CRUD </div>
+<div>- Report Sales : Menampilkan data report transaksi, filter data transaksi dan ekspor data excel </div>
+<div>- Setting Profile : Update profile, avatar, dan ganti password user </div>
+<div>- Setting Application : Mengelola data preference aplikasi </div>
 
 <h4>Menu Cashier</h4>
-<b> - Transaction Order : Membuat transaksi order dan cetak struk order <br>
-<b> - Repot Sales : Menampilkan data report transaksi, filter data transaksi dan ekspor data excel<br>
-<b> - Archive : Menampilkan arsip riwayat order  <br>
-<b> - Setting Profile<br> : Update profile, avatar, dan ganti password 
+<div> - Transaction Order : Membuat transaksi order dan cetak struk order </div>
+<div> - Repot Sales : Menampilkan data report transaksi, filter data transaksi dan ekspor data excel</div>
+<div> - Archive : Menampilkan arsip riwayat order  </div>
+<div> - Setting Profile : Update profile, avatar, dan ganti password  </div>
+-----------------------------------------------------------------------------------------
+
+<h4> Running Aplikasi </h4>
+<div> - npm install</div>
+<div> - npm run dev</div>
+<div> - Port Backend : http://localhost:3000/ </div>
+<div> - Port Frontend :  http://localhost:5173/ </div>
