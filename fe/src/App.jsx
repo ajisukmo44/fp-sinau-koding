@@ -8,6 +8,8 @@ import LoginPage from './pages/admin/LoginPage';
 import DashboardAdmin from './pages/admin/HomeDashboard';
 import SalesReportPage from './pages/admin/SalesReportPage';
 import SettingsPage from './pages/admin/SettingsPage';
+import SettingsApps from './pages/admin/SettingsAppsPage';
+import UsersPage from './pages/admin/UsersPage';
 import MasterCatalogPage from './pages/admin/MasterCatalogPage';
 
 // cashier 
@@ -55,8 +57,10 @@ function App() {
         <Route path="/admin/login" element={<LoginRedirect><LoginPage /></LoginRedirect>} />
         <Route path="/admin/dashboard-admin" element={<RoleProtectedRoute allowedRoles={['admin']}><DashboardAdmin /></RoleProtectedRoute>} />
         <Route path="/admin/master-catalog" element={<RoleProtectedRoute allowedRoles={['admin']}><MasterCatalogPage /></RoleProtectedRoute>} />
+        <Route path="/admin/master-user" element={<RoleProtectedRoute allowedRoles={['admin']}><UsersPage /></RoleProtectedRoute>} />
         <Route path="/admin/report-sales" element={<RoleProtectedRoute allowedRoles={['admin']}><SalesReportPage /></RoleProtectedRoute>} />
         <Route path="/admin/setting" element={<RoleProtectedRoute allowedRoles={['admin']}><SettingsPage /></RoleProtectedRoute>} />
+        <Route path="/admin/setting-apps" element={<RoleProtectedRoute allowedRoles={['admin']}><SettingsApps /></RoleProtectedRoute>} />
 
         {/* cashier */}
         <Route path="/cashier" element={<Navigate to="/cashier/login" replace />} />

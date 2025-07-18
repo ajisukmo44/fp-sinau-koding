@@ -12,9 +12,9 @@ router.use((req, res, next) => {
 
 // Crud setting application
 router.get("/", authenticateToken, settingController.getSetting);
-// router.get("/:id", authenticateToken, settingController.getsettingDetail);
+router.get("/:id", authenticateToken, settingController.getSettingsDetail);
 router.post("/", authenticateToken, settingController.addSettings);
-// router.put("/:id", authenticateToken, settingController.updatesettingData); // Update a todo by ID
+router.put("/:id", authenticateToken, settingController.updateSettingData); 
 router.delete("/:id", authenticateToken, settingController.deleteSetting);
 
 module.exports = router;

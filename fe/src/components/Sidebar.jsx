@@ -15,6 +15,9 @@ import menuboardActive from '../assets/icon/menu-board-active.png'
 import reportActive from '../assets/icon/report-active.png'
 import arrowLeft from '../assets/icon/arrow-left.png'
 import arrowRight from '../assets/icon/arrow-right.png'
+import userPng from '../assets/icon/user.png'
+import scan from '../assets/icon/scan.png'
+import tagUser from '../assets/icon/tag-user.png'
 
 const Sidebar = ({ isOpen, minimized, onToggleMinimize }) => {
   const location = useLocation();
@@ -76,13 +79,33 @@ const Sidebar = ({ isOpen, minimized, onToggleMinimize }) => {
               <img src={location.pathname === '/admin/report-sales' ? reportActive : report} alt="Logo" className='me-2' style={{ width: '24px', height: '24px', objectFit: 'contain' }} />   {!minimized && 'Reports'}
             </Nav.Link>
           </Nav.Item>
-          <Nav.Item>
+          
+        <hr className="w-100 hr-sidebar my-3" />
+        <Nav.Item>
             <Nav.Link
               href="/admin/setting"
               active={location.pathname === '/admin/setting'}
               className="d-flex align-items-center justify-content-start"
             >
               <img src={location.pathname === '/admin/setting' ? settingActive : setting} alt="Logo" className='me-2' style={{ width: '24px', height: '24px', objectFit: 'contain' }} /> {!minimized && 'Settings'}
+            </Nav.Link>
+          </Nav.Item>
+        <Nav.Item>
+            <Nav.Link
+              href="/admin/master-user"
+              active={location.pathname === '/admin/master-user'}
+              className="d-flex align-items-center justify-content-start"
+            >
+              <img src={location.pathname === '/admin/master-user' ? userPng : userPng} alt="Logo" className='me-2' style={{ width: '24px', height: '24px', objectFit: 'contain',  opacity: '0.3' }} /> {!minimized && 'Master User'}
+            </Nav.Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Nav.Link
+              href="/admin/setting-apps"
+              active={location.pathname === '/admin/setting-apps'}
+              className="d-flex align-items-center justify-content-start"
+            >
+              <img src={location.pathname === '/admin/setting-apps' ? scan : scan} alt="Logo" className='me-2' style={{ width: '23px', height: '22px', objectFit: 'contain', opacity: '0.3' }} /> {!minimized && 'Settings Apps'}
             </Nav.Link>
           </Nav.Item>
         </Nav>

@@ -39,12 +39,14 @@ app.use('/api/profile/admin', userProfileRoutes);
 app.use('/api/admin/statistics-summary', statisticsRoutes);
 app.use('/api/admin/sales-report', reportSalesRoutes);
 app.use('/api/admin/master-catalogs', catalogRoutes);
+app.use('/api/admin/transactions', transactionRoutes);
 app.use('/api/admin/master-user', userRoutes);
 app.use('/api/admin/setting', settingRoutes);
 
 // routes cashier
 app.use('/api/auth/cashier', authCashierRoutes);
 app.use('/api/profile/cashier', userProfileRoutes);
+app.use('/api/cashier/master-catalogs', catalogRoutes);
 app.use('/api/cashier/transactions', transactionRoutes);
 app.use('/api/cashier/statistics-summary', statisticsRoutes);
 app.use('/api/cashier/sales-report', reportSalesRoutes);

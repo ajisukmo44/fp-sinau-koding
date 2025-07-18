@@ -29,7 +29,16 @@ async function addSetting(data) {
   return setting.get();
 };
 
-async function getSettingById(id) {
+const updateSetting = async (id, data) => {
+  const set = await Setting.findByPk(id);
+  if (!set) return null;
+  set.key = data.key;
+  set.value = data.value;
+  await set.save();
+  return set.get();
+};
+
+async function getSettingByID(id) {
   const setting = await Setting.findByPk(id);
   return setting ? setting.get() : null;
 };
@@ -41,4 +50,4 @@ async function deleteSetting(id) {
   return true;
 };
 
-module.exports = { getSetting, addSetting, deleteSetting, getSettingById };
+module.exports = { getSetting, addSetting, deleteSetting, getSettingByID, updateSetting };

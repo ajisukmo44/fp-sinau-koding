@@ -58,7 +58,7 @@ const formatRupiah = (number) => {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await api.get('/admin/master-catalogs', {
+      const response = await api.get('/cashier/master-catalogs', {
         headers: { Authorization: `Bearer ${token}` }
       });
 

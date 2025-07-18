@@ -11,45 +11,45 @@ const JWT_SECRET = 'your-secret-key-change-in-production';
 
 // user crud 
 async function getAllUser() {
-  const res = await pool.query('SELECT * FROM users');
+  const res = await pool.query('SELECT * FROM users ORDER BY id');
   return res.rows;
 };
 
 async function addUser(data) {
-  const res = await pool.query('INSERT INTO users (avatar, role, name, username, email, status, password, language, created_at) VALUES ($1, $2, $3, $4,  $5, $6, $7, $8, $9) RETURNING *', [data.avatar, data.role ,data.name, data.username, data.email, data.status, data.password, data.language, nDate]);
+  const res = await pool.query('INSERT INTO users (avatar, role, name, username, email, status, password, language, created_at) VALUES ($1, $2, $3, $4,  $5, $6, $7, $8, $9) RETURNING *', [data.avatar, data.role, data.name, data.username, data.email, data.status, data.password, data.language, nDate]);
   return res.rows[0];
 };
 
-async function getUserById (id) {
+async function getUserById(id) {
   const res = await pool.query('SELECT * FROM users WHERE id = $1', [id]);
   return res.rows[0];
 };
 
-async function updateUser(id, user){
+async function updateUser(id, user) {
   let query = 'UPDATE users SET ';
   let values = [];
   let paramCount = 1;
-  
+
   if (user.avatar !== undefined) {
     query += `avatar = $${paramCount}, `;
     values.push(user.avatar);
     paramCount++;
   }
-  
+
   query += `name = $${paramCount}, username = $${paramCount + 1}, email = $${paramCount + 2}, status = $${paramCount + 3}, updated_at = $${paramCount + 4} WHERE id = $${paramCount + 5} RETURNING *`;
   values.push(user.name, user.username, user.email, user.status, nDate, id);
-  
+
   const res = await pool.query(query, values);
   return res.rows[0];
 };
 
-async function deleteUser(id){
+async function deleteUser(id) {
   const res = await pool.query('DELETE FROM users WHERE id = $1 RETURNING *', [id]);
   return res.rows;
 };
 
 // user profile
-async function updateProfileUser(token, user){
+async function updateProfileUser(token, user) {
   const decoded = jwt.verify(token, JWT_SECRET);
   const userResult = await pool.query('SELECT * FROM users WHERE id = $1', [decoded.userId]);
   const userID = userResult.rows[0].id;
@@ -57,29 +57,29 @@ async function updateProfileUser(token, user){
   let query = 'UPDATE users SET ';
   let values = [];
   let paramCount = 1;
-  
+
   query += `name = $${paramCount}, username = $${paramCount + 1}, email = $${paramCount + 2}, language = $${paramCount + 3}, updated_at = $${paramCount + 4} WHERE id = $${paramCount + 5} RETURNING *`;
   values.push(user.name, user.username, user.email, user.language, nDate, userID);
-  
+
   const res = await pool.query(query, values);
   return res.rows[0];
 };
 
-async function updatePasswordUser(token, user){
+async function updatePasswordUser(token, user) {
   const decoded = jwt.verify(token, JWT_SECRET);
   const userResult = await pool.query('SELECT * FROM users WHERE id = $1', [decoded.userId]);
   const userID = userResult.rows[0].id;
-  
+
   const saltRounds = 10;
   const hashedPassword = await bcrypt.hash(user.password, saltRounds);
 
   let query = 'UPDATE users SET ';
   let values = [];
   let paramCount = 1;
-  
+
   query += `password = $${paramCount}, updated_at = $${paramCount + 1} WHERE id = $${paramCount + 2} RETURNING *`;
   values.push(hashedPassword, nDate, userID);
-  
+
   const res = await pool.query(query, values);
   return res.rows[0];
 };

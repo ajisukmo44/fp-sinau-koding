@@ -4,6 +4,10 @@ const Joi = require('joi');
 const { v4: uuidv4 } = require('uuid');
 const pool = require('../config/pg');
 
+const dateNow = new Date().toLocaleString('en-US', {
+  timeZone: 'Asia/Jakarta'
+});
+
 exports.getTransaction = async (req, res, next) => {
     // const Transaction = await pool.query('SELECT * FROM transaction');
     let filteredTransaction = await getAllTransaction();
@@ -58,9 +62,6 @@ exports.getTransactionDetail = async (req, res, next) => {
 
 exports.addTransactions = async (req, res, next) => {
   const token = req.headers.authorization?.split(' ')[1];
-  const dateNow = new Date().toLocaleString('en-US', {
-    timeZone: 'Asia/Jakarta'
-  });
   try {
    const last_id = await pool.query('SELECT * FROM transaction_group ORDER BY id DESC');
    let idtrx = 0;
@@ -126,21 +127,21 @@ exports.addTransactions = async (req, res, next) => {
 };
 
 exports.deleteTransaction =  async (req, res, next) => {
-  // const idd = req.params.id;
+  const idd = req.params.id;
     
-  // const deleteTransactionx = await deleteTransaction(idd);
-  // const output = {
-  //   message: "Transaction deleted successfully",
-  //   status: "success",
-  // };
-  // if (deleteTransactionx) {
-  //   res.writeHead(200, { "Content-Type": "application/json" }); // No Content
-  //   res.write(JSON.stringify(output));
-  // } else {
-  //   res.writeHead(404, { "Content-Type": "application/json" });
-  //   res.write(JSON.stringify({ error: "Transaction not found" }));
-  // }
-  // res.end();
+  const deleteTransactionx = await deleteTransaction(idd, dateNow);
+  const output = {
+    message: "Transaction deleted successfully",
+    status: "success",
+  };
+  if (deleteTransactionx) {
+    res.writeHead(200, { "Content-Type": "application/json" }); 
+    res.write(JSON.stringify(output));
+  } else {
+    res.writeHead(404, { "Content-Type": "application/json" });
+    res.write(JSON.stringify({ error: "Transaction not found" }));
+  }
+  res.end();
 };
 
 exports.updateTransactionData = async (req, res) => {

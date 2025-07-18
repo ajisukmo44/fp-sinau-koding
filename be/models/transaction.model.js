@@ -7,7 +7,7 @@ const JWT_SECRET = 'your-secret-key-change-in-production';
 
 // Transaction crud 
 async function getAllTransaction() {
-  const res = await pool.query('SELECT * FROM transaction_group ORDER BY created_at DESC');
+  const res = await pool.query('SELECT * FROM transaction_group WHERE is_deleted = FALSE ORDER BY created_at DESC');
   return res.rows;
 };
 
@@ -53,14 +53,14 @@ async function updateTransaction(id, transaction) {
   return res.rows[0];
 };
 
-async function deleteTransaction(id) {
-  const res = await pool.query('UPDATE transaction SET is_deleted = true, deleted_at = $1 WHERE id = $2 RETURNING *', [nDate, id]);
+async function deleteTransaction(id, date) {
+  const res = await pool.query('UPDATE transaction_group SET is_deleted = true, deleted_at = $1 WHERE id = $2 RETURNING *', [date, id]);
   return res.rows;
 };
 
 
 async function getSalesReport(startDate, endDate, transactionType, limit, page) {
-  let query = 'SELECT * FROM transaction_group WHERE 1=1';
+  let query = 'SELECT * FROM transaction_group WHERE is_deleted = FALSE';
   const params = [];
   let paramIdx = 1;
 
@@ -96,7 +96,7 @@ async function getSalesReport(startDate, endDate, transactionType, limit, page) 
 };
 
 async function getSalesReportCount(startDate, endDate, transactionType) {
-  let query = 'SELECT COUNT(*) FROM transaction_group WHERE 1=1';
+  let query = 'SELECT COUNT(*) FROM transaction_group WHERE is_deleted = FALSE';
   const params = [];
   let paramIdx = 1;
   if (startDate) {
