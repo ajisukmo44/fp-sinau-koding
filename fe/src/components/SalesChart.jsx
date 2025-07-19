@@ -69,7 +69,7 @@ const chartOptions = {
 const MainChart = () => {
   const dateNow = moment().format('YYYY-MM-DD');
   const last7day = moment().subtract(6, "days").format("YYYY-MM-DD");
-  console.log('date now', last7day);
+  // console.log('date now', last7day);
 
   const [chartData, setChartData] = useState({
     labels: [],

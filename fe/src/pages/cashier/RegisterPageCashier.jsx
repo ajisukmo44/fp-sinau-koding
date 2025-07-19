@@ -38,7 +38,7 @@ function Register() {
           "password" : password
       }
       const res_data = await register(data);
-      console.log('result register', res_data);
+      // console.log('result register', res_data);
       setSuccess(res_data?.message);
       setUsername('');
       setEmail('');

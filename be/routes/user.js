@@ -10,7 +10,7 @@ router.use((req, res, next) => {
   next();
 });
 
-// Get all users
+// Crud all users
 router.get("/", authenticateToken, userController.getUser);
 router.get("/:id", authenticateToken, userController.getUserDetail);
 router.post("/", authenticateToken, userController.addUsers);

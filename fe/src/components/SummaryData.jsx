@@ -47,9 +47,6 @@ const SummaryData = ({ icon, title, value }) => {
       </Col>
 
       <Modal show={showModal} onHide={() => setShowModal(false)} centered>
-        {/* <Modal.Header closeButton>
-          <Modal.Title>{title}</Modal.Title>
-        </Modal.Header> */}
         <Modal.Body>
           <div className="row mb-4 p-0">
             <div className="col-6 mt-2">

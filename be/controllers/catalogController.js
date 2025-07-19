@@ -1,5 +1,5 @@
 // create a handler for catalog
-const  { getAllCatalog, addCatalog, deleteCatalog, getCatalogById, updateCatalog }  = require("../models/catalog.model.js");
+const { getAllCatalog, addCatalog, deleteCatalog, getCatalogById, updateCatalog } = require("../models/catalog.model.js");
 const Joi = require('joi');
 const multer = require('multer');
 const path = require('path');
@@ -51,51 +51,51 @@ const catalogSchema = Joi.object({
 });
 
 exports.getCatalog = async (req, res, next) => {
-    // const catalog = await pool.query('SELECT * FROM catalog');
-    let filteredCatalog = await getAllCatalog();
-    let catalogs = await getAllCatalog();
-    try {
-      console.log("Fetching items for user:", req);
-  
-      if (req.query.search) {
-        const searchRegex = new RegExp(req.query.search, 'i');
-        filteredCatalog = catalogs.filter(catalog => searchRegex.test(catalog.name));
-      }
+  // const catalog = await pool.query('SELECT * FROM catalog');
+  let filteredCatalog = await getAllCatalog();
+  let catalogs = await getAllCatalog();
+  try {
+    console.log("Fetching items for user:", req);
 
-      res.writeHead(200, { "Content-Type": "application/json" });
-      const output = {
-        message: "List of catalog",
-        data: filteredCatalog,
-        count: filteredCatalog.length, 
-        status: "success",
-      };
-      res.write(JSON.stringify(output));
-      res.end();
-
-    } catch (err) {
-    res.status(500).json({message: err, success: false});
+    if (req.query.search) {
+      const searchRegex = new RegExp(req.query.search, 'i');
+      filteredCatalog = catalogs.filter(catalog => searchRegex.test(catalog.name));
     }
+
+    res.writeHead(200, { "Content-Type": "application/json" });
+    const output = {
+      message: "List of catalog",
+      data: filteredCatalog,
+      count: filteredCatalog.length,
+      status: "success",
+    };
+    res.write(JSON.stringify(output));
+    res.end();
+
+  } catch (err) {
+    res.status(500).json({ message: err, success: false });
+  }
 }
 
 exports.getCatalogDetail = async (req, res, next) => {
   const id = req.params.id;
   // res.json({id, success: true});
   try {
-  const catalogx = await getCatalogById(id);
-  const output = {
-    message: "Detail of catalog",
-    data: catalogx,
-    status: "success",
-  };
-  if (catalogx) {
-    res.writeHead(200, { "Content-Type": "application/json" });
-    res.write(JSON.stringify(output));
-  } else {
-    res.writeHead(404, { "Content-Type": "application/json" });
-    res.write(JSON.stringify({ error: "catalog not found" }));
-  }
-} catch (err) {
-  res.status(500).json({message: err, success: false});
+    const catalogx = await getCatalogById(id);
+    const output = {
+      message: "Detail of catalog",
+      data: catalogx,
+      status: "success",
+    };
+    if (catalogx) {
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.write(JSON.stringify(output));
+    } else {
+      res.writeHead(404, { "Content-Type": "application/json" });
+      res.write(JSON.stringify({ error: "catalog not found" }));
+    }
+  } catch (err) {
+    res.status(500).json({ message: err, success: false });
   }
   res.end();
 }
@@ -129,7 +129,7 @@ exports.addCatalogs = async (req, res, next) => {
       };
 
       const createdCatalog = await addCatalog(newcatalog);
-      
+
       const output = {
         message: "Catalog added successfully",
         data: {
@@ -156,7 +156,7 @@ exports.addCatalogs = async (req, res, next) => {
 
 exports.updateCatalogData = async (req, res) => {
   const id = req.params.id;
-  
+
   // Use multer middleware for single image upload
   upload.single('image')(req, res, async (err) => {
     if (err) {
@@ -182,7 +182,7 @@ exports.updateCatalogData = async (req, res) => {
       };
 
       const updatedCatalog = await updateCatalog(id, updateData);
-      
+
       if (!updatedCatalog) {
         return res.status(404).json({
           message: "Catalog not found",
@@ -212,32 +212,9 @@ exports.updateCatalogData = async (req, res) => {
       });
     }
   });
-  // const id = req.params.id;
-  // let body = req.body || "";
-
-  // try {
-  //   const updateData = body;
-  //   await updateCatalog(id, updateData);
-  //   const output = {
-  //     message: "catalog updated successfully",
-  //     data: updateData,
-  //     status: "success",
-  //   };
-  //   res.writeHead(200, { "Content-Type": "application/json" });
-  //   res.write(JSON.stringify(output));
-
-  //  } catch (err) {
-  //   console.error("Error creating catalog:", err);
-  //   res.status(500).json({
-  //     message: err.message || "Failed to create catalog item",
-  //     success: false
-  //   });
-  // }
-  
-  // res.end();
 };
 
-exports.deleteCatalog =  async (req, res, next) => {
+exports.deleteCatalog = async (req, res, next) => {
   const idd = req.params.id;
   const deleteCatalogx = await deleteCatalog(idd);
   const output = {

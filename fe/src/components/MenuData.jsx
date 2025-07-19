@@ -132,7 +132,7 @@ const MenuApp = () => {
       // setMenuData(prev => prev.map(item => 
       //   item.id === selectedMenu.id ? { ...item, ...editForm } : item
       // ));
-      console.log('res edit menu', response);
+      // console.log('res edit menu', response);
       //  setSelectedMenu(response.data[0]);
       // setSelectedMenu({ ...selectedMenu, ...editForm });
       setSelectedMenu(null);

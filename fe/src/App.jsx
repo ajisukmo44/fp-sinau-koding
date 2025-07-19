@@ -3,6 +3,8 @@ import { useState } from 'react'
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+import HomePage from './pages/HomePage';
+
 // admin
 import LoginPage from './pages/admin/LoginPage';
 import DashboardAdmin from './pages/admin/HomeDashboard';
@@ -51,9 +53,10 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Navigate to="/admin/login" replace />} />
-        <Route path="/admin" element={<Navigate to="/admin/login" replace />} />
+        <Route path="/" element={<HomePage />} />
+        
         {/* admin */}
+        <Route path="/admin" element={<Navigate to="/admin/login" replace />} />
         <Route path="/admin/login" element={<LoginRedirect><LoginPage /></LoginRedirect>} />
         <Route path="/admin/dashboard-admin" element={<RoleProtectedRoute allowedRoles={['admin']}><DashboardAdmin /></RoleProtectedRoute>} />
         <Route path="/admin/master-catalog" element={<RoleProtectedRoute allowedRoles={['admin']}><MasterCatalogPage /></RoleProtectedRoute>} />

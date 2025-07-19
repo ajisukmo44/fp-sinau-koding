@@ -102,7 +102,7 @@ const SettingApp = () => {
         }
       });
 
-      console.log('res edit data', response);
+      // console.log('res edit data', response);
       setselectedSetting(null);
       setIsEditMode(false);
       fetchDataSetting();

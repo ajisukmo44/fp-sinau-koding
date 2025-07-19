@@ -12,6 +12,7 @@ function Login() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -25,6 +26,7 @@ function Login() {
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) return;
     
+    setLoading(true);
     try {
       const res_data = await loginCashier(username, password);
       // console.log('result login', res_data);
@@ -38,6 +40,8 @@ function Login() {
       navigate('/cashier/menu-order');
     } catch (error) {
       setErrors({ general: error.response?.data?.message || 'Login failed' });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -59,6 +63,7 @@ function Login() {
               placeholder="Username" 
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              disabled={loading}
             />
             {errors.username && <div className="invalid-feedback">{errors.username}</div>}
           </div>
@@ -74,11 +79,13 @@ function Login() {
                 placeholder="Password" 
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                disabled={loading}
               />
               <button
                 type="button"
                 className="btn position-absolute end-0 top-50 translate-middle-y border-0 bg-transparent"
                 onClick={() => setShowPassword(!showPassword)}
+                disabled={loading}
               >
                 {showPassword ? <img src={eyeSlash} alt="icon" /> : <img src={eye} alt="icon" style={{width: '18px', height: '18px'}}/>}
               </button>
@@ -89,10 +96,23 @@ function Login() {
             {errors.password && <div className="invalid-feedback d-block">{errors.password}</div>}
           </div>
           {errors.general && <div className="alert alert-danger">{errors.general}</div>}
-          <button type="submit" className="btn btn-primary w-100">Login</button>
+          <button 
+            type="submit" 
+            className="btn btn-primary w-100" 
+            disabled={loading}
+          >
+            {loading ? (
+              <>
+                <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                Logging in...
+              </>
+            ) : (
+              'Login'
+            )}
+          </button>
         </form>
         <div className='text-center mt-2'>
-         <small className='text-muted me-2'> Don’t have an account?</small><small><Link to="/cashier/register">Register</Link></small>
+         <small className='text-muted me-2'> Don't have an account?</small><small><Link to="/cashier/register">Register Cashier</Link></small>
         </div>
       </div>
     </div>

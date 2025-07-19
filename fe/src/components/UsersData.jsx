@@ -106,8 +106,7 @@ const SettingApp = () => {
         "language" : editForm.language,
       }
       const response = await api.put(`/admin/master-user/${selectedUser.id}`, data);
-
-      console.log('res edit data', response);
+      // console.log('res edit data', response);
       setselectedUser(null);
       setIsEditMode(false);
       fetchDataSetting();
@@ -141,12 +140,10 @@ const SettingApp = () => {
         "status" : 'active'
       }
 
-      console.log(data);
+      // console.log(data);
       const response = await api.post('/admin/master-user', data);
-      
       setDataSetting(prev => [...prev, response.data]);
       setIsAddMode(false);
-      
       fetchDataSetting();
       setShowAlert(true);
       setMessageAlert('data successfully created!');

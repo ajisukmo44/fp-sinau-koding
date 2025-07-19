@@ -1,5 +1,5 @@
 // create a handler for user
-const  { getAllUser, addUser, deleteUser, getUserById, updateUser }  = require("../../models/users.model.js");
+const { getAllUser, addUser, deleteUser, getUserById, updateUser } = require("../../models/users.model.js");
 const Joi = require('joi');
 const multer = require('multer');
 const path = require('path');
@@ -55,47 +55,47 @@ const userSchema = Joi.object({
 });
 
 exports.getUser = async (req, res, next) => {
-    // const user = await pool.query('SELECT * FROM user');
-    let filteredUser= await getAllUser();
-    let users = await getAllUser();
-    try {
-      console.log("Fetching items for user:", req);
-  
-      if (req.query.search) {
-        const searchRegex = new RegExp(req.query.search, 'i');
-        filteredUser = users.filter(user => searchRegex.test(user.name));
-      }
+  // const user = await pool.query('SELECT * FROM user');
+  let filteredUser = await getAllUser();
+  let users = await getAllUser();
+  try {
+    console.log("Fetching items for user:", req);
 
-      const output = {
-        message: "List of user",
-        data: filteredUser,
-        count: filteredUser.length, 
-        status: "success",
-      };
-      res.json(output);
-
-    } catch (err) {
-    res.status(500).json({message: err, success: false});
+    if (req.query.search) {
+      const searchRegex = new RegExp(req.query.search, 'i');
+      filteredUser = users.filter(user => searchRegex.test(user.name));
     }
+
+    const output = {
+      message: "List of user",
+      data: filteredUser,
+      count: filteredUser.length,
+      status: "success",
+    };
+    res.json(output);
+
+  } catch (err) {
+    res.status(500).json({ message: err, success: false });
+  }
 }
 
 exports.getUserDetail = async (req, res, next) => {
   const id = req.params.id;
   // res.json({id, success: true});
   try {
-  const userx = await getUserById(id);
-  const output = {
-    message: "Detail of user",
-    data: userx,
-    status: "success",
-  };
-  if (userx) {
-    res.json(output);
-  } else {
-    res.status(404).json({ error: "user not found" });
-  }
-} catch (err) {
-  res.status(500).json({message: err, success: false});
+    const userx = await getUserById(id);
+    const output = {
+      message: "Detail of user",
+      data: userx,
+      status: "success",
+    };
+    if (userx) {
+      res.json(output);
+    } else {
+      res.status(404).json({ error: "user not found" });
+    }
+  } catch (err) {
+    res.status(500).json({ message: err, success: false });
   }
 }
 
@@ -159,7 +159,7 @@ exports.addUsers = async (req, res, next) => {
 
 exports.updateUserData = async (req, res) => {
   const id = req.params.id;
-  
+
   // Use multer middleware for single image upload
   upload.single('avatar')(req, res, async (err) => {
     if (err) {
@@ -185,7 +185,7 @@ exports.updateUserData = async (req, res) => {
       };
 
       const updatedUser = await updateUser(id, updateData);
-      
+
       if (!updatedUser) {
         return res.status(404).json({
           message: "User not found",
@@ -217,9 +217,9 @@ exports.updateUserData = async (req, res) => {
   });
 };
 
-exports.deleteUser =  async (req, res, next) => {
+exports.deleteUser = async (req, res, next) => {
   const idd = req.params.id;
-    
+
   const deleteUserx = await deleteUser(idd);
   const output = {
     message: "User deleted successfully",

@@ -6,8 +6,25 @@ const moment = require('moment-timezone');
 const JWT_SECRET = 'your-secret-key-change-in-production';
 
 // Transaction crud 
-async function getAllTransaction() {
-  const res = await pool.query('SELECT * FROM transaction_group WHERE is_deleted = FALSE ORDER BY created_at DESC');
+async function getAllTransaction(searchName, searchCategory) {
+  let query = 'SELECT * FROM transaction_group WHERE is_deleted = FALSE';
+  const params = [];
+  let paramIdx = 1;
+
+  if (searchName) {
+    query += ` AND customer_name ILIKE $${paramIdx}`;
+    params.push(`%${searchName}%`);
+    paramIdx++;
+  }
+
+  if (searchCategory) {
+    query += ` AND transaction_type ILIKE $${paramIdx}`;
+    params.push(`%${searchCategory}%`);
+    paramIdx++;
+  }
+
+  query += ' ORDER BY created_at DESC';
+  const res = await pool.query(query, params);
   return res.rows;
 };
 

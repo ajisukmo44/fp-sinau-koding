@@ -7,7 +7,6 @@ import edit2 from '../assets/icon/edit-2.png'
 import logo from '../assets/logo.png';
 import api from '../api';
 import urlImage from '../api/baseUrl';
-import Alert from 'react-bootstrap/Alert';
 import { Trash, Plus, Dash } from 'react-bootstrap-icons';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -18,16 +17,6 @@ const MenuApp = () => {
   const [selectedMenu, setSelectedMenu] = useState(null);
   const [loading, setLoading] = useState(false);
   const [activeCategory, setActiveCategory] = useState('all');
-  const [showAlert, setShowAlert] = useState(false);
-  const [messageAlert, setMessageAlert] = useState('');
-  const [addForm, setAddForm] = useState({
-    name: '',
-    category: '',
-    price: '',
-    description: '',
-    image: null
-  });
-  const [adding, setAdding] = useState(false);
   const [orderList, setOrderList] = useState([]);
   const [orderTotal, setOrderTotal] = useState(0);
   const [orderType, setOrderType] = useState('dine_in');
@@ -39,6 +28,11 @@ const MenuApp = () => {
   const [invoiceData, setInvoiceData] = useState(null);
   const [dataDetailItem, setDataDetailItem] = useState(null);
   const [paying, setPaying] = useState(false);
+  
+  // Note modal state
+  const [showNoteModal, setShowNoteModal] = useState(false);
+  const [selectedItemForNote, setSelectedItemForNote] = useState(null);
+  const [noteText, setNoteText] = useState('');
   // const urlImage = urlImage;
 
   // Lazyloading spinner state for card images
@@ -112,6 +106,34 @@ const formatRupiah = (number) => {
     calculateTotal();
   };
 
+  const addNote = (itemId) => {
+    const item = orderList.find(order => order.id === itemId);
+    if (item) {
+      setSelectedItemForNote(item);
+      setNoteText(item.note || '');
+      setShowNoteModal(true);
+    }
+  };
+
+  const handleSaveNote = () => {
+    if (selectedItemForNote) {
+      setOrderList(prev => prev.map(order => 
+        order.id === selectedItemForNote.id 
+          ? { ...order, note: noteText }
+          : order
+      ));
+      setShowNoteModal(false);
+      setSelectedItemForNote(null);
+      setNoteText('');
+    }
+  };
+
+  const handleCloseNoteModal = () => {
+    setShowNoteModal(false);
+    setSelectedItemForNote(null);
+    setNoteText('');
+  };
+
   const calculateTotal = () => {
     const subtotal = orderList.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     const tax = subtotal * 0.1;
@@ -134,17 +156,18 @@ const formatRupiah = (number) => {
           catalog_id: item.id,
           quantity: item.quantity,
           subtotal: item.price*item.quantity,
-          note: '-'
+          note: item.note || '-'
         })),
         subtotal_group : subtotal,
         tax : tax,
         cash : paymentAmount,
         cashback : (parseFloat(paymentAmount)-(total))
       };
-      // console.log('orderData', orderData);
       const response = await api.post('/cashier/transactions', orderData, {
         headers: { Authorization: `Bearer ${token}` }
       });
+      // console.log('dataList', orderList);
+      // console.log('dataItem', response.data.dataItem);
       setShowInvoiceModal(true);
       setDataDetailItem(response.data.dataItem)
       setInvoiceData(response.data.data);
@@ -395,12 +418,17 @@ const formatRupiah = (number) => {
                     <div className="col-6">
                       <div><strong>{item.name}</strong></div>
                       <div className="text-muted">{formatRupiah(item.price)}</div>
+                      {item.note && item.note !== '-' && (
+                        <div className="text-info small mt-1">
+                          <small><strong>Note:</strong> {item.note}</small>
+                        </div>
+                      )}
                        <Button 
                           size="sm" 
                           variant="light"
                           className='p-1 ps-2'
                         >
-                         <img src={edit2} alt="Logo" className='me-2 pb-1' style={{ width: '18px', height: '18px', objectFit: 'contain' }} />
+                         <img src={edit2} alt="Logo"  onClick={() => addNote(item.id)} className='me-2 pb-1' style={{ width: '18px', height: '18px', objectFit: 'contain' }} />
                         </Button>
                     </div>
                     <div className="col-3 text-end">
@@ -458,7 +486,7 @@ const formatRupiah = (number) => {
                   <div className='mt-2 mb-2'>
                     <small className='mt-4 mb-2' htmlFor="sn">Select Nominal</small>
                     <div className="d-flex gap-2 px-1 mb-3">
-                    {[50000, 75000, 100000, 200000].map((amount) => (
+                    {[100000, 150000, 200000, 300000].map((amount) => (
                         <div className="">
                           <button
                             size="sm"
@@ -486,9 +514,9 @@ const formatRupiah = (number) => {
             )}     
             <div className='d-flex flex-column mt-auto'>
               <Button 
-                variant={(orderList.length === 0 || paying || !customerName || paymentAmount < orderList.reduce((sum, item) => sum + (item.price * item.quantity), 0) * 1.1) ? 'secondary' : 'primary' }
+                variant={(orderList.length === 0 || paying || !customerName || (paymentAmount+1) < orderList.reduce((sum, item) => sum + (item.price * item.quantity), 0) * 1.1) ? 'secondary' : 'primary' }
                 className="w-100 mt-3"
-                disabled={orderList.length === 0 || paying || !customerName || paymentAmount < orderList.reduce((sum, item) => sum + (item.price * item.quantity), 0) * 1.1}
+                disabled={orderList.length === 0 || paying || !customerName || (paymentAmount+1) < orderList.reduce((sum, item) => sum + (item.price * item.quantity), 0) * 1.1}
                 onClick={handlePay}
               >
                 {paying ? 'Processing...' : 'Pay'}
@@ -500,10 +528,10 @@ const formatRupiah = (number) => {
 
       {/* Invoice Modal */}
       <Modal show={showInvoiceModal} onHide={() => setShowInvoiceModal(false)} size="md">
-        <Modal.Body className='bg-invoice'>
+        <Modal.Body className='bg-invoice rounded'>
          <div>
            <div className='text-end'>
-            <button className='bordered'  onClick={() => setShowInvoiceModal(false)}>X</button>
+            <button className='bordered' style={{ cursor: 'pointer', backgroundColor: 'transparent', border: 'none', borderRadius: '50%', width: '30px', height: '30px' }} onClick={() => setShowInvoiceModal(false)}>X</button>
           </div>
           <div className="text-center pt-1 mt-2 mb-4 anyclass" data-html2canvas-ignore="true">
             <h4><b>Transaction Success</b></h4>
@@ -571,7 +599,7 @@ const formatRupiah = (number) => {
           <div className="mx-3 mb-5 anyclass" data-html2canvas-ignore="true">
               <button 
                 type="button" 
-                className="btn btn-primary w-100"
+                className="btn btn-primary w-100 rounded"
                 onClick={printInvoice}
               >
                 Print Struk
@@ -579,6 +607,62 @@ const formatRupiah = (number) => {
           </div>
           </div>
          </div>
+        </Modal.Body>
+      </Modal>
+
+      {/* Note Modal */}
+      <Modal show={showNoteModal} onHide={handleCloseNoteModal} size="md">
+        <Modal.Body className='bg-white rounded'>
+          <div className='d-flex flex justify-content-between'>
+            <h5 className='p-2'><b>Detail Menu</b></h5>
+            <button className='bordered' style={{ cursor: 'pointer', backgroundColor: 'transparent', border: 'none', borderRadius: '50%', width: '30px', height: '30px' }} onClick={handleCloseNoteModal}>X</button>
+          </div>
+          {selectedItemForNote && (
+            <div className="p-3">
+              <div className="mb-3">
+                <div className="row align-items-center mb-2">
+                  <div className="col-12 mb-2">
+                    <img
+                      src={urlImage + '/catalogs/' + selectedItemForNote.image}
+                      alt={selectedItemForNote.name}
+                      style={{ width: '100%', height: 250, borderRadius: 8, objectFit: 'cover' }}
+                    />
+                  </div>
+                  <div className="col-12">
+                    <h6><strong>{selectedItemForNote.name}</strong></h6>
+                    <small className="text-muted">{formatRupiah(selectedItemForNote.price)} x {selectedItemForNote.quantity}</small>
+                  </div>
+                </div>
+              </div>
+              <Form.Group className="mb-3">
+                <Form.Label><small>Catatan (Optional)</small></Form.Label>
+                <Form.Control
+                  as="textarea"
+                  rows={4}
+                  placeholder="..."
+                  value={noteText}
+                  onChange={(e) => setNoteText(e.target.value)}
+                  className="rounded"
+                />
+              </Form.Group>
+              <div className="d-flex gap-2">
+                <Button 
+                  variant="outline-secondary" 
+                  className="flex-fill rounded"
+                  onClick={handleCloseNoteModal}
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  variant="primary" 
+                  className="flex-fill rounded"
+                  onClick={handleSaveNote}
+                >
+                  Save Note
+                </Button>
+              </div>
+            </div>
+          )}
         </Modal.Body>
       </Modal>
     </>
