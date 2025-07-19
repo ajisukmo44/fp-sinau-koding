@@ -10,9 +10,9 @@ router.use((req, res, next) => {
   next();
 });
 
-// Get all users
+// user profile login get data by token
 router.patch("/change-password", authenticateToken, userProfileController.changePassword);
-router.put("/edit", authenticateToken, userProfileController.updateUserProfile); 
-router.patch("/change-avatar", authenticateToken, userProfileController.updatePicture); 
+router.put("/edit", authenticateToken, userProfileController.updateUserProfile);
+router.patch("/change-avatar", authenticateToken, userProfileController.updatePicture);
 
 module.exports = router;

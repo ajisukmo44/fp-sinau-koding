@@ -5,16 +5,14 @@ import moment from 'moment';
 // Import komponen-komponen
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
-import SummaryData from '../components/SummaryData';
 import SalesReportData from '../components/SalesReportData';
 
 // Import ikon-ikon untuk SummaryData
-import { FiArchive, FiDollarSign, FiClipboard, FiCoffee, FiGift, FiTrello } from '../components/Icon';
-
 function App() {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
-  const [isSidebarMinimized, setSidebarMinimized] = useState(false);
+  const [isSidebarMinimized, setSidebarMinimized] = useState(true);
   const timeNow = moment().format('[Today,] dddd DD MMMM YYYY');
+  const [summaryDataCashier, setSummaryDataCashier] = useState({});
 
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
@@ -37,15 +35,14 @@ function App() {
       
     <Header toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} isSidebarMinimized={isSidebarMinimized}/>
       <main className="p-4 mt-5">
-        <div className="d-flex flex-wrap justify-content-between mb-4">
+        <div className="d-flex flex-wrap justify-content-between mb-2">
           <div>
-            <h4 className="fw-bolder">Sales Report</h4>
+            <h5 className="fw-bolder">Sales Report</h5>
           </div>
           <div className="text-muted">
             {timeNow}
           </div>
         </div>
-
         <SalesReportData />
       </main>
     </div>

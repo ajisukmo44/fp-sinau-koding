@@ -69,7 +69,7 @@ const chartOptions = {
 const MainChart = () => {
   const dateNow = moment().format('YYYY-MM-DD');
   const last7day = moment().subtract(6, "days").format("YYYY-MM-DD");
-  console.log('date now', last7day);
+  // console.log('date now', last7day);
 
   const [chartData, setChartData] = useState({
     labels: [],
@@ -141,19 +141,19 @@ const MainChart = () => {
     <Card className="shadow-sm border-0 mt-4">
       <Card.Body className="p-4">
         <div className="d-flex flex-wrap justify-content-between align-items-center mb-4">
-            <Card.Title as="h4" className="fw-bold mb-2 mb-md-0">Total Omzet</Card.Title>
+            <Card.Title as="h5" className="fw-bold mb-2 mb-md-0">Total Omzet</Card.Title>
             <div className="d-flex flex-wrap gap-2">
                 <Form.Control 
                   type="date" 
                   placeholder="Start date" 
-                  style={{width: '150px'}}
+                  style={{width: '240px'}}
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
                 />
                 <Form.Control 
                   type="date" 
                   placeholder="Finish date" 
-                  style={{width: '150px'}}
+                  style={{width: '240px'}}
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
                 />

@@ -41,7 +41,7 @@ const Header = ({ toggleSidebar, isSidebarOpen, isSidebarMinimized }) => {
           <FiSearch className="position-absolute" style={{ top: '50%', left: '15px', transform: 'translateY(-50%)', color: '#aaa' }} />
           <Form.Control type="text" placeholder="Enter the keyword here" className="ps-5 rounded-pill border-0 bg-light" />
         </div>
-        <div className="d-flex align-items-center ms-auto">
+        <div className="d-flex align-items-center ms-auto me-4">
           <Image src={urlImage + '/users/'+avatarImage || `https://as2.ftcdn.net/jpg/08/19/66/31/1000_F_819663119_che4sZSrmQv8uQJOzuN9TVQFQNHJlfQ2.jpg`} roundedCircle width="40" height="40" className="me-2" alt="avatar"/>
           <div className="d-none d-md-block">
             <div className="fw-bold">{username ?? '-'}</div>

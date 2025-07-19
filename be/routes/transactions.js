@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { authenticateToken } = require('../middleware/auth');
+const { authenticateToken, authorizeCashier, authorizeAdmin } = require('../middleware/auth');
 const transactionController = require("../controllers/transactionController");
 const itemsRouter = express.Router();
 
@@ -10,29 +10,11 @@ router.use((req, res, next) => {
   next();
 });
 
-// Get all products
+// Crud Transaction Order
 router.get("/", authenticateToken, transactionController.getTransaction);
 router.get("/:id", authenticateToken, transactionController.getTransactionDetail);
-router.post("/", authenticateToken, transactionController.addTransactions);
-router.put("/:id", authenticateToken, transactionController.updateTransactionData); // Update a todo by ID
-router.delete("/:id", authenticateToken, transactionController.deleteTransaction);
-
-// Create new product
-// router.post('/', (req, res) => {
-//   const { name, price } = req.body;
-//   res.status(201).json({ id: 3, name, price });
-// });
-
-// Update product
-// router.put('/:id', (req, res) => {
-//   const { id } = req.params;
-//   const { name, price } = req.body;
-//   res.json({ id, name, price });
-// });
-
-// Delete product
-// router.delete('/:id', (req, res) => {
-//   res.status(204).end();
-// });
+router.post("/", authenticateToken, authorizeCashier, transactionController.addTransactions);
+router.put("/:id", authenticateToken, authorizeCashier, transactionController.updateTransactionData);
+router.delete("/:id", authenticateToken, authorizeAdmin, transactionController.deleteTransaction);
 
 module.exports = router;

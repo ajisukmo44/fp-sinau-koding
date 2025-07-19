@@ -1,12 +1,12 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../App.css';
-import SalesReport from '../../layout/SalesReport';
+import '../../App.css';
+import SalesReportCashier from '../../layout/SalesReportCashier';
 
 function App() {
   return (
  <>
-  <SalesReport />
+  <SalesReportCashier />
   </>
   )
 }

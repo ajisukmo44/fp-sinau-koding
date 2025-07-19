@@ -1,5 +1,5 @@
 // create a handler for user
-const  { updateProfileUser, updatePasswordUser, updateAvatar }  = require("../models/users.model.js");
+const { updateProfileUser, updatePasswordUser, updateAvatar } = require("../models/users.model.js");
 const Joi = require('joi');
 const multer = require('multer');
 const path = require('path');
@@ -73,7 +73,7 @@ exports.updatePicture = async (req, res) => {
       };
 
       const updateAva = await updateAvatar(token, updateData);
-      
+
       if (!updateAva) {
         return res.status(404).json({
           message: "User not found",
@@ -105,7 +105,7 @@ exports.updatePicture = async (req, res) => {
 };
 
 
-exports.updateUserProfile= async (req, res) => {
+exports.updateUserProfile = async (req, res) => {
   const token = req.headers.authorization?.split(' ')[1];
   // Use multer middleware for single image upload
   upload.single('avatar')(req, res, async (err) => {
@@ -131,7 +131,7 @@ exports.updateUserProfile= async (req, res) => {
       };
 
       const updatedUser = await updateProfileUser(token, updateData);
-      
+
       if (!updatedUser) {
         return res.status(404).json({
           message: "User not found",
@@ -163,51 +163,51 @@ exports.updateUserProfile= async (req, res) => {
 };
 
 exports.changePassword = async (req, res) => {
-    const token = req.headers.authorization?.split(' ')[1];
-    try {
-      // Validate request body
-      const { error, value } = passwordSchema.validate(req.body);
-      if (error) {
-        return res.status(400).json({
-          message: error.details[0].message,
-          success: false
-        });
-      }
-
-      const updateData = {
-        password: value.password
-      };
-
-      const updatedUserPassword = await updatePasswordUser(token, updateData);
-      
-      if (!updatedUserPassword) {
-        return res.status(404).json({
-          message: "User not found",
-          success: false
-        });
-      }
-      const user_res = {
-        'name' : updatedUserPassword.name,
-        'username' : updatedUserPassword.username,
-        'email' : updatedUserPassword.email,
-        'role' : updatedUserPassword.originalname
-      }
-
-      const output = {
-        message: "User password updated successfully",
-        data: user_res,
-        status: "success",
-      };
-
-      res.json(output);
-
-    } catch (err) {
-      console.error("Error updating user:", err);
-      // If file was uploaded but database operation failed, delete the file
-      res.status(500).json({
-        message: err.message || "Failed to update user item",
+  const token = req.headers.authorization?.split(' ')[1];
+  try {
+    // Validate request body
+    const { error, value } = passwordSchema.validate(req.body);
+    if (error) {
+      return res.status(400).json({
+        message: error.details[0].message,
         success: false
       });
     }
+
+    const updateData = {
+      password: value.password
+    };
+
+    const updatedUserPassword = await updatePasswordUser(token, updateData);
+
+    if (!updatedUserPassword) {
+      return res.status(404).json({
+        message: "User not found",
+        success: false
+      });
+    }
+    const user_res = {
+      'name': updatedUserPassword.name,
+      'username': updatedUserPassword.username,
+      'email': updatedUserPassword.email,
+      'role': updatedUserPassword.originalname
+    }
+
+    const output = {
+      message: "User password updated successfully",
+      data: user_res,
+      status: "success",
+    };
+
+    res.json(output);
+
+  } catch (err) {
+    console.error("Error updating user:", err);
+    // If file was uploaded but database operation failed, delete the file
+    res.status(500).json({
+      message: err.message || "Failed to update user item",
+      success: false
+    });
+  }
 };
 

@@ -10,22 +10,24 @@ exports.getSummary = async (req, res, next) => {
     let omzetData = await getOmzet();
     let menuOrder = await getMenuOrder();
     let menuCategoryOrder = await getMenuOrderItem();
-
-    
     try {
-      res.writeHead(200, { "Content-Type": "application/json" });
+      function getCategoryTotal(category) {
+        const found = menuCategoryOrder.find((cat) => cat.category == category);
+        return found && found.total_item_category ? found.total_item_category : 0;
+      }
       const output = {
         message: "List of Summary",
         data: {
           total_order : orderTotal.length,
           total_omzet : omzetData.total_omzet,
           total_menu : menuOrder.total_menu_order,
-          total_beverages : menuCategoryOrder.filter((cat) => cat.category == 'beverages')[0].total_item_category,
-          total_desserts : menuCategoryOrder.filter((cat) => cat.category == 'desserts')[0].total_item_category,
-          total_foods : menuCategoryOrder.filter((cat) => cat.category == 'foods')[0].total_item_category,
+          total_beverages : getCategoryTotal('beverages'),
+          total_desserts : getCategoryTotal('desserts'),
+          total_foods : getCategoryTotal('foods'),
         },
         status: "success",
       };
+      res.writeHead(200, { "Content-Type": "application/json" });
       res.write(JSON.stringify(output));
       res.end();
 

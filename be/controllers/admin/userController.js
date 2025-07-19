@@ -1,5 +1,5 @@
 // create a handler for user
-const  { getAllUser, addUser, deleteUser, getUserById, updateUser }  = require("../../models/users.model.js");
+const { getAllUser, addUser, deleteUser, getUserById, updateUser } = require("../../models/users.model.js");
 const Joi = require('joi');
 const multer = require('multer');
 const path = require('path');
@@ -7,7 +7,6 @@ const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
 const express = require('express');
 const bcrypt = require('bcryptjs');
-
 const saltRounds = 10;
 
 // Configure multer for image upload
@@ -56,53 +55,48 @@ const userSchema = Joi.object({
 });
 
 exports.getUser = async (req, res, next) => {
-    // const user = await pool.query('SELECT * FROM user');
-    let filteredUser= await getAllUser();
-    let users = await getAllUser();
-    try {
-      console.log("Fetching items for user:", req);
-  
-      if (req.query.search) {
-        const searchRegex = new RegExp(req.query.search, 'i');
-        filteredUser = users.filter(user => searchRegex.test(user.name));
-      }
+  // const user = await pool.query('SELECT * FROM user');
+  let filteredUser = await getAllUser();
+  let users = await getAllUser();
+  try {
+    console.log("Fetching items for user:", req);
 
-      res.writeHead(200, { "Content-Type": "application/json" });
-      const output = {
-        message: "List of user",
-        data: filteredUser,
-        count: filteredUser.length, 
-        status: "success",
-      };
-      res.write(JSON.stringify(output));
-      res.end();
-
-    } catch (err) {
-    res.status(500).json({message: err, success: false});
+    if (req.query.search) {
+      const searchRegex = new RegExp(req.query.search, 'i');
+      filteredUser = users.filter(user => searchRegex.test(user.name));
     }
+
+    const output = {
+      message: "List of user",
+      data: filteredUser,
+      count: filteredUser.length,
+      status: "success",
+    };
+    res.json(output);
+
+  } catch (err) {
+    res.status(500).json({ message: err, success: false });
+  }
 }
 
 exports.getUserDetail = async (req, res, next) => {
   const id = req.params.id;
   // res.json({id, success: true});
   try {
-  const userx = await getUserById(id);
-  const output = {
-    message: "Detail of user",
-    data: userx,
-    status: "success",
-  };
-  if (userx) {
-    res.writeHead(200, { "Content-Type": "application/json" });
-    res.write(JSON.stringify(output));
-  } else {
-    res.writeHead(404, { "Content-Type": "application/json" });
-    res.write(JSON.stringify({ error: "user not found" }));
+    const userx = await getUserById(id);
+    const output = {
+      message: "Detail of user",
+      data: userx,
+      status: "success",
+    };
+    if (userx) {
+      res.json(output);
+    } else {
+      res.status(404).json({ error: "user not found" });
+    }
+  } catch (err) {
+    res.status(500).json({ message: err, success: false });
   }
-} catch (err) {
-  res.status(500).json({message: err, success: false});
-  }
-  res.end();
 }
 
 exports.addUsers = async (req, res, next) => {
@@ -165,7 +159,7 @@ exports.addUsers = async (req, res, next) => {
 
 exports.updateUserData = async (req, res) => {
   const id = req.params.id;
-  
+
   // Use multer middleware for single image upload
   upload.single('avatar')(req, res, async (err) => {
     if (err) {
@@ -187,11 +181,11 @@ exports.updateUserData = async (req, res) => {
 
       const updateData = {
         ...value,
-        image: req.file ? req.file.filename : undefined // Only update image if new file is uploaded
+        image: req.file ? req.file.filename : undefined
       };
 
       const updatedUser = await updateUser(id, updateData);
-      
+
       if (!updatedUser) {
         return res.status(404).json({
           message: "User not found",
@@ -223,21 +217,18 @@ exports.updateUserData = async (req, res) => {
   });
 };
 
-exports.deleteUser =  async (req, res, next) => {
+exports.deleteUser = async (req, res, next) => {
   const idd = req.params.id;
-    
+
   const deleteUserx = await deleteUser(idd);
   const output = {
     message: "User deleted successfully",
     status: "success",
   };
   if (deleteUserx) {
-    res.writeHead(200, { "Content-Type": "application/json" }); // No Content
-    res.write(JSON.stringify(output));
+    res.json(output);
   } else {
-    res.writeHead(404, { "Content-Type": "application/json" });
-    res.write(JSON.stringify({ error: "User not found" }));
+    res.status(404).json({ error: "User not found" });
   }
-  res.end();
 };
 

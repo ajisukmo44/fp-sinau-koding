@@ -33,8 +33,7 @@ function SettingsPage() {
     try {
       const response = await api.get('/auth/admin/profile');
       const profile = response.data.data?.user;
-      console.log('profile', profile);
-      
+      // console.log('profile', profile);
       setFormData(prev => ({
         ...prev,
         id: profile.id || '',

@@ -1,10 +1,7 @@
 const express = require('express');
 const pool = require('../config/pg');
 const sequelize = require('../config/pg-sequelize');
-
-const nDate = new Date().toLocaleString('en-US', {
-  timeZone: 'Asia/Jakarta'
-});
+const moment = require('moment-timezone');
 
 async function getSummaryOrder() {
   const res = await pool.query('SELECT * FROM transaction_group');
@@ -33,6 +30,10 @@ async function getMenuOrderItemDetail(id) {
 };
 
 async function getDailyChartCategoryOrder(startDate, endDate) {
+    // Ensure startDate and endDate are in Asia/Jakarta timezone and formatted as YYYY-MM-DD
+    const start = moment.tz(startDate, 'Asia/Jakarta').startOf('day');
+    const end = moment.tz(endDate, 'Asia/Jakarta').startOf('day');
+
     const res = await pool.query(`
         SELECT 
             DATE(tg.created_at) as date,
@@ -44,14 +45,14 @@ async function getDailyChartCategoryOrder(startDate, endDate) {
         WHERE DATE(tg.created_at) BETWEEN $1 AND $2
         GROUP BY DATE(tg.created_at), c.category
         ORDER BY date
-    `, [startDate, endDate]);
+    `, [start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD')]);
 
+    // Generate date list in Asia/Jakarta timezone
     const dateList = [];
-    const current = new Date(startDate);
-    const end = new Date(endDate);
-    while (current <= end) {
-        dateList.push(current.toISOString().split('T')[0]);
-        current.setDate(current.getDate() + 1);
+    let current = start.clone();
+    while (current.isSameOrBefore(end)) {
+        dateList.push(current.format('YYYY-MM-DD'));
+        current.add(1, 'day');
     }
 
     const grouped = {};
@@ -59,7 +60,7 @@ async function getDailyChartCategoryOrder(startDate, endDate) {
         if (!grouped[row.label]) {
             grouped[row.label] = { label: row.label, data: new Array(dateList.length).fill(0) };
         }
-        const dateIndex = dateList.indexOf(row.date.toISOString().split('T')[0]);
+        const dateIndex = dateList.indexOf(moment(row.date).format('YYYY-MM-DD'));
         if (dateIndex !== -1) {
             grouped[row.label].data[dateIndex] = parseInt(row.total);
         }

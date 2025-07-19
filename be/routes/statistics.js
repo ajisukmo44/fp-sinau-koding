@@ -10,9 +10,9 @@ router.use((req, res, next) => {
   next();
 });
 
-// Get all statistics
-router.get("/", authenticateToken, authorizeAdmin, statisticController.getSummary);
-router.get("/:id", authenticateToken, authorizeAdmin, statisticController.getSummaryDetail);
+// Get all statistics dashboard
+router.get("/", authenticateToken, statisticController.getSummary);
+router.get("/:id", authenticateToken, statisticController.getSummaryDetail);
 router.post("/daily-chart", authenticateToken, authorizeAdmin, statisticController.getDailyChartOrderCategory);
 
 module.exports = router;

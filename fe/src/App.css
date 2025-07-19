@@ -5,6 +5,31 @@
   /* text-align: center; */
 }
 
+/* Dotted red border */
+hr {
+  border-top: 1px dotted #707070;
+}
+
+.upload-card {
+  border-radius: 10px;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-color: #f9f9f9;
+  border-style: dashed !important;
+  cursor: pointer;
+  width: 100%;
+  margin: auto;
+}
+
+.bg-invoice{
+  background-color: #f9f9f9;
+}
+
+.img-invoice {
+  -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
+  filter: grayscale(100%);
+}
+
 .table-container {
   background: #fff;
   max-width: 500px;
@@ -204,10 +229,45 @@ td {
   text-align: start;
 }
 .nav-pills .nav-link.active {
-  background-color: #3572EF !important;
-  color: #f1f1f1 !important;
+  background-color: #f7f7f7;
+  border-right: 5px solid #3572EF;
+  border-radius: 4px;
+  color: #3572EF;
   font-weight: 700;
 }
+
+h3{
+  font-size: 36px;
+  line-height: 46px;
+  font-weight: 600;
+}
+
+.input-payment {
+  border: 0;
+  outline: 0;
+  border-bottom: 2px solid #C4C4C4;
+  font-size: 22px;
+  font-weight: 600;
+  color: #707070;
+        
+}
+
+/* Specific styling for menu data and menu order components */
+.menu-nav .nav-link.active {
+  background-color: #3572EF !important;
+  color: #ffffff !important;
+  font-weight: 700;
+  border-right: 0px;
+}
+
+/* .nav-pills .nav-link.active {
+  background-color: #f7f7f7 ;
+  border-right: 5px solid #3572EF;
+  color: #3572EF ;
+  color: #f1f1f1 !important;
+  font-weight: 700;
+} */
+
 .nav-pills .nav-link:hover {
   background-color: #f8f9fa;
 }
@@ -238,7 +298,7 @@ body {
 }
 .sidebar.minimized .nav-link span,
 .sidebar.minimized .nav-link:not(:has(svg)) {
-  display: none !important;
+  /* display: none !important; */
 }
 @media (min-width: 992px) {
   .sidebar.minimized ~ .main-content {
@@ -272,4 +332,16 @@ body {
   .navbar-fixed {
     left: 0; /* Full width on mobile */
   }
+}
+
+/* Specific styling for MenuData and MenuOrder components only */
+.menu-component .nav-link.active {
+  background-color: #3572EF !important;
+  color: #ffffff !important;
+}
+
+/* Override for menu components only */
+.menu-component .nav-pills .nav-link.active {
+  background-color: #3572EF !important;
+  color: #ffffff !important;
 }

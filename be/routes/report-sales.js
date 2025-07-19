@@ -10,7 +10,7 @@ router.use((req, res, next) => {
   next();
 });
 
-// Get all products
+// Get all report sales
 router.get("/", authenticateToken, reportSalesController.getReportSales);
 router.get("/:id", authenticateToken, reportSalesController.getReportSalesDetail);
 

@@ -8,8 +8,8 @@ html, body {
 
 .login-page{
   background-image: url('../assets/bg-login.png');
-  background-size: 100% 100%;
-  background-position: center;
+  background-size: 100% ;
+  background-position: topcenter;
   background-repeat: no-repeat;
   background-attachment: fixed;
   margin: 0;
@@ -24,7 +24,7 @@ html, body {
 
 .login-box {
   width: 520px;
-  height: 550px;
+  height: 600px;
   backdrop-filter: blur(5px);
   background-color: rgba(255, 255, 255, 0.95);
   margin-left: 10%;
@@ -32,7 +32,7 @@ html, body {
 
 .login-cashier-box {
   width: 520px;
-  height: 600px;
+  height: 650px;
   backdrop-filter: blur(5px);
   background-color: rgba(255, 255, 255, 0.95);
   margin-left: 10%;

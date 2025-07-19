@@ -3,7 +3,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../assets/login.css'; // Custom styles if needed
 import logo from '../../assets/logo.png';
 import { Link, useNavigate } from 'react-router-dom';
-import { login } from '../../api/auth';
+import { register } from '../../api/auth';
+import eyeSlash from '../../assets/icon/eye-slash.png';
+import eye from '../../assets/icon/eye.png';
 
 function Register() {
   const [username, setUsername] = useState('');
@@ -13,6 +15,7 @@ function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
   const [errors, setErrors] = useState({});
+  const [success, setSuccess] = useState('');
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -22,24 +25,30 @@ function Register() {
     if (!email.trim()) newErrors.email = 'email is required';
     if (!username.trim()) newErrors.username = 'Username is required';
     if (!password.trim()) newErrors.password = 'Password is required';
+    if (!passwordConfirm.trim()) newErrors.passwordConfirm = 'passwordConfirm is required';
     if (password.length < 6) newErrors.password = 'Password must be at least 6 characters';
     
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) return;
     
     try {
-      const res_data = await login(username, password);
-      // console.log('result login', res_data);
-      localStorage.setItem('token', res_data.data.token);
-      localStorage.setItem('role', res_data.data.user?.role);
-      localStorage.setItem('username', res_data.data.user?.username);
-      localStorage.setItem('name', res_data.data.user?.name);
-      localStorage.setItem('avatar_image', res_data.data.user?.avatar);
+     const data =  {
+          "username" : username,
+          "email" : email,
+          "password" : password
+      }
+      const res_data = await register(data);
+      // console.log('result register', res_data);
+      setSuccess(res_data?.message);
+      setUsername('');
+      setEmail('');
+      setPassword('');
+      setPasswordConfirm('');
       // notify other components about auth change
-      window.dispatchEvent(new Event('storage'));
-      navigate('/dashboard-admin');
+      // window.dispatchEvent(new Event('storage'));
+      // navigate('/cashier/login');
     } catch (error) {
-      setErrors({ general: error.response?.data?.message || 'Login failed' });
+      setErrors({ general: error.response?.data?.message || 'Register failed' });
     }
   };
 
@@ -49,8 +58,9 @@ function Register() {
         <div className="text-center mb-4">
           <img src={logo} alt="Logo" style={{ width: '150px', height: '60px', objectFit: 'contain' }} />
         </div>
-        <h4 className="text-center mb-3">Welcome Back!</h4>
-        <div className="text-center text-muted"><small>Create your account here!</small></div>
+        <h3 className="text-center mb-3">Welcome Back!</h3>
+        {!success ? (
+        <div className="text-center text-muted"><small>Create your account here!</small></div>) : (<div className="alert alert-success">{success}</div>)}
         <form onSubmit={handleLogin}>
           <div className="mb-3 mt-3">
             <label htmlFor="username" className="form-label d-flex justify-content-between">Username</label>
@@ -94,7 +104,7 @@ function Register() {
                 className="btn position-absolute end-0 top-50 translate-middle-y border-0 bg-transparent"
                 onClick={() => setShowPassword(!showPassword)}
               >
-                {showPassword ? '👁️' : '👁️‍🗨️'}
+                 {showPassword ? <img src={eyeSlash} alt="icon" /> : <img src={eye} alt="icon" style={{width: '18px', height: '18px'}}/>}
               </button>
             </div>
 
@@ -115,7 +125,7 @@ function Register() {
                 className="btn position-absolute end-0 top-50 translate-middle-y border-0 bg-transparent"
                 onClick={() => setShowPasswordConfirm(!showPasswordConfirm)}
               >
-                {showPassword ? '👁️' : '👁️‍🗨️'}
+                {showPassword ? <img src={eyeSlash} alt="icon" /> : <img src={eye} alt="icon" style={{width: '18px', height: '18px'}}/>}
               </button>
             </div>
             {errors.password && <div className="invalid-feedback d-block">{errors.password}</div>}
@@ -124,7 +134,7 @@ function Register() {
           <button type="submit" className="btn btn-primary w-100">Register</button>
         </form>
         <div className='text-center mt-2'>
-         <span className='text-muted'> Already have an account?</span> <Link to="/cashier/login">Login</Link>
+         <small className='text-muted me-2'> Already have an account? <Link to="/cashier/login">Login</Link></small>
         </div>
       </div>
     </div>

@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Nav, Form, Button, Modal } from 'react-bootstrap';
-import axios from 'axios';
-import Swal from 'sweetalert2';
 import foods from '../assets/icon/reserve1.png'
 import beverages from '../assets/icon/coffe1.png'
 import desserts from '../assets/icon/cake1.png'
@@ -22,6 +20,7 @@ const MenuApp = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [editForm, setEditForm] = useState({});
+  const [editImageForm, setEditImageForm] = useState({});
   const [updating, setUpdating] = useState(false);
   const [isAddMode, setIsAddMode] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -36,6 +35,18 @@ const MenuApp = () => {
   });
   const [adding, setAdding] = useState(false);
   // const urlImage = urlImage;
+  const formatRupiah = (number) => {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0,
+    }).format(number);
+  };
+
+  // Add image loading state and delay
+  const [imageLoading, setImageLoading] = useState({});
+  const [imageLoaded, setImageLoaded] = useState({});
+  const MIN_IMAGE_LOAD_DELAY = 1500; // ms
 
   const fetchMenuData = async () => {
     setLoading(true);
@@ -101,7 +112,6 @@ const MenuApp = () => {
 
   const handleUpdateMenu = async () => {
     if (!selectedMenu) return;
-    
     setUpdating(true);
     try {
       const token = localStorage.getItem('token');
@@ -110,40 +120,40 @@ const MenuApp = () => {
       formData.append('category', editForm.category);
       formData.append('price', editForm.price);
       formData.append('description', editForm.description);
-      if (editForm.image) {
-        formData.append('image', editForm.image);
+      if (editImageForm.image) {
+        formData.append('image', editImageForm.image);
       }
-      
       const response = await api.put(`/admin/master-catalogs/${selectedMenu.id}`, formData, {
         headers: { 
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data'
         }
       });
-
-      console.log('res edit menu', response);
-      
-      
-      setMenuData(prev => prev.map(item => 
-        item.id === selectedMenu.id ? { ...item, ...editForm } : item
-      ));
-      setSelectedMenu({ ...selectedMenu, ...editForm });
+      // setMenuData(prev => prev.map(item => 
+      //   item.id === selectedMenu.id ? { ...item, ...editForm } : item
+      // ));
+      // console.log('res edit menu', response);
+      //  setSelectedMenu(response.data[0]);
+      // setSelectedMenu({ ...selectedMenu, ...editForm });
+      setSelectedMenu(null);
       setIsEditMode(false);
       fetchMenuData();
       setShowAlert(true);
       setMessageAlert('Menu successfully updated!');
-      
-      // Swal.fire({
-      //   title: 'Success!',
-      //   text: 'Menu has been updated successfully',
-      //   icon: 'success',
-      //   confirmButtonText: 'OK'
-      // });
     } catch (error) {
       console.error('Error updating menu:', error);
     } finally {
       setUpdating(false);
     }
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setFile(e.dataTransfer.files[0]);
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
   };
 
   const handleAddMenu = () => {
@@ -179,15 +189,10 @@ const MenuApp = () => {
       
       setMenuData(prev => [...prev, response.data]);
       setIsAddMode(false);
+      
       fetchMenuData();
       setShowAlert(true);
       setMessageAlert('Menu successfully created!');
-      // Swal.fire({
-      //   title: 'Success!',
-      //   text: 'Menu has been added successfully',
-      //   icon: 'success',
-      //   confirmButtonText: 'OK'
-      // });
     } catch (error) {
       console.error('Error creating menu:', error);
     } finally {
@@ -208,7 +213,7 @@ const MenuApp = () => {
 
   const filteredMenuData = activeCategory === 'all' 
     ? menuData 
-    : menuData.filter(item => item.category.toLowerCase() === activeCategory.toLowerCase());
+    : menuData.filter(item => item.category === activeCategory);
 
   return (
     <>
@@ -216,12 +221,12 @@ const MenuApp = () => {
         {/* Left Panel - Menu List */}
         <Col md={8}>
           <div>
-            <h4 className="fw-bolder">List Menu</h4>
+            <h5 className="fw-bolder">List Menu</h5>
           </div>
           <div className='text-start'>
             <div className="row">
               <div className="col-8">
-              <Nav variant="pills" defaultActiveKey="all">
+              <Nav variant="pills" defaultActiveKey="all" className="menu-component">
               <Nav.Item className='border rounded me-2'>
                 <Nav.Link 
                   eventKey="all" 
@@ -254,7 +259,7 @@ const MenuApp = () => {
               </div>
               <div className="col-4 text-end">
               <div className="text-muted mt-2">
-                Total : <b>{filteredMenuData.length} Menu</b> 
+               <small> Total : <b>{filteredMenuData.length} Menu</b></small> 
               </div>
               </div>
             </div>
@@ -270,22 +275,49 @@ const MenuApp = () => {
               </Col>
             ) : (
               filteredMenuData.map((item, idx) => (
-                <Col key={idx} md={4} className="mb-3">
-                  <Card onClick={() => setSelectedMenu(item)} style={{ cursor: 'pointer' }} className='h-100'>
-                    <Card.Img variant="top" src={urlImage + '/catalogs/' + item.image}  style={{ width: '100%', height: '200px' }} />  
+                <Col key={idx} md={3} className="mb-3">
+                  <Card onClick={() => setSelectedMenu(item)} style={{ cursor: 'pointer' }} className='h-100 px-3 py-0'>
                     <Card.Body className='px-0'>
-                      <div className="row">
+                      <div style={{ position: 'relative', width: '100%', height: '150px' }}>
+                        <img
+                          src={urlImage + '/catalogs/' + item.image}
+                          style={{ width: '100%', height: '150px', objectFit: 'cover' }}
+                          className='p-0 rounded mb-2'
+                          loading="lazy"
+                          alt={item.name}
+                          onLoad={() => {
+                            setImageLoaded(prev => ({ ...prev, [item.id]: true }));
+                            setTimeout(() => {
+                              setImageLoading(prev => ({ ...prev, [item.id]: true }));
+                            }, MIN_IMAGE_LOAD_DELAY);
+                          }}
+                          onError={() => {
+                            setImageLoaded(prev => ({ ...prev, [item.id]: true }));
+                            setTimeout(() => {
+                              setImageLoading(prev => ({ ...prev, [item.id]: true }));
+                            }, MIN_IMAGE_LOAD_DELAY);
+                          }}
+                        />
+                        {(!imageLoading[item.id]) && (
+                          <div style={{position:'absolute',top:0,left:0,right:0,bottom:0,display:'flex',alignItems:'center',justifyContent:'center',background:'#f8f9fa',zIndex:1}}>
+                            <div className="spinner-border" role="status" style={{width:'2rem',height:'2rem'}}>
+                              <span className="visually-hidden">Loading...</span>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                      <div className="row mt-2">
                         <div className="col-12 text-muted">
                           <h5><b>{item.name} </b></h5>
-                          <small>{item?.description.slice(0, 100)} {item.description.length > 100 ? '...' : ''}</small>
+                          <small>{item?.description.slice(0, 60)} {item.description.length > 60 ? '...' : ''}</small>
                         </div>
-                        <div className="col-8 mt-3">
-                          <b>Rp {item.price}</b> <small className='text-muted'>/ Portion</small>
+                        <div className="col-8 mt-3 align-content-bottom">
+                         <b>{formatRupiah(item.price)}</b><small className='text-muted'>/Portion</small>
                         </div>
-                        <div className="col-4 mt-3">
-                            <span className="badge bg-primary">{item.category}</span>
+                        <div className="col-4 mt-3 text-end">
+                           <small> <span className="badge bg-primary pe-2">{item.category}</span></small>
                         </div>
-                    </div>
+                      </div>
                     </Card.Body>
                   </Card>
                 </Col>
@@ -337,15 +369,43 @@ const MenuApp = () => {
           </div>
           <hr />
             {isAddMode ? (
-              <Card.Body className='p-0 pt-4'>
+              <Card.Body className='p-0 pt-0'>
                 <Form>
-                  <Form.Group className="mb-3 bg-light p-3 rounded">
-                    <Form.Label>Image</Form.Label>
+                  <Form.Group className="mb-3 mt-0 rounded">
+                    {/* <Form.Label>Image</Form.Label>
                     <Form.Control 
                       type="file"
                       accept="image/*"
                       onChange={(e) => setAddForm({...addForm, image: e.target.files[0]})}
-                    />
+                    /> */}
+                    <div
+                      className="upload-card border border-primary border-dashed w-100"
+                      onDrop={handleDrop}
+                      onDragOver={handleDragOver}
+                    >
+                      <div className="text-center">
+                        {addForm.image ? (
+                          <div>
+                            <img 
+                              src={URL.createObjectURL(addForm.image)} 
+                              alt="Preview" 
+                              style={{ width: '250px', height: '150px' }}
+                              className="rounded mb-2"
+                            />
+                            <p className="text-success">{addForm.image.name}</p>
+                          </div>
+                        ) : (
+                          <>
+                            <i className="bi bi-upload fs-1 mb-2" />
+                            <p>Drag and Drop your file here or</p>
+                          </>
+                        )}
+                        <label className="btn btn-primary">
+                          {addForm.image ? 'Change File' : 'Choose File'}
+                          <input type="file" hidden accept="image/*" onChange={(e) => setAddForm({...addForm, image: e.target.files[0]})} />
+                        </label>
+                      </div>
+                    </div>
                   </Form.Group>
                   <Form.Group className="mb-3">
                     <Form.Label>Name</Form.Label>
@@ -402,13 +462,41 @@ const MenuApp = () => {
               <Card.Body className='p-0 pt-4'>
                 <Form>
                   <Form.Group className="mb-3 bg-light p-4 rounded text-center">
-                      <Form.Label>Image</Form.Label> <br />
+                      {/* <Form.Label>Image</Form.Label> <br />
                       <img src={urlImage + '/catalogs/' + editForm.image} alt="menu" className='h-25 w-25 mb-2' />
                     <Form.Control 
                       type="file"
                       accept="image/*"
                       onChange={(e) => setEditForm({...editForm, image: e.target.files[0]})}
-                    />
+                    /> */}
+                    <div
+                      className="upload-card border border-primary border-dashed w-100"
+                      onDrop={handleDrop}
+                      onDragOver={handleDragOver}
+                    >
+                      <div className="text-center">
+                        {editForm.image ? (
+                          <div>
+                            <img 
+                              src={editImageForm.image instanceof File ? URL.createObjectURL(editImageForm.image) : urlImage + '/catalogs/' + editForm.image}
+                              alt="Preview" 
+                              style={{ width: '150px', height: '150px', objectFit: 'cover' }}
+                              className="rounded mb-2"
+                            />
+                            <p className="text-success">{editImageForm.image instanceof File ? editImageForm.image.name : 'Current image'}</p>
+                          </div>
+                        ) : (
+                          <>
+                            <i className="bi bi-upload fs-1 mb-2" />
+                            <p>Drag and Drop your file here or</p>
+                          </>
+                        )}
+                        <label className="btn btn-primary">
+                          {editImageForm.image ? 'Change File' : 'Choose File'}
+                          <input type="file" hidden accept="image/*"  onChange={(e) => setEditImageForm({...editImageForm, image: e.target.files[0]})} />
+                        </label>
+                      </div>
+                    </div>
                   </Form.Group>
                   <Form.Group className="mb-3">
                     <Form.Label>Name</Form.Label>
@@ -464,9 +552,9 @@ const MenuApp = () => {
             ) : selectedMenu ? (
               <>
                 {/* <Card.Img variant="top" src={urlImage + '/catalogs/' + selectedMenu.image} className='h-25 w-25 mb-2 text-center' /> */}
-                  <Card.Body className='p-0 pt-4'>
+                  <Card.Body className='p-0 pt-0'>
                   <div className='text-center'>
-                        <img src={urlImage + '/catalogs/' + selectedMenu.image} className='h-50 w-50 mb-2 text-center' alt="menu" />
+                      <img src={urlImage + '/catalogs/' + selectedMenu.image} className='w-100 rounded mb-2 text-center' alt="menu" style={{height:'300px'}} />
                   </div>
                   <Form>
                     <Form.Group className="mb-3">
@@ -509,7 +597,7 @@ const MenuApp = () => {
       <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} centered>
         <Modal.Body className='text-center'>
           <img src={deleted} alt="Logo" className='me-2 mb-4 mt-5' style={{ width: '80px', height: '80px' }} /> 
-          <h3 style={{ fontWeight: '600' }}>Are you sure want to delete <br /> this file?</h3>
+          <h4 style={{ fontWeight: '600' }}>Are you sure want to delete <br /> this file?</h4>
           <div className="text-center mb-5 mt-5">
             <Button variant="outline-secondary" onClick={() => setShowDeleteModal(false)} className='me-3 px-5'>
               Cancel
