@@ -213,7 +213,7 @@ const MenuApp = () => {
 
   const filteredMenuData = activeCategory === 'all' 
     ? menuData 
-    : menuData.filter(item => item.category.toLowerCase() === activeCategory.toLowerCase());
+    : menuData.filter(item => item.category === activeCategory);
 
   return (
     <>

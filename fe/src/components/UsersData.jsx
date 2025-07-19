@@ -193,7 +193,7 @@ const SettingApp = () => {
                             src={urlImage + '/users/'+item.avatar || "https://as2.ftcdn.net/jpg/08/19/66/31/1000_F_819663119_che4sZSrmQv8uQJOzuN9TVQFQNHJlfQ2.jpg"}
                             alt="ava"
                             className="rounded-circle bg-light"
-                            width="100%"
+                            width="80%"
                           />
                         </div>
                         <div className="col-8 text-muted">

@@ -7,7 +7,6 @@ const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
 const express = require('express');
 const bcrypt = require('bcryptjs');
-
 const saltRounds = 10;
 
 // Configure multer for image upload
@@ -182,7 +181,7 @@ exports.updateUserData = async (req, res) => {
 
       const updateData = {
         ...value,
-        image: req.file ? req.file.filename : undefined // Only update image if new file is uploaded
+        image: req.file ? req.file.filename : undefined
       };
 
       const updatedUser = await updateUser(id, updateData);

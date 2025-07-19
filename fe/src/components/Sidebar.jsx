@@ -87,7 +87,7 @@ const Sidebar = ({ isOpen, minimized, onToggleMinimize }) => {
               active={location.pathname === '/admin/setting'}
               className="d-flex align-items-center justify-content-start"
             >
-              <img src={location.pathname === '/admin/setting' ? settingActive : setting} alt="Logo" className='me-2' style={{ width: '24px', height: '24px', objectFit: 'contain' }} /> {!minimized && 'Settings'}
+              <img src={location.pathname === '/admin/setting' ? settingActive : setting} alt="Logo" className='me-2' style={{ width: '24px', height: '24px', objectFit: 'contain' }} /> {!minimized && 'Settings Profile'}
             </Nav.Link>
           </Nav.Item>
         <Nav.Item>

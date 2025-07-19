@@ -36,8 +36,8 @@ async function updateUser(id, user) {
     paramCount++;
   }
 
-  query += `name = $${paramCount}, username = $${paramCount + 1}, email = $${paramCount + 2}, status = $${paramCount + 3}, updated_at = $${paramCount + 4} WHERE id = $${paramCount + 5} RETURNING *`;
-  values.push(user.name, user.username, user.email, user.status, nDate, id);
+  query += `name = $${paramCount}, username = $${paramCount + 1}, email = $${paramCount + 2}, status = $${paramCount + 3}, role = $${paramCount + 4}, language = $${paramCount + 5}, updated_at = $${paramCount + 6} WHERE id = $${paramCount + 7} RETURNING *`;
+  values.push(user.name, user.username, user.email, user.status, user.role, user.language, nDate, id);
 
   const res = await pool.query(query, values);
   return res.rows[0];
