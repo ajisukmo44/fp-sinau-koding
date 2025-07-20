@@ -439,7 +439,7 @@ const formatRupiah = (number) => {
                       >
                         <Trash />
                       </Button>
-                      <div className="d-flex align-items-center mt-1">
+                      <div className="align-items-center mt-1 mx-0 px-0">
                         <Button 
                           size="sm" 
                           variant="outline-secondary"

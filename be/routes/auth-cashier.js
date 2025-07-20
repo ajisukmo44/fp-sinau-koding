@@ -70,7 +70,7 @@ router.post('/register', async (req, res) => {
   }
 });
 
-// Login user
+// Login cashier
 router.post('/login', async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -188,6 +188,72 @@ router.get('/profile', async (req, res) => {
     res.status(401).json({
       success: false,
       message: 'Invalid token'
+    });
+  }
+});
+
+
+// cek email reset password
+router.post('/reset-password', async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    // Validate input
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: 'email are required'
+      });
+    }
+
+    const emailcek = req.body.email;
+    const userEmail = await pool.query('SELECT * FROM users WHERE email = $1', [emailcek]);
+
+    const user = userEmail.rows[0];
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: 'Email Not Found'
+      });
+    }
+
+    if (user.role !== 'cashier') {
+      return res.status(400).json({
+        success: false,
+        message: 'Acces denided!'
+      });
+    }
+
+
+    // Generate JWT token
+    // const token = jwt.sign(
+    //   { userId: user.id, username: user.username },
+    //   JWT_SECRET,
+    //   { expiresIn: '24h' }
+    // );
+
+    res.json({
+      success: true,
+      message: 'Cek your email to reset password !',
+      data: {
+        user: {
+          // id: user.id,
+          // username: user.username,
+          email: user.email,
+          // role: user.role,
+          // name: user.name,
+          // avatar: user.avatar
+        },
+        // token
+      }
+    });
+
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error'
     });
   }
 });

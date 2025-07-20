@@ -14,3 +14,8 @@ export const loginCashier = async (username, password) => {
   const response = await api.post('/auth/cashier/login', { username, password });
   return response.data;
 };
+
+export const restPasswordCashier = async (email) => {
+  const response = await api.post('/auth/cashier/reset-password', { email });
+  return response.data;
+};
