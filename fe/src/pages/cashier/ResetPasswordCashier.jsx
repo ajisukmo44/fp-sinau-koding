@@ -3,41 +3,31 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../assets/login.css'; // Custom styles if needed
 import logo from '../../assets/logo.png';
 import { Link, useNavigate } from 'react-router-dom';
-import { loginCashier } from '../../api/auth';
+import { restPasswordCashier } from '../../api/auth';
 import eyeSlash from '../../assets/icon/eye-slash.png';
 import eye from '../../assets/icon/eye.png';
 
 function Login() {
   const [email, setemail] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
+  const [success, setSuccess] = useState('');
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
+  const handleEmail = async (e) => {
     e.preventDefault();
     
     const newErrors = {};
     if (!email.trim()) newErrors.email = 'email is required';
-    if (!password.trim()) newErrors.password = 'Password is required';
-    if (password.length < 6) newErrors.password = 'Password must be at least 6 characters';
     
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) return;
     
     try {
-      const res_data = await loginCashier(email, password);
-      // console.log('result login', res_data);
-      localStorage.setItem('token', res_data.data.token);
-      localStorage.setItem('role', res_data.data.user?.role);
-      localStorage.setItem('email', res_data.data.user?.email);
-      localStorage.setItem('name', res_data.data.user?.name);
-      localStorage.setItem('avatar_image', res_data.data.user?.avatar);
-      // notify other components about auth change
-      window.dispatchEvent(new Event('storage'));
-      navigate('/cashier/menu-order');
+      const res_data = await restPasswordCashier(email);
+      console.log('result', res_data);
+      setSuccess(res_data?.message);
     } catch (error) {
-      setErrors({ general: error.response?.data?.message || 'Login failed' });
+      setErrors({ general: error.response?.data?.message || 'Email failed' });
     }
   };
 
@@ -48,8 +38,9 @@ function Login() {
           <img src={logo} alt="Logo" style={{ width: '150px', height: '60px', objectFit: 'contain' }} />
         </div>
         <h3 className="text-center mb-3">Reset Password</h3>
-        <div className="text-center text-muted"><small>Please enter your registered email here!</small></div>
-        <form onSubmit={handleLogin}>
+          {!success ? (
+        <div className="text-center text-muted"><small>Please enter your registered email here!!</small></div>) : (<div className="alert alert-success">{success}</div>)}
+        <form onSubmit={handleEmail}>
           <div className="mb-3 mt-5">
             <label htmlFor="Email" className="form-label d-flex justify-content-between">Email</label>
             <input 
