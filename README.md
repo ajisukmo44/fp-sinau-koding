@@ -28,3 +28,5 @@ Tugas Project KodingFinal Sinau  <br>
 ----------------------------------------------------------------------
 
 <div>Dokumentasi Postman :  https://documenter.getpostman.com/view/8077069/2sB34kCdZZ </div>
+---------------------------------------------------------------------
+![dashboard](https://github.com/user-attachments/assets/ab34daa3-c9d8-469b-91f3-2351c7dc2389)
