@@ -91,7 +91,7 @@ const MainChart = () => {
 
   useEffect(() => {
     fetchChartData();
-  }, [startDate] [endDate]);
+  }, [startDate, endDate]);
 
   const fetchChartData = async () => {
     const data = {
