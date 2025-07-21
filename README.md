@@ -22,8 +22,8 @@ Tugas Project KodingFinal Sinau  <br>
 <h4> Running Aplikasi </h4>
 <div> - npm install</div>
 <div> - npm run dev</div>
-<div> - Port Backend : http://localhost:3000/ </div>
-<div> - Port Frontend :  http://localhost:5173/ </div>
+<div> - Port Backend : http://localhost:3000/ | https://sinau-be-i81w.vercel.app/ </div>
+<div> - Port Frontend :  http://localhost:5173/ | https://fesinaupos.netlify.app/ </div>
 
 ----------------------------------------------------------------------
 
