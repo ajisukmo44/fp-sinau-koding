@@ -78,10 +78,20 @@ const MainChart = () => {
   const [loading, setLoading] = useState(true);
   const [startDate, setStartDate] = useState(last7day);
   const [endDate, setEndDate] = useState(dateNow);
+  const [totalOmzet, setTotalOmzet] = useState('');
+  const [totalTax, setTotalTax] = useState('');
+
+  const formatRupiah = (number) => {
+  return new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    minimumFractionDigits: 0,
+  }).format(number);
+};
 
   useEffect(() => {
     fetchChartData();
-  }, [endDate]);
+  }, [startDate] [endDate]);
 
   const fetchChartData = async () => {
     const data = {
@@ -91,6 +101,8 @@ const MainChart = () => {
     try {
       const response = await api.post('/admin/statistics-summary/daily-chart', data);
       const data_res = response.data.data;
+      setTotalOmzet(data_res.totalOmzet);
+      setTotalTax(data_res.totalTax);
       const result_foods = data_res.results.filter((value) => value.label == 'foods');
       const result_beverages = data_res.results.filter((value) => value.label == 'beverages');
       const result_desserts = data_res.results.filter((value) => value.label == 'desserts');
@@ -139,9 +151,9 @@ const MainChart = () => {
 
   return (
     <Card className="shadow-sm border-0 mt-4">
-      <Card.Body className="p-4">
-        <div className="d-flex flex-wrap justify-content-between align-items-center mb-4">
-            <Card.Title as="h5" className="fw-bold mb-2 mb-md-0">Total Omzet</Card.Title>
+      <Card.Body className="p-2">
+        <div className="d-flex flex-wrap justify-content-between align-items-center mb-0">
+          <Card.Title as="h5" className="fw-bold mb-2 mb-md-0">Total Omzet</Card.Title>
             <div className="d-flex flex-wrap gap-2">
                 <Form.Control 
                   type="date" 
@@ -164,6 +176,10 @@ const MainChart = () => {
                     <option value="3">Dessert</option>
                 </Form.Select> */}
             </div>
+        </div>
+        <div className='mb-4'>
+          <small><b>Omzet : </b><small className='text-success'>{formatRupiah(totalOmzet)}</small></small> | 
+          <small className='ms-1'><b>Tax :</b><small className='text-danger'> {formatRupiah(totalTax)}</small></small>
         </div>
         <div style={{ height: '350px' }}>
           <Bar options={chartOptions} data={chartData} />

@@ -47,6 +47,14 @@ async function getDailyChartCategoryOrder(startDate, endDate) {
         ORDER BY date
     `, [start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD')]);
 
+    // Get totalOmzet and totalTax for the same date range
+    const sumRes = await pool.query(
+      `SELECT SUM(subtotal_group) AS total_omzet, SUM(tax) AS total_tax FROM transaction_group WHERE DATE(created_at) BETWEEN $1 AND $2 AND is_deleted = FALSE`,
+      [start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD')]
+    );
+    const totalOmzet = parseInt(sumRes.rows[0].total_omzet) || 0;
+    const totalTax = parseInt(sumRes.rows[0].total_tax) || 0;
+
     // Generate date list in Asia/Jakarta timezone
     const dateList = [];
     let current = start.clone();
@@ -68,7 +76,9 @@ async function getDailyChartCategoryOrder(startDate, endDate) {
     
     return {
         dates: dateList,
-        results: Object.values(grouped)
+        results: Object.values(grouped),
+        totalOmzet,
+        totalTax
     };
 };
 

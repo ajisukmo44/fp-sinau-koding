@@ -7,7 +7,8 @@ import urlImage from '../api/baseUrl';
 
 const Header = ({ toggleSidebar, isSidebarOpen, isSidebarMinimized }) => {
   const navigate = useNavigate();
-  const [role, setName] = useState(localStorage.getItem('role'));
+  const [role, setRole] = useState(localStorage.getItem('role'));
+  const [name, setName] = useState(localStorage.getItem('name'));
   const [username, setUsername] = useState(localStorage.getItem('username'));
   const [avatarImage, setavatarImage] = useState(localStorage.getItem('avatar_image'));
 
