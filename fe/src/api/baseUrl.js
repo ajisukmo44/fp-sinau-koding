@@ -1,5 +1,5 @@
 import axios from 'axios';
 
-const urlImage = 'http://localhost:3000/uploads';
+const urlImage = 'https://sinau-be-i81w.vercel.app/uploads';
 
 export default urlImage;
