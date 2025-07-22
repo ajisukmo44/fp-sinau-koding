@@ -29,3 +29,8 @@ Tugas Project KodingFinal Sinau  <br>
 
 <div>Dokumentasi Postman :  https://documenter.getpostman.com/view/8077069/2sB34kCdZZ </div>
 ---------------------------------------------------------------------
+login admin : admin
+password : admin12345
+------------------
+login kasir : kasir1
+password : kasir1234
